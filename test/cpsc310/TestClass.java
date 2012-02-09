@@ -18,6 +18,7 @@ public class TestClass {
 	public void printNames()
 	{
 		System.out.println("Richard");
+		System.out.println("Jessica");		
 	}
 	
 }
