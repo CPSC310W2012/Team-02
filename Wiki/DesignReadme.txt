@@ -19,7 +19,7 @@ User: Accounts for Realtors.
 FileParser: Parse for files.
 
 Sequence Diagrams
-SequenceDiagram_DataUpdate_v1-0.jpg
+SequenceDiagram_DataUpdate_v1-1.jpg
 Server interaction: “Update homes information from Data Vancouver”
 
 SequenceDiagram_MapRetrival_v1-0.jpg
@@ -33,8 +33,8 @@ UML_Draft1.jpg
 UML_Draft2.jpg
 - second draft of our class diagram
 
-UML_Final_v1-0.jpg
-- final copy of our class diagram as of 16/2/2012
+UML_Final_v1-1.jpg
+- final copy of our class diagram as of 17/2/2012
 
 GUIMockup1.jpg, GUIMockup2.jpg
 - GUI mockup, contains diagrams for the login page, search criteria box upon login and results table
