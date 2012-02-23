@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <!-- The DOCTYPE declaration above will set the     -->
 <!-- browser's rendering engine into                -->
 <!-- "Standards Mode". Replacing this declaration   -->
@@ -7,33 +7,22 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-    <!--                                                               -->
-    <!-- Consider inlining CSS to reduce the number of requested files -->
-    <!--                                                               -->
-    <link type="text/css" rel="stylesheet" href="Team_02.css">
-
-    <title>Cpsc 310 Property taxes viewer</title>
     
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
+    <!--Link to CSS file-->
+    <link type="text/css" rel="stylesheet" href="/Team_02.css">
+    
+    <!--Title that appears on the browser window-->
+    <title>iVanHomesPrices</title>
+    
     <script type="text/javascript" language="javascript" src="team_02/team_02.nocache.js"></script>
   </head>
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                           -->
   <body>
 
-    <!-- OPTIONAL: include this if you want history support -->
+	<!--To enable history. Added by default GWT-->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     
-    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <!--Warns users without JavaScript. Need this for accessibility reasons. -->
     <noscript>
       <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
         Your web browser must have JavaScript enabled
@@ -41,19 +30,17 @@
       </div>
     </noscript>
 
-    <h1>cs 310 Project - team XP</h1>
-
-    <table align="center">
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Please enter your name:</td>        
-      </tr>
-      <tr>
-        <td id="nameFieldContainer"></td>
-        <td id="sendButtonContainer"></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
-      </tr>
-    </table>
+	<!--Site Logo-->
+	<h1>iVanHomesPrices - Team XD</h1>
+    
+    <!--Google Map comes here-->
+    <div id="map">
+    	Google Map comes here
+    </div>
+	
+	<!--App is associated with java from this point-->
+	<div id="appPanel">
+	</div>
+    
   </body>
 </html>
