@@ -5,8 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Button;
@@ -17,6 +25,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.cell.client.NumberCell;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -156,7 +165,35 @@ public class Team_02 implements EntryPoint {
 	private Button loginBtn = new Button("Login");
 
 	
+	
+	  /**
+	  * Adds the map
+	  */
+	private void addMap() {
+	    // Open a map centered on UBC
+	    LatLng ubc = LatLng.newInstance(49.261084, -123.252965);
 
+	    final MapWidget map = new MapWidget(ubc, 12);
+	    map.setSize("100%", "100%");
+	    // Add some controls for the zoom level
+	    map.addControl(new LargeMapControl());
+
+	    // Add a test marker
+	    map.addOverlay(new Marker(ubc));
+
+	    // Add an info window to highlight a point of interest
+	    map.getInfoWindow().open(map.getCenter(),
+	        new InfoWindowContent("Vancouver - UBC"));
+
+	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
+	    dock.addNorth(map, 500);
+
+	    // Add the map to the HTML host page
+	    mainPanel.add(dock);
+	  }
+	
+	
+	
 	
 	/**
 	 * This is the entry point method.
@@ -240,10 +277,17 @@ public class Team_02 implements EntryPoint {
 		controlPanel.selectTab(0);
 				
 		// Assemble Main panel
+		 Maps.loadMapsApi("", "2", false, new Runnable() {
+			      public void run() {
+			        addMap();
+			      }
+			    });
 		mainPanel.add(loginBtn);
 		mainPanel.add(homesCellTable);		
 		mainPanel.add(simplePager);
 		mainPanel.add(controlPanel);
+		
+
 		
 		// Associate the Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
