@@ -10,7 +10,7 @@ import com.google.gwt.dev.util.collect.HashMap;
 public class HouseDataPoint {
 
 	// variables
-	// tentitatively stable; may be removing or adding additional ones often
+	// tentatively stable; may be removing or adding additional ones often
 	// early on
 	// Variables to be set by house data
 	private int pid;
@@ -61,15 +61,19 @@ public class HouseDataPoint {
 		return postalCode;
 	}
 
+	public int getLandValue() {
+		return landValue;
+	}
+	
 	public String getOwner() {
 		return owner;
 	}
 
-	public boolean isSelling() {
+	public boolean getIsSelling() {
 		return isSelling;
 	}
 
-	public double isPrice() {
+	public double getPrice() {
 		return price;
 	}
 	
@@ -82,7 +86,7 @@ public class HouseDataPoint {
 	{
 		isSelling = sell;
 	}
-	public void setPrice(String salePrice)
+	public void setPrice(double salePrice)
 	{
 		price = salePrice;
 	}

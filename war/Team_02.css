@@ -1,16 +1,71 @@
 /** Add css rules here for your application. */
 
+* {
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
 
-/** Example rules used by the template application (remove for your app) */
+body {
+	width: 100%;
+	height: 100%;
+	font-size: 1em;
+	overflow-x: hidden;
+}
 h1 {
-	margin: 40px 0px 70px;
+	margin: 0 auto;
 	font-size: 2em;
 	font-weight: bold;
 	text-align: center;
 }
-.gwt-TextBox {
+
+.mainPanel {
+	width: 80%;
+	margin: 0 auto;	
+	clear:both;
 }
+
+.loginPanel {
+	width: 10%;
+	float: right;
+	clear: right;
+}
+
+.map {
+	width:100%;
+	height:500px;
+	clear:both;
+}
+
+.mapContainerPanel {
+	height: 500px;
+	clear: both;
+}
+
+.lowerWrapFlexTable {
+
+	clear: both;
+}
+
+.homesCellTable {
+	width: 70%;
+}
+
+.gwt-TabPanel {
+	width: 20%;
+	margin-right: 50px;
+}
+
+
+.gwt-TextBox {
+	width: 100px;
+	height: 20px;
+}
+
 .gwt-Button {
 }
+
+
+
 /** Most GWT widgets already have a style name defined */
 /** Set ids using widget.getElement().setId("idOfElement") */

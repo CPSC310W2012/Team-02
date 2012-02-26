@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
@@ -13,6 +14,7 @@ import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -37,6 +39,8 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
 
@@ -72,8 +76,8 @@ public class Team_02 implements EntryPoint {
 		  private final long landVal;
 		  private final int assmntYr;
 		  private final int yrBuilt;
-		  private final int price;
-		  private final String isSelling;
+		  private int price;
+		  private String isSelling;
 		  
 		  private TmpHouseDataPoint(String pid, Address address, String postalCode, 
 	    		long coordinates, long landVal, int assmntYr, int yrBuilt, int price, String isSelling) {
@@ -177,6 +181,9 @@ public class Team_02 implements EntryPoint {
 	
 	
 	private VerticalPanel mainPanel = new VerticalPanel();
+	private HorizontalPanel loginPanel = new HorizontalPanel();	
+	private SimplePanel mapContainerPanel = new SimplePanel();	
+	private FlexTable lowerWrapFlexTable = new FlexTable();	
 	private TabPanel controlPanel = new TabPanel();	
 	private VerticalPanel searchPanel = new VerticalPanel();
 	private VerticalPanel editPanel = new VerticalPanel();		
@@ -197,8 +204,14 @@ public class Team_02 implements EntryPoint {
 	private RadioButton noSellingRdBtn = new RadioButton("isSelling", "No");
 	private RadioButton unknownSellingRdBtn = new RadioButton("isSelling", "Unknown");
 	private Button loginBtn = new Button("Login");
+	private Button logoutBtn = new Button("Log out");
+	private TmpHouseDataPoint selectedHouse = null;
 	
+	private LoginInfo loginInfo = null;
 	
+
+  	
+  	
 	  /**
 	  * Adds the map
 	  */
@@ -208,6 +221,7 @@ public class Team_02 implements EntryPoint {
 
 	    final MapWidget map = new MapWidget(ubc, 12);
 	    map.setSize("100%", "100%");
+	    map.setStyleName("map");
 	    // Add some controls for the zoom level
 	    map.addControl(new LargeMapControl());
 
@@ -222,7 +236,7 @@ public class Team_02 implements EntryPoint {
 	    dock.addNorth(map, 500);
 
 	    // Add the map to the HTML host page
-	    mainPanel.add(dock);
+	    mapContainerPanel.add(dock);
 	  }
 	
 	
@@ -232,10 +246,41 @@ public class Team_02 implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {	
-		
+		// Check login status using login service
+		LoginServiceAsync loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+	      public void onFailure(Throwable error) {
+	      }
+
+	      public void onSuccess(LoginInfo result) {
+	    	  loginInfo = result;
+	    	// Allow Edit if logged in.
+	  		if (loginInfo.isLoggedIn() == true) {
+	  			allowEdit();
+	  			loginBtn.setVisible(false);
+	  			loginBtn.setEnabled(false);
+	  		}
+	  		else {
+	  			logoutBtn.setVisible(false);
+	  			logoutBtn.setEnabled(false);
+	  		}    	  
+	      }
+	    });
+	    
+	    // Assemble Login Panel
+	    loginPanel.add(loginBtn);
+		loginPanel.add(logoutBtn);
+						
+		// Assemble mapContainer panel
+		 Maps.loadMapsApi("", "2", false, new Runnable() {
+			      public void run() {
+			        addMap();
+			      }
+		});
+		 
 		// Create Cell Table ******* Will be updated once HouseDataPoint.java is implemented
+		initCellTableSorting(sortHandler);		
 		homesCellTable.addColumnSortHandler(sortHandler);
-		initCellTableColumns(selectionModel, sortHandler);
 		homesCellTable.addColumn(pidColumn, "PID");
 		homesCellTable.addColumn(addrColumn, "Address");		
 		homesCellTable.addColumn(postalColumn, "Postal Code");		
@@ -245,11 +290,10 @@ public class Team_02 implements EntryPoint {
 		homesCellTable.addColumn(yrBuiltColumn, "Year Built");
 		homesCellTable.addColumn(priceColumn, "Price");
 		homesCellTable.addColumn(isSellingColumn, "Sale");
-		homesCellTable.addColumn(selectRowColumn, "Select");
 		homesCellTable.setPageSize(3);
-		simplePager.setDisplay(homesCellTable);
 		dataProvider.addDataDisplay(homesCellTable);
-		
+		simplePager.setDisplay(homesCellTable);		 
+
 		// Connect the table to the data provider. ******* Will be updated once HouseDataPoint.java is implemented
 		List<TmpHouseDataPoint> list = dataProvider.getList();
 		
@@ -257,9 +301,8 @@ public class Team_02 implements EntryPoint {
 	    // widget. ******* Will be updated once HouseDataPoint.java is implemented
 		for (TmpHouseDataPoint house : HOUSES) {
 			list.add(house);
-		}
-				
-		
+		}	
+			
 		// Create Search Criteria table. **** Possibly replace with HTML form panel
 		searchSettingsFlexTable.setText(0, 0,"Coordinates");
 		searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
@@ -272,49 +315,53 @@ public class Team_02 implements EntryPoint {
 		searchSettingsFlexTable.setText(2, 0, "Postal Code");
 		searchSettingsFlexTable.setWidget(2, 1, postalCodeTextBox);
 		
-		// Create Edit Criteria table.
-		editFlexTable.setText(0, 0, "Property Address:");
-		editFlexTable.setWidget(0, 1, propAddrLabel);
-		editFlexTable.setText(1, 0, "Price");
-		editFlexTable.setWidget(1, 1, priceTextBox);
-		editFlexTable.setText(2, 0, "For Sale");
-		editFlexTable.setWidget(2, 1, yesSellingRdBtn);		
-		editFlexTable.setWidget(2, 2, noSellingRdBtn);		
-		editFlexTable.setWidget(2, 3, unknownSellingRdBtn);
-		
 		// Assemble Search panel
 		searchPanel.add(searchSettingsFlexTable);	
 		searchPanel.add(searchBtn);
 		
-		// Assemble Edit panel
-		editPanel.add(editFlexTable);		
-		editPanel.add(editBtn);
-		
 		// Assemble Control Tab panel
 		controlPanel.add(searchPanel, "Search", false);
-		controlPanel.add(editPanel, "Edit", false);
 		controlPanel.selectTab(0);
+			
+		// Assemble lowerWrapFlexTable which wraps controlPanel, homesCellTable, and simplePager
+		lowerWrapFlexTable.setWidget(0, 0, controlPanel);
+		lowerWrapFlexTable.setWidget(0, 1, homesCellTable);
+		lowerWrapFlexTable.setWidget(1, 1, simplePager);		
+		
+		// Assemble Main Panel
+		mainPanel.add(loginPanel);		
+		mainPanel.add(mapContainerPanel);	
+		mainPanel.add(lowerWrapFlexTable);
+		
+		// Set style
+		loginPanel.setStyleName("loginPanel");		 
+		mainPanel.setStyleName("mainPanel");
+		mapContainerPanel.setStyleName("mapContainerPanel");
+		lowerWrapFlexTable.setStyleName("lowerWrapFlexTable");		
 				
-		// Assemble Main panel
-		 Maps.loadMapsApi("", "2", false, new Runnable() {
-			      public void run() {
-			        addMap();
-			      }
-			    });
-		mainPanel.add(loginBtn);
-		mainPanel.add(homesCellTable);
-		mainPanel.add(simplePager);
-		mainPanel.add(controlPanel);
-				
-		// Associate the Main panel with the HTML host page
+		// Associate Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
+
+		// Listen for mouse events on Login
+		loginBtn.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				Window.Location.replace(loginInfo.getLoginUrl());
+			}
+		});
+		
+		// Listen for mouse events on Logout
+		logoutBtn.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				Window.Location.replace(loginInfo.getLogoutUrl());
+			}
+		});
 		
 		// Listen for mouse events on Search
 		searchBtn.addClickHandler(new ClickHandler() {
 			public void onClick (ClickEvent event) {
 				searchHouse();
 			}
-		});
+		});		
 		
 		// Listen for mouse events on Edit
 		editBtn.addClickHandler(new ClickHandler() {
@@ -325,21 +372,7 @@ public class Team_02 implements EntryPoint {
 	}
 	
 	// For enabling CellTable sort **** Will be updated once HouseDataPoint.java is implemented
-	private void initCellTableColumns(final SingleSelectionModel<TmpHouseDataPoint> selectionModel, 
-			ListHandler<TmpHouseDataPoint> sortHandler) {
-				
-		homesCellTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TmpHouseDataPoint> createCheckboxManager());
-		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				TmpHouseDataPoint selected = selectionModel.getSelectedObject();
-				if (selected == null)
-					propAddrLabel.setText(null);
-				propAddrLabel.setText(selected.address.toString() + " " + selected.postalCode);
-				
-			}
-		});
-
+	private void initCellTableSorting(ListHandler<TmpHouseDataPoint> sortHandler) {
 		
 		sortHandler.setComparator(pidColumn, new Comparator<TmpHouseDataPoint>() {
 			public int compare(TmpHouseDataPoint o1, TmpHouseDataPoint o2) {
@@ -409,17 +442,44 @@ public class Team_02 implements EntryPoint {
 		isSellingColumn.setSortable(true);
 	}
 	
+	private void initCellTableSelection(final SingleSelectionModel<TmpHouseDataPoint> selectionModel) {
+		homesCellTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<TmpHouseDataPoint> createCheckboxManager());
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				TmpHouseDataPoint selected = selectionModel.getSelectedObject();
+				if (selected == null) {
+					propAddrLabel.setText(null);
+					setSelectedHouse(null);
+				}
+				propAddrLabel.setText(selected.address.toString() + " " + selected.postalCode);
+				setSelectedHouse (selected);
+			}
+		});
+	}
+	
 	private void searchHouse() {
 		final String lowerCoord = lowerCoordTextBox.getText().trim();
 		final String upperCoord = upperCoordTextBox.getText().trim();
 		final String lowerLandVal = lowerLandValTextBox.getText().trim();
 		final String upperLandVal = upperLandValTextBox.getText().trim();
-		final String postalCode = postalCodeTextBox.getText().trim();
+		final String postalCode = postalCodeTextBox.getText().trim().toUpperCase();
 		
+		String[] searchCriteria = {lowerCoord, upperCoord, lowerLandVal, upperLandVal, postalCode};
+		
+		String checkDigit = "|[0-9]+[/.]?[0-9]*";
+		String checkPostalCode = "|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]";
+
 		// Coordinate must be numeric value
-		if (!lowerCoord.matches("|[0-9]+[/.]?[0-9]*")) {
-			Window.alert("Only numeric value is allowed.");
-			lowerCoordTextBox.selectAll();
+		if (!lowerCoord.matches(checkDigit) | !upperCoord.matches(checkDigit) |
+				!lowerLandVal.matches(checkDigit) | !upperLandVal.matches(checkDigit)) {
+			Window.alert("Only numeric value is allowed for coordinates and land values.");
+			return;
+		}		
+		
+		if (!postalCode.matches(checkPostalCode)) {
+			Window.alert("Please type in a valid postal code");
+			postalCodeTextBox.selectAll();
 			return;
 		}
 		
@@ -427,6 +487,71 @@ public class Team_02 implements EntryPoint {
 	}
 	
 	private void editHouse() {
+		final String price = priceTextBox.getText().trim();
+		final boolean unknownSelling = unknownSellingRdBtn.getValue();
+		final TmpHouseDataPoint house = selectedHouse;  
+		
+		
+		if (house == null) {
+			Window.alert("Please select a house to edit");
+			return;
+		}
+		
+		if (!price.matches("|[0-9]*")) {
+			Window.alert("Only non-decimal numeric value is allowed for price.");
+			priceTextBox.selectAll();
+			return;
+		}
+		
+		
+		if (price.isEmpty())
+			house.price = 0;
+		else
+			house.price = Integer.parseInt(price);
+		
+		if (unknownSelling == true)
+			house.isSelling = "";
+		else {			
+			boolean isSelling = yesSellingRdBtn.getValue();			
+			if (isSelling == true)
+				house.isSelling = "For Sale";
+			else
+				house.isSelling = "Not For Sale";
+		}
+		
+		refreshHouse(house);
+	}
+	
+	private void setSelectedHouse(TmpHouseDataPoint house) {
+		selectedHouse = house;
+	}
+	
+	private void refreshHouse(TmpHouseDataPoint house) {
+		homesCellTable.redraw();
+	}
+	
+	private void allowEdit() {
+		
+		initCellTableSelection(selectionModel);
+		homesCellTable.addColumn(selectRowColumn, "Select");
+		
+		// Create Edit Criteria table.
+		editFlexTable.setText(0, 0, "Property Address:");
+		editFlexTable.setWidget(0, 1, propAddrLabel);
+		editFlexTable.setText(1, 0, "Price");
+		editFlexTable.setWidget(1, 1, priceTextBox);
+		editFlexTable.setText(2, 0, "For Sale");
+		editFlexTable.setWidget(2, 1, yesSellingRdBtn);		
+		editFlexTable.setWidget(2, 2, noSellingRdBtn);		
+		editFlexTable.setWidget(2, 3, unknownSellingRdBtn);
+		unknownSellingRdBtn.setValue(true);
+		
+		// Assemble Edit panel
+		editPanel.add(editFlexTable);		
+		editPanel.add(editBtn);
+		
+		// Add Edit tab to the controlPanel
+		controlPanel.add(editPanel, "Edit", false);
 		
 	}
 }
