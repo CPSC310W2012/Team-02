@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Team-02
+Bundle-SymbolicName: Team-02
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: Team-02.jar,
+ Team-02/war/WEB-INF/lib/gwt-maps.jar
+Export-Package: cpsc310,
+ cpsc310.client,
+ cpsc310.server,
+ cpsc310.shared
