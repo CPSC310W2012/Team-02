@@ -27,8 +27,8 @@ public class HouseDataPoint {
 	/*
 	 * Constructor
 	 * 
-	 * @Pre: a hashMap Object(keys are table headers)
-	 * @Post: a houseDataPoint Object
+	 * @pre: a hashMap Object(keys are table headers)
+	 * @post: a houseDataPoint Object
 	 */
 	public HouseDataPoint(HashMap<String, String> houseRow) {
 		// Variables to be set by house data
@@ -82,7 +82,7 @@ public class HouseDataPoint {
 	{
 		isSelling = sell;
 	}
-	public void setPrice(String salePrice)
+	public void setPrice(double salePrice)
 	{
 		price = salePrice;
 	}
