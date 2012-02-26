@@ -1,3 +1,5 @@
+@CHARSET "UTF-8";
+
 /** Add css rules here for your application. */
 
 * {
@@ -9,63 +11,87 @@
 body {
 	width: 100%;
 	height: 100%;
+	background-color:#F5F4E4 !important;
 	font-size: 1em;
+	font-family: Helvetica, Arial, sans-serif;
 	overflow-x: hidden;
 }
-h1 {
-	margin: 0 auto;
-	font-size: 2em;
-	font-weight: bold;
+
+#contentWrapper {
+	width:90%;
+	margin:0 auto;
+}
+
+#header h1 {
+	position:absolute;
+	top:10px;
+	color: #10898B;
+	font-size: 40px;
+	font-family: Georgia, Times New Roman, serif;
+	font-weight:lighter;
 	text-align: center;
 }
 
+.clear {
+	width:100%;
+	height:30px;
+	clear:both;	
+}
+
+#footer {
+	width:200px;
+	margin: 0 auto;
+	clear: both;
+}
+
+#footer span {
+	font-size: 15px;
+	color: #868684;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	text-align: center;
+	padding: 30px auto;
+}
+
 .mainPanel {
-	width: 80%;
-	margin: 0 auto;	
-	clear:both;
+	width: 90%;
+	clear: both;
 }
 
 .loginPanel {
-	width: 10%;
+	margin: 20px 0;
 	float: right;
 	clear: right;
 }
 
 .map {
-	width:100%;
-	height:500px;
 	clear:both;
 }
 
 .mapContainerPanel {
 	height: 500px;
 	clear: both;
+	margin-top:30px;
+	border-top: 2px solid #2C9FA3;
+	border-bottom: 2px solid #2C9FA3;			
 }
 
-.lowerWrapFlexTable {
-
+.lowerWrapPanel {
+	width: 100%;
+	margin: 20px auto;	
 	clear: both;
 }
 
-.homesCellTable {
-	width: 70%;
+.gwt-TabPanelBottom {
+	background-color: #FFF;
 }
-
-.gwt-TabPanel {
-	width: 20%;
-	margin-right: 50px;
-}
-
 
 .gwt-TextBox {
-	width: 100px;
-	height: 20px;
+	width: 130px;
+	height: 25px;
 }
 
 .gwt-Button {
 }
 
 
-
-/** Most GWT widgets already have a style name defined */
-/** Set ids using widget.getElement().setId("idOfElement") */
