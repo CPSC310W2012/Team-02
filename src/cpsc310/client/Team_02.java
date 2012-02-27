@@ -1,13 +1,11 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -24,16 +22,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.cell.client.NumberCell;
@@ -141,7 +135,7 @@ public class Team_02 implements EntryPoint {
 	  	// Assemble tableWrapPanel
 	  	tableWrapPanel.add(homesCellTable);
 	  	tableWrapPanel.add(simplePager);
-		tableWrapPanel.setSpacing(20);
+		tableWrapPanel.setSpacing(5);
 	  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		// Assemble lowerWrapPanel
@@ -149,6 +143,7 @@ public class Team_02 implements EntryPoint {
 	  	lowerWrapPanel.add(tableWrapPanel);
 	  	
 		// Assemble Main Panel
+	  	mainPanel.setWidth("80%");
 		mainPanel.add(loginPanel);		
 		mainPanel.add(mapContainerPanel);	
 		mainPanel.add(lowerWrapPanel);
@@ -290,14 +285,14 @@ public class Team_02 implements EntryPoint {
 	  	homesCellTable.addColumn(ownerColumn, "Owner");
 	  	homesCellTable.addColumn(priceColumn, "Price");
 	  	homesCellTable.addColumn(isSellingColumn, "Sale");
-	  	homesCellTable.setColumnWidth(pidColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(addrColumn, 150.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(postalColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(coordColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(landValColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(ownerColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(priceColumn, 80.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(isSellingColumn, 80.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(pidColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(addrColumn, 40.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(postalColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(coordColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(landValColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(ownerColumn, 30.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(priceColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(isSellingColumn, 20.0, Unit.PX);
 	  	simplePager.setDisplay(homesCellTable);		
 		homesCellTable.setPageSize(3);
 		
@@ -343,7 +338,7 @@ public class Team_02 implements EntryPoint {
 		*/
 		
 		// Create sort handler, associate sort handler to the table
-		List<HouseData> newData = new ArrayList(homesCellTable.getVisibleItems());
+		List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
 		ListHandler<HouseData> sortHandler =  
 				new ListHandler<HouseData>(newData);
 		homesCellTable.addColumnSortHandler(sortHandler);
@@ -500,6 +495,7 @@ public class Team_02 implements EntryPoint {
 		};
 		
 		// Add checkBox column to the table
+		homesCellTable.setColumnWidth(selectRowColumn, 10.0, Unit.PX);
 		homesCellTable.addColumn(selectRowColumn, "Select");
 	
 	}

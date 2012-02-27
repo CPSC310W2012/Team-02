@@ -13,7 +13,6 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.google.gwt.maps.GoogleMaps' />
-  <stylesheet src="/Team_02.css" />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='cpsc310.client.Team_02'/>

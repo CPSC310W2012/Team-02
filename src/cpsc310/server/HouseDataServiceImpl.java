@@ -20,8 +20,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
 		
 		// TODO Grab data from database
-		
-		return null;
+		List<HouseData> tmpHouse = new ArrayList<HouseData>();
+		return tmpHouse;
 	}
 
 	@Override
