@@ -1,7 +1,5 @@
 package cpsc310.server;
 
-import java.util.Iterator;
-
 import com.google.gwt.dev.util.collect.HashMap;
 
 /*
