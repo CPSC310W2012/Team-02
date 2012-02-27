@@ -24,15 +24,15 @@ public class HouseData implements Serializable{
 	 */
 	public HouseData(int pid, String address, String postalCode, int coordinate, 
 			int landValue, String owner, boolean isSelling, double price) {
-		pid = this.pid;
-		coordinate = this.coordinate;
-		address = this.address;
-		postalCode = this.postalCode;
-		landValue = this.landValue;
+		this.pid = pid;
+		this.coordinate = coordinate;
+		this.address = address;
+		this.postalCode = postalCode;
+		this.landValue = landValue;
 
-		owner = this.owner;
-		isSelling = this.isSelling;
-		price = this.price;
+		this.owner = owner;
+		this.isSelling = isSelling;
+		this.price = price;
 	}
 
 	

@@ -15,17 +15,14 @@ import cpsc310.client.HouseDataService;
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 	
-	private List<HouseData> HOUSES = new ArrayList<HouseData>();
-	private HouseData test = new HouseData(29992, "123 12th AVE W", "V6K 1M3", 123, 93821, "John Doe", true, 399928);
-	
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
 		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
 		
 		// TODO Grab data from database
 		List<HouseData> tmpHouse = new ArrayList<HouseData>();
-		HOUSES.set(0, test);
-		tmpHouse.addAll(HOUSES);
+		HouseData test = new HouseData(29992, "123 12th AVE W", "V6K 1M3", 123, 93821, "John Doe", true, 399928);
+		tmpHouse.add(test);
 		return tmpHouse;
 	}
 
@@ -55,7 +52,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// TODO get database length
 		
 		// TODO temporary. change when above gets implemented
-		return HOUSES.size();
+		return 1;
 	}	
 
 	@Override
