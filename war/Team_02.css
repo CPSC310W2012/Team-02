@@ -1,0 +1,97 @@
+@CHARSET "UTF-8";
+
+/** Add css rules here for your application. */
+
+* {
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	background-color:#F5F4E4 !important;
+	font-size: 1em;
+	font-family: Helvetica, Arial, sans-serif;
+	overflow-x: hidden;
+}
+
+#header {
+	width:90%;
+	margin:0 auto;
+}
+
+#header h1 {
+	position:absolute;
+	top:10px;
+	color: #10898B;
+	font-size: 40px;
+	font-family: Georgia, Times New Roman, serif;
+	font-weight:lighter;
+	text-align: center;
+}
+
+.clear {
+	width:100%;
+	height:30px;
+	clear:both;	
+}
+
+#footer {
+	width:200px;
+	margin: 0 auto;
+	clear: both;
+}
+
+#footer span {
+	font-size: 15px;
+	color: #868684;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	text-align: center;
+	padding: 30px auto;
+}
+
+.mainPanel {
+	margin:0 auto;
+	clear:both;
+}
+
+.loginPanel {
+	margin: 20px 0;
+	float: right;
+	clear: right;
+}
+
+.map {
+	clear:both;
+}
+
+.mapContainerPanel {
+	height: 500px;
+	clear: both;
+	margin-top:30px;
+	margin-bottom:30px;
+	border-top: 3px solid #2C9FA3;
+	border-bottom: 3px solid #2C9FA3;			
+}
+
+.lowerWrapPanel {
+	margin-top: 20px 0;	
+	clear: both;
+}
+
+.gwt-TabPanelBottom {
+	background-color: #FFF;
+}
+
+.gwt-TextBox {
+	width: 130px;
+	height: 25px;
+}
+
+.gwt-Button {
+}
+
+
