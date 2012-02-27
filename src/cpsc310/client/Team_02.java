@@ -52,6 +52,7 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 
 public class Team_02 implements EntryPoint {
 
+	private DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel loginPanel = new HorizontalPanel();	
 	private SimplePanel mapContainerPanel = new SimplePanel();	
@@ -91,13 +92,12 @@ public class Team_02 implements EntryPoint {
 	    loginPanel.add(loginBtn);
 		loginPanel.add(logoutBtn);
 		
-						
-		// Assemble mapContainer panel
-		 Maps.loadMapsApi("", "2", false, new Runnable() {
-			      public void run() {
-			        addMap();
-			      }
-		});
+		// The map
+		propertyMap theMap = new propertyMap();
+		theMap.buildUi();
+
+		// Assemple map panel
+		dock.addNorth(theMap.getMap(), 500);
 		 
 		// Create Cell Table
 		initCellTable();
@@ -158,6 +158,8 @@ public class Team_02 implements EntryPoint {
 		
 		// Associate Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
+		RootPanel.get("map").add(dock);
+		
 
 		
 		// Listen for mouse events on Search
@@ -169,34 +171,6 @@ public class Team_02 implements EntryPoint {
 		
 	}
 	
-	/**
-	  * Adds the map
-	  */
-	private void addMap() {
-	    // Open a map centered on UBC
-	    LatLng ubc = LatLng.newInstance(49.261084, -123.252965);
-	
-	    final MapWidget map = new MapWidget(ubc, 12);
-	    map.setSize("100%", "100%");
-	    map.setStyleName("map");
-	    
-	    // Add some controls for the zoom level
-	    map.addControl(new LargeMapControl());
-	
-	    // Add a test marker
-	    map.addOverlay(new Marker(ubc));
-	
-	    // Add an info window to highlight a point of interest
-	    map.getInfoWindow().open(map.getCenter(),
-	        new InfoWindowContent("Vancouver - UBC"));
-	
-	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
-	    dock.addNorth(map, 500);
-	
-	    // Add the map to the HTML host page
-	    mapContainerPanel.add(dock);
-	  }
-
 	/**
 	 * Initializes homesCellTable.
 	 * Creates cell columns, adds those columns to the table,
