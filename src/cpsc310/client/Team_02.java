@@ -1,10 +1,12 @@
 package cpsc310.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -60,9 +63,11 @@ public class Team_02 implements EntryPoint {
 	private SimplePanel mapContainerPanel = new SimplePanel();	
 	private TabPanel controlPanel = new TabPanel();	
 	private VerticalPanel searchPanel = new VerticalPanel();
-	private VerticalPanel editPanel = new VerticalPanel();		
-	private CellTable<HouseDataPointClient> homesCellTable = 
-			new CellTable<HouseDataPointClient>();
+	private VerticalPanel editPanel = new VerticalPanel();	
+	private HorizontalPanel lowerWrapPanel = new HorizontalPanel();
+	private VerticalPanel tableWrapPanel = new VerticalPanel();	
+	private CellTable<HouseData> homesCellTable = 
+			new CellTable<HouseData>(HouseData.KEY_PROVIDER);
 	private SimplePager simplePager = new SimplePager();	
 	private	FlexTable searchSettingsFlexTable = new FlexTable();
 	private TextBox lowerCoordTextBox = new TextBox();
@@ -79,11 +84,9 @@ public class Team_02 implements EntryPoint {
 	private RadioButton noSellingRdBtn = new RadioButton("isSelling", "No");
 	private Button loginBtn = new Button("Login");
 	private Button logoutBtn = new Button("Log out");
-	private HouseDataPointClient selectedHouse = null;
-	private final HorizontalPanel lowerWrapPanel = new HorizontalPanel();
-	private final VerticalPanel tableWrapPanel = new VerticalPanel();
+	private HouseData selectedHouse = null;
+	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 
-  	
 	
 	/**
 	 * This is the entry point method.
@@ -208,59 +211,59 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void initCellTable() {
 	  	// Create cell columns
-	  	TextColumn<HouseDataPointClient> pidColumn = 
-	  			new TextColumn<HouseDataPointClient>() {
+	  	Column<HouseData, Number> pidColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public String getValue(HouseDataPointClient house) {
+	  		public Number getValue(HouseData house) {
 	  			return house.getPID();
 	  		}
-	  	};
-	  	TextColumn<HouseDataPointClient> addrColumn = 
-	  			new TextColumn<HouseDataPointClient>() {
+	  	};	  	
+	  	TextColumn<HouseData> addrColumn = 
+	  			new TextColumn<HouseData>() {
 	  		@Override
-	  		public String getValue(HouseDataPointClient house) {
+	  		public String getValue(HouseData house) {
 	  			return house.getAddress();
 	  		}
 	  	};
-	  	TextColumn<HouseDataPointClient> postalColumn = 
-	  			new TextColumn<HouseDataPointClient>() {
+	  	TextColumn<HouseData> postalColumn = 
+	  			new TextColumn<HouseData>() {
 			@Override
-			public String getValue(HouseDataPointClient house) {
+			public String getValue(HouseData house) {
 				return house.getPostalCode();
 			}
 		};
-	  	Column<HouseDataPointClient, Number> coordColumn = 
-	  			new Column<HouseDataPointClient, Number>(new NumberCell()) {
+	  	Column<HouseData, Number> coordColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public Number getValue(HouseDataPointClient house) {
+	  		public Number getValue(HouseData house) {
 	  			return house.getCoordinate();
 	  		}
 	  	};
-	  	Column<HouseDataPointClient, Number> landValColumn = 
-	  			new Column<HouseDataPointClient, Number>(new NumberCell()) {
+	  	Column<HouseData, Number> landValColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public Number getValue(HouseDataPointClient house) {
+	  		public Number getValue(HouseData house) {
 	  			return house.getLandValue();
 	  		}
 	  	};
-	  	TextColumn<HouseDataPointClient> ownerColumn = 
-	  			new TextColumn<HouseDataPointClient>() {
+	  	TextColumn<HouseData> ownerColumn = 
+	  			new TextColumn<HouseData>() {
 	  		@Override
-	  		public String getValue(HouseDataPointClient house) {
+	  		public String getValue(HouseData house) {
 	  			return house.getOwner();
 	  		}
 	  	};		
-	  	Column<HouseDataPointClient, Number> priceColumn = 
-	  			new Column<HouseDataPointClient, Number>(new NumberCell()) {
+	  	Column<HouseData, Number> priceColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public Number getValue(HouseDataPointClient house) {
+	  		public Number getValue(HouseData house) {
 	  			return house.getPrice();
 	  		}
 	  	};
-	  	TextColumn<HouseDataPointClient> isSellingColumn = 
-	  			new TextColumn<HouseDataPointClient>() {
+	  	TextColumn<HouseData> isSellingColumn = 
+	  			new TextColumn<HouseData>() {
 	  		@Override
-	  		public String getValue(HouseDataPointClient house) {
+	  		public String getValue(HouseData house) {
 	  			if (house.getIsSelling())
 	  				return "For Sale";
 	  			return "";
@@ -296,24 +299,65 @@ public class Team_02 implements EntryPoint {
 	  	homesCellTable.setColumnWidth(priceColumn, 80.0, Unit.PX);
 	  	homesCellTable.setColumnWidth(isSellingColumn, 80.0, Unit.PX);
 	  	simplePager.setDisplay(homesCellTable);		
-		homesCellTable.setPageSize(3);		
-	
-	/*
-		// Create sort handler, associate sort handler to the table
-		ListHandler<HouseDataPointClient> sortHandler =  
-				new ListHandler<HouseDataPointClient>(dataProvider.getList());
-		homesCellTable.addColumnSortHandler(sortHandler);
+		homesCellTable.setPageSize(3);
 		
+		// Grab database length
+		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
+			@Override
+			public void onFailure (Throwable caught) {
+			Window.alert(caught.getMessage());	
+			}
+			@Override
+			public void onSuccess (Integer result) {
+				homesCellTable.setRowCount(result);
+			}
+		};
+		houseDataSvc.getHouseDatabaseLength(callback);		
+		
+		// Data provider to populate Table
+		AsyncDataProvider<HouseData> dataProvider = new AsyncDataProvider<HouseData>() {
+			@Override
+			protected void onRangeChanged(HasData<HouseData> display) {
+				final int start = display.getVisibleRange().getStart();
+				int range = display.getVisibleRange().getLength();
+				
+				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+					@Override
+					public void onFailure (Throwable caught) {
+					Window.alert(caught.getMessage());	
+					}
+					@Override
+					public void onSuccess (List<HouseData> result) {
+						updateRowData(start, result);
+					}
+				};
+				houseDataSvc.getHouses(start, range, callback);
+			}
+		};
+		
+		dataProvider.addDataDisplay(homesCellTable);		
+		
+		/*
+		AsyncHandler columnSortHandler = new AsyncHandler(homesCellTable);
+		homesCellTable.addColumnSortHandler(columnSortHandler);
+		*/
+		
+		// Create sort handler, associate sort handler to the table
+		List<HouseData> newData = new ArrayList(homesCellTable.getVisibleItems());
+		ListHandler<HouseData> sortHandler =  
+				new ListHandler<HouseData>(newData);
+		homesCellTable.addColumnSortHandler(sortHandler);
 	
 		// Set comparators for sorting
-		sortHandler.setComparator(pidColumn, new Comparator<HouseDataPointClient>() {
-			public int compare(HouseDataPointClient o1, HouseDataPointClient o2) {
-				return o1.getPID().compareTo(o2.getPID());
+		sortHandler.setComparator(pidColumn, new Comparator<HouseData>() {
+			public int compare(HouseData o1, HouseData o2) {
+				return o1.getPID() > o2.getPID() ? 1 : 
+					o1.getPID() == o2.getPID() ? 0 : -1;
 			}
 		});
 		
-		sortHandler.setComparator(addrColumn, new Comparator<HouseDataPointClient>() {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(addrColumn, new Comparator<HouseData>() {
+			public int compare (HouseData o1, HouseData o2) {
 				int o1space = o1.getAddress().indexOf(" ");
 				int o2space = o2.getAddress().indexOf(" ");
 				String o1StreetName = o1.getAddress().substring(o1space + 1);
@@ -327,41 +371,41 @@ public class Team_02 implements EntryPoint {
 			}
 		});
 		
-		sortHandler.setComparator(postalColumn, new Comparator<HouseDataPointClient>() {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(postalColumn, new Comparator<HouseData>() {
+			public int compare (HouseData o1, HouseData o2) {
 				return o1.getPostalCode().compareTo(o2.getPostalCode());
 			}
 		});
 		
-		sortHandler.setComparator(coordColumn, new Comparator<HouseDataPointClient> () {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(coordColumn, new Comparator<HouseData> () {
+			public int compare (HouseData o1, HouseData o2) {
 				return o1.getCoordinate() > o2.getCoordinate() ? 1 : 
 					o1.getCoordinate() == o2.getCoordinate() ? 0 : -1;
 			}
 		});		
 		
-		sortHandler.setComparator(landValColumn, new Comparator<HouseDataPointClient> () {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(landValColumn, new Comparator<HouseData> () {
+			public int compare (HouseData o1, HouseData o2) {
 				return o1.getLandValue() > o2.getLandValue() ? 1 : 
 					o1.getLandValue() == o2.getLandValue() ? 0 : -1;
 			}
 		});
 			
-		sortHandler.setComparator(ownerColumn, new Comparator<HouseDataPointClient> () {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(ownerColumn, new Comparator<HouseData> () {
+			public int compare (HouseData o1, HouseData o2) {
 				return o1.getOwner().compareTo(o2.getOwner());
 			}
 		});
 		
-		sortHandler.setComparator(priceColumn, new Comparator<HouseDataPointClient> () {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(priceColumn, new Comparator<HouseData> () {
+			public int compare (HouseData o1, HouseData o2) {
 				return o1.getPrice() > o2.getPrice() ? 1 : 
 					o1.getPrice() == o2.getPrice() ? 0 : -1;
 			}
 		});
 		
-		sortHandler.setComparator(isSellingColumn, new Comparator<HouseDataPointClient> () {
-			public int compare (HouseDataPointClient o1, HouseDataPointClient o2) {
+		sortHandler.setComparator(isSellingColumn, new Comparator<HouseData> () {
+			public int compare (HouseData o1, HouseData o2) {
 				if (o1.getIsSelling() == true && o2.getIsSelling() == false)
 					return 1;
 				if (o1.getIsSelling() == o2.getIsSelling())
@@ -369,44 +413,9 @@ public class Team_02 implements EntryPoint {
 				return -1;
 			}
 		});
-	
-	*/
 		
 		// Set column width
 		homesCellTable.setWidth("auto", true);
-	}
-	
-	/**
-	 * Gets user input from search tab and passes to server-side search
-	 */
-	private void searchHouse() {
-		final String lowerCoord = lowerCoordTextBox.getText().trim();
-		final String upperCoord = upperCoordTextBox.getText().trim();
-		final String lowerLandVal = lowerLandValTextBox.getText().trim();
-		final String upperLandVal = upperLandValTextBox.getText().trim();
-		final String owner = ownerTextBox.getText().trim().toUpperCase();
-		
-		String[] searchCriteria = {lowerCoord, upperCoord, lowerLandVal, upperLandVal, owner};
-		
-		String checkDigit = "|[0-9]+[/.]?[0-9]*";
-		//String checkPostalCode = "|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]";
-		String checkOwner = "|[A-Z]+[ ]?+[A-Z]";
-	
-		// Coordinates and land values must be numeric value
-		if (!lowerCoord.matches(checkDigit) | !upperCoord.matches(checkDigit) |
-				!lowerLandVal.matches(checkDigit) | !upperLandVal.matches(checkDigit)) {
-			Window.alert("Only numeric value is allowed for coordinates and land values.");
-			return;
-		}		
-		
-		// Realtor name must be alphabetical
-		if (!owner.matches(checkOwner)) {
-			Window.alert("Please type in a valid name.");
-			ownerTextBox.selectAll();
-			return;
-		}
-		
-		// TODO Server-side search
 	}
 
 	/**
@@ -458,21 +467,20 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void initCellTableSelection() {
 		
-	/*
 		// Create selection model
-		final SingleSelectionModel<HouseDataPointClient> selectionModel = 
-				new SingleSelectionModel<HouseDataPointClient> (KEY_PROVIDER);
+		final SingleSelectionModel<HouseData> selectionModel = 
+				new SingleSelectionModel<HouseData> (HouseData.KEY_PROVIDER);
 						
 		// Associate the selection model with the table
 		homesCellTable.setSelectionModel(selectionModel, 
-				DefaultSelectionEventManager.<HouseDataPointClient> createCheckboxManager());
+				DefaultSelectionEventManager.<HouseData> createCheckboxManager());
 		
 		// Handle selection event. Upon selection the address label in the edit panel 
 		// is updated with the selected house address.
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				HouseDataPointClient selected = selectionModel.getSelectedObject();
+				HouseData selected = selectionModel.getSelectedObject();
 				if (selected == null) {
 					propAddrLabel.setText(null);
 					setSelectedHouse(null);
@@ -483,28 +491,115 @@ public class Team_02 implements EntryPoint {
 		});
 		
 		// Create checkBox column		
-		final Column<HouseDataPointClient, Boolean> selectRowColumn = 
-				new Column<HouseDataPointClient, Boolean>(new CheckboxCell(true, false)) {
+		final Column<HouseData, Boolean> selectRowColumn = 
+				new Column<HouseData, Boolean>(new CheckboxCell(true, false)) {
 			@Override
-			public Boolean getValue(HouseDataPointClient house) {
+			public Boolean getValue(HouseData house) {
 				return selectionModel.isSelected(house);
 			}
 		};
 		
 		// Add checkBox column to the table
 		homesCellTable.addColumn(selectRowColumn, "Select");
-	*/	
+	
 	}
 	
+	/**
+	 * Helper to table selection event
+	 * 
+	 * @param house
+	 */
+	private void setSelectedHouse(HouseData house) {
+		selectedHouse = house;
+	}
+
+	/**
+	 * Gets user input from search tab and passes to server-side search
+	 */
+	private void searchHouse() {
+		boolean isCoordEmpty = true;
+		boolean isLandValEmpty = true;
+		boolean isOwnerEmpty = true;
+		final String lowerCoordInput = lowerCoordTextBox.getText().trim();
+		final String upperCoordInput = upperCoordTextBox.getText().trim();
+		final String lowerLandValInput = lowerLandValTextBox.getText().trim();
+		final String upperLandValInput = upperLandValTextBox.getText().trim();
+		final String ownerInput = ownerTextBox.getText().trim().toUpperCase();
+		
+		String checkDigit = "|[0-9]+[/.]?[0-9]*";
+		//String checkPostalCode = "|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]";
+		String checkOwner = "|[A-Z]+[ ]?[A-Z]+";
+	
+		// Coordinates and land values must be numeric value
+		if (!lowerCoordInput.matches(checkDigit) | !upperCoordInput.matches(checkDigit) |
+				!lowerLandValInput.matches(checkDigit) | !upperLandValInput.matches(checkDigit)) {
+			Window.alert("Only numeric value is allowed for coordinates and land values.");
+			return;
+		}		
+		
+		// Realtor name must be alphabetical
+		if (!ownerInput.matches(checkOwner)) {
+			Window.alert("Please type in a valid name.");
+			ownerTextBox.selectAll();
+			return;
+		}
+	
+		// Assemble search criteria
+		if (!lowerCoordInput.isEmpty() && !upperCoordInput.isEmpty()) {
+			isCoordEmpty = false;
+		}
+		else if (!lowerLandValInput.isEmpty() && !upperLandValInput.isEmpty()) {
+			isLandValEmpty = false;
+		}
+		else if (!ownerInput.isEmpty()) {
+			isOwnerEmpty = false;
+		}
+		
+		// TODO Server-side search
+		// Initailize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+		
+		// Set up the callback object
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(List<HouseData> result) {
+				// TODO Display search results on the table
+			}
+		};
+		
+		// make the call to the house data service
+		if (isLandValEmpty == false) {
+			int lowerLandVal = Integer.parseInt(lowerLandValInput);
+			int upperLandVal = Integer.parseInt(upperLandValInput);
+			houseDataSvc.getHousesByPriceRange(lowerLandVal, upperLandVal, callback);
+		}
+		else if (isCoordEmpty == false) {
+			int lowerCoord = Integer.parseInt(lowerCoordInput);
+			int upperCoord = Integer.parseInt(upperCoordInput);			
+			houseDataSvc.getHousesByCoordRange(lowerCoord, upperCoord, callback);
+		}
+		else if (isOwnerEmpty == false) {
+			String owner = ownerInput;
+			houseDataSvc.getHousesByOwner(owner, callback);
+		}
+		else {
+			return;
+		}
+	}
+
 	/**
 	 * Edit handler.
 	 * Gets user input in the edit tab, checks for valid input,
 	 * then passes on to the server-side edit
 	 */
 	private void editHouse() {
-		final String price = priceTextBox.getText().trim();
-		final boolean isSelling = yesSellingRdBtn.getValue();
-		final HouseDataPointClient house = selectedHouse;  
+		final String priceInput = priceTextBox.getText().trim();
+		final boolean isSellingInput = yesSellingRdBtn.getValue();
+		final HouseData house = selectedHouse;  
 		
 		// Check for selection
 		if (house == null) {
@@ -513,32 +608,51 @@ public class Team_02 implements EntryPoint {
 		}
 		
 		// Price input must be numerical
-		if (!price.matches("|[0-9]*")) {
+		if (!priceInput.matches("|[0-9]*")) {
 			Window.alert("Only non-decimal numeric value is allowed for price.");
 			priceTextBox.selectAll();
 			return;
 		}
 		
-		// TODO Server-side edit
+		// Assemble edit request
+		double price = Double.parseDouble(priceInput);
+		boolean isSelling;
+		if (isSellingInput == true) 
+			isSelling = true;
+		else
+			isSelling = false;
+		// TODO connect to user service to get owner
+		String owner = "";
 		
+		// TODO Server-side edit
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+		
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(Void result) {
+				// TODO Display edit results on the table
+			}
+		};
+		
+		// make the call to the house data service
+		houseDataSvc.updateHouses(owner, price, isSelling, house, callback);
+				
 		// Refresh table
 		refreshHouse(house);
-	}
-	
-	/**
-	 * Helper to table selection event
-	 * 
-	 * @param house
-	 */
-	private void setSelectedHouse(HouseDataPointClient house) {
-		selectedHouse = house;
 	}
 	
 	/**
 	 * Helper to call server-side refresh upon edit request
 	 * @param house
 	 */
-	private void refreshHouse(HouseDataPointClient house) {
-		// TODO Server-side refresh
+	private void refreshHouse(HouseData house) {
+		homesCellTable.redraw();
+		// TODO may need to reimplement
 	}
 }
