@@ -452,10 +452,11 @@ public class Team_02 implements EntryPoint {
 				HouseData selected = selectionModel.getSelectedObject();
 				if (selected == null) {
 					propAddrLabel.setText(null);
-					setSelectedHouse(null);
+					theMap.removeMarker(selectedHouse.getAddress() + " VANCOUVER");
+					setSelectedHouse(null);			
 				}
 				propAddrLabel.setText(selected.getAddress());
-				setSelectedHouse (selected);
+				setSelectedHouse(selected);
 				// add marker onto map
 				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}

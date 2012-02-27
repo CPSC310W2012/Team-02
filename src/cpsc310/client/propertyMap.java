@@ -8,6 +8,7 @@ import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -70,6 +71,34 @@ public class propertyMap {
 		 	   Geocoder geocoder = new Geocoder();
 		 	   geocoder.getLatLng(location, callback);
 	  }
+	  
+	  public void removeMarker(final String location)
+	  {
+		  /*
+		  Window.alert("removing: " + location);
+		  LatLngCallback callback = new LatLngCallback() {
+
+		 	   public void onFailure() {
+		 	   //address was not found. do nothing
+		 		   // insert some error handling here
+		 		   // popup message?
+		 		  Window.alert("marker not found, failed to remove");
+		 	   }
+
+		 	   public void onSuccess(LatLng point) {
+		 	   // removes the location onto the map
+		 	   Window.alert("remove overlay is not working..");
+		 	   Marker marker = new Marker(point);
+		 	   map.removeOverlay(marker);
+		 	   }
+		 	   };
+		 	   Geocoder geocoder = new Geocoder();
+		 	   geocoder.getLatLng(location, callback);
+		 	   
+		 	   */
+		  map.clearOverlays();
+	  }
+	  
 	
 	  public MapWidget getMap()
 	  {
