@@ -15,6 +15,11 @@
   	<servlet-name>HouseDataService</servlet-name>
   	<servlet-class>cpsc310.server.HouseDataServiceImpl</servlet-class>
   </servlet>
+
+  <servlet>
+  	<servlet-name>observerService</servlet-name>
+  	<servlet-class>cpsc310.server.DataCatalogueObserverImpl</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
@@ -24,6 +29,11 @@
   <servlet-mapping>
     <servlet-name>HouseDataService</servlet-name>
     <url-pattern>/team_02/houseData</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>observerService</servlet-name>
+    <url-pattern>/team_02/observer</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
