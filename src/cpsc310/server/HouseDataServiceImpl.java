@@ -21,7 +21,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		
 		// TODO Grab data from database
 		List<HouseData> tmpHouse = new ArrayList<HouseData>();
-		HouseData test = new HouseData(29992, "123 12th AVE W", "V6K 1M3", 123, 93821, "John Doe", true, 399928);
+		HouseData test = new HouseData(025530151, "1295 RICHARDS ST", "V6K 1M3", 123, 93821, "John Doe", true, 399928);
 		tmpHouse.add(test);
 		return tmpHouse;
 	}

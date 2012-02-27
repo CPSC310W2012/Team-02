@@ -81,6 +81,7 @@ public class Team_02 implements EntryPoint {
 	private HouseData selectedHouse = null;
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 
+	private propertyMap theMap;
 	
 	/**
 	 * This is the entry point method.
@@ -92,7 +93,7 @@ public class Team_02 implements EntryPoint {
 		loginPanel.add(logoutBtn);
 		
 		// The map
-		propertyMap theMap = new propertyMap();
+		theMap = new propertyMap();
 		theMap.buildUi();
 		theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
@@ -455,6 +456,8 @@ public class Team_02 implements EntryPoint {
 				}
 				propAddrLabel.setText(selected.getAddress());
 				setSelectedHouse (selected);
+				// add marker onto map
+				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
 		});
 		
