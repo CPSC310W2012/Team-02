@@ -52,7 +52,6 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 
 public class Team_02 implements EntryPoint {
 
-	private DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel loginPanel = new HorizontalPanel();	
 	private SimplePanel mapContainerPanel = new SimplePanel();	
@@ -96,8 +95,8 @@ public class Team_02 implements EntryPoint {
 		propertyMap theMap = new propertyMap();
 		theMap.buildUi();
 
-		// Assemple map panel
-		dock.addNorth(theMap.getMap(), 500);
+		// Assemble map panel
+		mapContainerPanel.add(theMap.getMap());
 		 
 		// Create Cell Table
 		initCellTable();
@@ -158,7 +157,6 @@ public class Team_02 implements EntryPoint {
 		
 		// Associate Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
-		RootPanel.get("map").add(dock);
 		
 
 		
