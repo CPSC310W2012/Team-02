@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import cpsc310.client.HouseData;
 import cpsc310.client.HouseDataService;
+import cpsc310.client.HouseData;
 
 /**
  * Server side methods to fetch house data
@@ -17,32 +17,35 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
-		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
+		List<HouseData> houses = new ArrayList<HouseData>();
 		
 		// TODO Grab data from database
 		List<HouseData> tmpHouse = new ArrayList<HouseData>();
 		HouseData test = new HouseData(025530151, "1295 RICHARDS ST", "V6K 1M3", 123, 93821, "John Doe", true, 399928);
 		tmpHouse.add(test);
+		tmpHouse.add(new HouseData (2000299, "1828 WEST BLVD", "V9N 1L2", 332, 248882, "", false, 0));
+		tmpHouse.add(new HouseData (4099223, "1828 EAST BLVD", "V9N 2L2", 331, 244882, "", false, 0));
+		tmpHouse.add(new HouseData (188281, "122 CAMBIE ST", "V7K 1H2", 12, 38823, "", false, 0));
 		return tmpHouse;
 	}
 
 	@Override
 	public List<HouseData> getHousesByPriceRange (int lowerVal, int upperVal) {
-		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
+		List<HouseData> houses = new ArrayList<HouseData>();
 		// TODO Grab data from database
 		return null;
 	}
 
 	@Override
 	public List<HouseData> getHousesByCoordRange(int lowerCoord, int upperCoord) {
-		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
+		List<HouseData> houses = new ArrayList<HouseData>();
 		// TODO Grab data from database
 		return null;
 	}
 
 	@Override
 	public List<HouseData> getHousesByOwner(String owner) {
-		List<HouseDataPoint> houses = new ArrayList<HouseDataPoint>();
+		List<HouseData> houses = new ArrayList<HouseData>();
 		// TODO Grab data from database
 		return null;
 	}
@@ -52,7 +55,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// TODO get database length
 		
 		// TODO temporary. change when above gets implemented
-		return 1;
+		return 4;
 	}	
 
 	@Override

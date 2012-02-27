@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.Column;
@@ -314,7 +315,7 @@ public class Team_02 implements EntryPoint {
 		// Create sort handler, associate sort handler to the table
 		List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
 		ListHandler<HouseData> sortHandler =  
-				new ListHandler<HouseData>(newData);
+				new ListHandler<HouseData>(newData);		
 		homesCellTable.addColumnSortHandler(sortHandler);
 	
 		// Set comparators for sorting
@@ -453,6 +454,7 @@ public class Team_02 implements EntryPoint {
 				if (selected == null) {
 					propAddrLabel.setText(null);
 					setSelectedHouse(null);
+					return;
 				}
 				propAddrLabel.setText(selected.getAddress());
 				setSelectedHouse (selected);
@@ -500,19 +502,30 @@ public class Team_02 implements EntryPoint {
 		
 		String checkDigit = "|[0-9]+[/.]?[0-9]*";
 		//String checkPostalCode = "|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]";
-		String checkOwner = "|[A-Z]+[ ]?[A-Z]+";
+		String checkOwner = "|[A-Z]+[ ]?[A-Z]*";
+		
+		String numericAlert = "Only numeric values are allowed for coordinates and land values. \n";
+		String ownerAlert = "Only alphabet characters are allowed for realtor name";
+		String msg = "";
+		boolean checkNumeric = true;
+		boolean checkAlpha = true;
 	
 		// Coordinates and land values must be numeric value
-		if (!lowerCoordInput.matches(checkDigit) | !upperCoordInput.matches(checkDigit) |
-				!lowerLandValInput.matches(checkDigit) | !upperLandValInput.matches(checkDigit)) {
-			Window.alert("Only numeric value is allowed for coordinates and land values.");
-			return;
+		if (!lowerCoordInput.matches(checkDigit) || !upperCoordInput.matches(checkDigit) ||
+				!lowerLandValInput.matches(checkDigit) || !upperLandValInput.matches(checkDigit)) {
+			checkNumeric = false;
+			msg = msg.concat(numericAlert);
 		}		
 		
 		// Realtor name must be alphabetical
 		if (!ownerInput.matches(checkOwner)) {
-			Window.alert("Please type in a valid name.");
+			checkAlpha = false;
+			msg = msg.concat(ownerAlert);
 			ownerTextBox.selectAll();
+		}
+		
+		if (checkNumeric == false || checkAlpha == false) {
+			Window.alert(msg);
 			return;
 		}
 	
