@@ -1,2 +1,3 @@
 # Module team_02
 # RPC service class, partial path of RPC policy file
+cpsc310.client.HouseDataService, 6A71837E922559B2627552FDAFB07BE3.gwt.rpc
