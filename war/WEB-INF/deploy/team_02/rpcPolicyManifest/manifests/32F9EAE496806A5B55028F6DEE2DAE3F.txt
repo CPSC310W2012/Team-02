@@ -1,2 +1,0 @@
-serviceClass: cpsc310.client.GreetingService
-path: 5247EA393968B3D169AA0A411CA5AABD.gwt.rpc
