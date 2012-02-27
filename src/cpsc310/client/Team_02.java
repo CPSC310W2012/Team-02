@@ -52,7 +52,6 @@ import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 
 public class Team_02 implements EntryPoint {
 
-	private DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel loginPanel = new HorizontalPanel();	
 	private SimplePanel mapContainerPanel = new SimplePanel();	
@@ -82,6 +81,7 @@ public class Team_02 implements EntryPoint {
 	private HouseData selectedHouse = null;
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 
+	private propertyMap theMap;
 	
 	/**
 	 * This is the entry point method.
@@ -93,11 +93,12 @@ public class Team_02 implements EntryPoint {
 		loginPanel.add(logoutBtn);
 		
 		// The map
-		propertyMap theMap = new propertyMap();
+		theMap = new propertyMap();
 		theMap.buildUi();
+		theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
-		// Assemple map panel
-		dock.addNorth(theMap.getMap(), 500);
+		// Assemble map panel
+		mapContainerPanel.add(theMap.getMap());
 		 
 		// Create Cell Table
 		initCellTable();
@@ -158,7 +159,6 @@ public class Team_02 implements EntryPoint {
 		
 		// Associate Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
-		RootPanel.get("map").add(dock);
 		
 
 		
@@ -456,6 +456,8 @@ public class Team_02 implements EntryPoint {
 				}
 				propAddrLabel.setText(selected.getAddress());
 				setSelectedHouse (selected);
+				// add marker onto map
+				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
 		});
 		
