@@ -1,0 +1,2 @@
+serviceClass: cpsc310.client.HouseDataService
+path: 39DB5B316A7200BDF5AA4323E417C002.gwt.rpc
