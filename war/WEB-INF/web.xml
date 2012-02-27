@@ -36,6 +36,17 @@
     <url-pattern>/team_02/observer</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>loginService</servlet-name>
+    <servlet-class>com.google.gwt.sample.stockwatcher.server.LoginServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>loginService</servlet-name>
+    <url-pattern>/stockwatcher/login</url-pattern>
+  </servlet-mapping>
+  
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>Team_02.html</welcome-file>
