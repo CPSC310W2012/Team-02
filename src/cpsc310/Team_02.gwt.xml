@@ -13,6 +13,10 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.google.gwt.maps.GoogleMaps' />
+  
+  <!-- load map script v2 - key is for deployment, not req for dev mode -->
+  <!-- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false" />   -->
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=AIzaSyBjDoqh_8ZFoxVvvW4ETGdJvADLzTX6-sI" />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='cpsc310.client.Team_02'/>
