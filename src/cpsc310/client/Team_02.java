@@ -94,6 +94,7 @@ public class Team_02 implements EntryPoint {
 		// The map
 		propertyMap theMap = new propertyMap();
 		theMap.buildUi();
+		theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
 		// Assemble map panel
 		mapContainerPanel.add(theMap.getMap());
