@@ -17,38 +17,25 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class propertyMap {
 	MapWidget map;
 	
-	public propertyMap()
-	{
+	// constructor
+	public propertyMap() {
 		map = new MapWidget();
 	}
 	
 	public void buildUi() {
-	  
 	    // Open a map centered on vancouver
 	    LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 		map.setCenter(vancouver, 10);
-	    
-		// map = new MapWidget(ubc, 10);
 	    map.setSize("100%", "100%");
 	    // Add some controls for the zoom level
 	    map.addControl(new LargeMapControl());
-	    
-	     // can remove later, just for testing**************
-	     // Add a marker
-	    map.addOverlay(new Marker(vancouver));
-	    // Add an info window to highlight a point of interest
-	    map.getInfoWindow().open(map.getCenter(),
-	        new InfoWindowContent("Vancouver"));
-	    // end test****************************************
-	   
 	  }
 	
 	  /*
 	   * Finds the location and plots it on the map!
 	   * 
 	   */  
-	  public void findLocation(final String location)
-	  {
+	public void findLocation(final String location) {
 		  LatLngCallback callback = new LatLngCallback() {
 
 		 	   public void onFailure() {
@@ -72,8 +59,18 @@ public class propertyMap {
 		 	   geocoder.getLatLng(location, callback);
 	  }
 	  
-	  public void removeMarker(final String location)
-	  {
+	  // Method that clears all markers from the map
+	  public void clearMap() {
+		  map.clearOverlays();
+	  }
+	  
+	 // get the mapWidget 
+	  public MapWidget getMap() {
+		  return this.map;
+	  }
+	  
+	  // TODO: Method that removes one marker given the string location
+	  public void removeMarker(final String location) {
 		  /*
 		  Window.alert("removing: " + location);
 		  LatLngCallback callback = new LatLngCallback() {
@@ -98,11 +95,4 @@ public class propertyMap {
 		 	   */
 		  map.clearOverlays();
 	  }
-	  
-	
-	  public MapWidget getMap()
-	  {
-		  return this.map;
-	  }
-	  
 }

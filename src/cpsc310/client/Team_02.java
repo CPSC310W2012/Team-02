@@ -98,7 +98,6 @@ public class Team_02 implements EntryPoint {
 		// The map
 		theMap = new propertyMap();
 		theMap.buildUi();
-		theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
 		// Assemble map panel
 		mapContainerPanel.add(theMap.getMap());
@@ -453,12 +452,13 @@ public class Team_02 implements EntryPoint {
 				HouseData selected = selectionModel.getSelectedObject();
 				if (selected == null) {
 					propAddrLabel.setText(null);
-					theMap.removeMarker(selectedHouse.getAddress() + " VANCOUVER");
+					theMap.clearMap();
 					setSelectedHouse(null);			
 					return;
 				}
 				propAddrLabel.setText(selected.getAddress());
 				setSelectedHouse(selected);
+				theMap.clearMap();
 				// add marker onto map
 				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
