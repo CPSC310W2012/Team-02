@@ -21,6 +21,11 @@
   	<servlet-class>cpsc310.server.DataCatalogueObserverImpl</servlet-class>
   </servlet>
   
+  <servlet>
+    <servlet-name>loginService</servlet-name>
+    <servlet-class>cpsc310.server.LoginServiceImpl</servlet-class>
+  </servlet>  
+  
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/team_02/greet</url-pattern>
@@ -36,14 +41,9 @@
     <url-pattern>/team_02/observer</url-pattern>
   </servlet-mapping>
   
-   <servlet>
-    <servlet-name>loginService</servlet-name>
-    <servlet-class>com.google.gwt.sample.stockwatcher.server.LoginServiceImpl</servlet-class>
-  </servlet>
-
   <servlet-mapping>
     <servlet-name>loginService</servlet-name>
-    <url-pattern>/stockwatcher/login</url-pattern>
+    <url-pattern>/team_02/login</url-pattern>
   </servlet-mapping>
   
   
