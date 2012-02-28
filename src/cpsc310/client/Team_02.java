@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -184,7 +185,7 @@ public class Team_02 implements EntryPoint {
 	private void initCellTable() {
 	  	// Create cell columns
 	  	Column<HouseData, Number> pidColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
+	  			new Column<HouseData, Number>(new NumberCell(NumberFormat.getFormat("0"))) {
 	  		@Override
 	  		public Number getValue(HouseData house) {
 	  			return house.getPID();
