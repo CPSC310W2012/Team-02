@@ -24,11 +24,12 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 			fileStream = fileConnection.getInputStream();
 			
 			byte[] buffer = new byte[1024];
-			ByteArrayOutputStream byteVersion = new ByteArrayOutputStream();		
-			while(fileStream.read(buffer) != -1)
+			ByteArrayOutputStream byteVersion = new ByteArrayOutputStream();
+			int bytesRead = fileStream.read(buffer);
+			while(bytesRead != -1)
 			{
-				byteVersion.write(buffer);
-				buffer = new byte[1024];
+				byteVersion.write(buffer, 0, bytesRead);
+				bytesRead = fileStream.read(buffer);
 			}
 			String fileName = fileLocation.getFile();
 			String message;
