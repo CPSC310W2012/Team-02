@@ -13,11 +13,11 @@ public class HouseDataPoint implements Serializable {
 	// tentatively stable; may be removing or adding additional ones often
 	// early on
 	// Variables to be set by house data
-	private int pid;
+	private String pid;
 	private int coordinate;
 	private String address;
 	private String postalCode;
-	private int landValue;
+	private double landValue;
 
 	// User specified data
 	private String owner;
@@ -26,30 +26,10 @@ public class HouseDataPoint implements Serializable {
 
 	/*
 	 * Constructor
-	 * 
-	 * @pre: a hashMap Object(keys are table headers)
-	 * @post: a houseDataPoint Object
 	 */
-	public HouseDataPoint(HashMap<String, String> houseRow) {
-		// Variables to be set by house data
-		pid = Integer.parseInt(houseRow.get("pid"));
-		coordinate = Integer.parseInt(houseRow.get("coordinate"));
-		address = houseRow.get("address");
-		postalCode = houseRow.get("postalCode");
-		landValue = Integer.parseInt(houseRow.get("landValue"));
-
-		// User specified data
-		owner = null;
-		isSelling = false;
-		price = 0;
-	}
-	
-	public HouseDataPoint() {
-	}
-
-
-	public HouseDataPoint(int pid, String address, String postalCode, int coordinate, 
-			int landValue, String owner, boolean isSelling, double price) {
+	public HouseDataPoint(String pid, String address, String postalCode,
+			int coordinate, int landValue, String owner, boolean isSelling,
+			double price) {
 		this.pid = pid;
 		this.coordinate = coordinate;
 		this.address = address;
@@ -61,16 +41,44 @@ public class HouseDataPoint implements Serializable {
 		this.price = price;
 	}
 
+	/*
+	 * Constructor
+	 * 
+	 * @pre: a hashMap Object(keys are table headers)
+	 * 
+	 * @post: a houseDataPoint Object
+	 */
+	public HouseDataPoint(HashMap<String, String> houseRow) {
+		// Variables to be set by house data
+		pid = houseRow.get("PID");
+		coordinate = Integer.parseInt(houseRow.get("LAND_COORDINATE"));
+		address = houseRow.get("TO_CIVIC_NUMBER") + " "
+				+ houseRow.get("STREET_NAME");
+		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
+		if (!houseRow.get("CURRENT_LAND_VALUE").isEmpty()) {
+			landValue = Double.parseDouble(houseRow.get("CURRENT_LAND_VALUE"));
+		} else {
+			landValue = 0;
+		}
+
+		// User specified data
+		owner = null;
+		isSelling = false;
+		price = 0;
+	}
+
+	public HouseDataPoint() {
+	}
 
 	//
 	public static final ProvidesKey<HouseDataPoint> KEY_PROVIDER = new ProvidesKey<HouseDataPoint>() {
-		public Object getKey (HouseDataPoint house) {
-			return house == null ? null : house.getPID(); 
+		public Object getKey(HouseDataPoint house) {
+			return house == null ? null : house.getPID();
 		}
 	};
 
-	//getters
-	public int getPID() {
+	// getters
+	public String getPID() {
 		return pid;
 	}
 
@@ -86,10 +94,10 @@ public class HouseDataPoint implements Serializable {
 		return postalCode;
 	}
 
-	public int getLandValue() {
+	public double getLandValue() {
 		return landValue;
 	}
-	
+
 	public String getOwner() {
 		return owner;
 	}
@@ -101,18 +109,17 @@ public class HouseDataPoint implements Serializable {
 	public double getPrice() {
 		return price;
 	}
-	
-	//setters
-	public void setOwner(String newOwner)
-	{
+
+	// setters
+	public void setOwner(String newOwner) {
 		owner = newOwner;
 	}
-	public void setIsSelling(boolean sell)
-	{
+
+	public void setIsSelling(boolean sell) {
 		isSelling = sell;
 	}
-	public void setPrice(double salePrice)
-	{
+
+	public void setPrice(double salePrice) {
 		price = salePrice;
 	}
 }
