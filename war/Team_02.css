@@ -8,28 +8,52 @@
 	position: relative;
 }
 
+html {
+	width: 100% !important;
+	overflow-x: hidden;
+}
+
 body {
-	width: 100%;
-	height: 100%;
-	background-color:#F5F4E4 !important;
-	font-size: 1em;
+	width: 100% !important;	
+	min-height: 700px;
+	background-color:#FCFCFC !important;
+	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow-x: hidden;
 }
 
 #header {
-	width:90%;
-	margin:0 auto;
+	width:80%;
+	margin: 0 auto;
 }
 
-#header h1 {
-	position:absolute;
-	top:10px;
-	color: #10898B;
+h1 {
+	background:#05B5BD;
+	z-index:-1;
+	color: #FCFCFC;
+	position: absolute;
 	font-size: 40px;
 	font-family: Georgia, Times New Roman, serif;
-	font-weight:lighter;
-	text-align: center;
+	font-weight: 100;
+	top: 10px;
+	height:70px;
+}
+
+h1:before, h1:after {
+	content:"";
+	position: absolute;
+	background: #05B5BD;
+	top:0;
+	bottom:0;
+	width:9999px;
+}
+
+h1:before {
+	right:100%;
+}
+
+h1:after {
+	left:100%;
 }
 
 .clear {
@@ -39,18 +63,23 @@ body {
 }
 
 #footer {
-	width:200px;
-	margin: 0 auto;
+	width: 100%;
+	margin-top: 30px;
+	padding:25px 0;
 	clear: both;
+	background:#05B5BD;
+	text-align:center;
+	height: 50px;
 }
 
 #footer span {
 	font-size: 15px;
-	color: #868684;
-	font-family: Helvetica, Arial, sans-serif;
+	color: #FCFCFC;
+	font-size:12px;
+	font-family: Georgia, Times New Roman, serif;
 	font-weight: bold;
 	text-align: center;
-	padding: 30px auto;
+	padding: 0 auto;
 }
 
 .mainPanel {
@@ -73,8 +102,7 @@ body {
 	clear: both;
 	margin-top:30px;
 	margin-bottom:30px;
-	border-top: 3px solid #2C9FA3;
-	border-bottom: 3px solid #2C9FA3;			
+	border: 3px solid #05B5BD;			
 }
 
 .lowerWrapPanel {
@@ -82,13 +110,41 @@ body {
 	clear: both;
 }
 
+.searchText {
+	font-size:11px !important;
+	color: #767676;
+}
+
+.gwt-Label {
+	font-size:11px !important;
+	color: #000;
+}
+
+.gwt-RadioButton {
+	font-size:11px !important;
+	color: #000;
+}
+
+.gwt-TabPanel {
+	margin-right: 20px;
+}
+
 .gwt-TabPanelBottom {
 	background-color: #FFF;
 }
 
+.gwt-TabBarItem {
+	font-size:11px;
+}
+
+.gwt-TabBarItem-selected {
+	font-size: 11px;
+}
+
 .gwt-TextBox {
-	width: 130px;
-	height: 25px;
+	width: 90px;
+	height: 20px;
+	font-size: 11px !important;
 }
 
 .gwt-Button {

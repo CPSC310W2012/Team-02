@@ -1,6 +1,7 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -61,8 +61,9 @@ public class Team_02 implements EntryPoint {
 	private VerticalPanel editPanel = new VerticalPanel();	
 	private HorizontalPanel lowerWrapPanel = new HorizontalPanel();
 	private VerticalPanel tableWrapPanel = new VerticalPanel();	
+	private CellTable.Resources resource = GWT.create(CellTableResources.class);
 	private CellTable<HouseData> homesCellTable = 
-			new CellTable<HouseData>(HouseData.KEY_PROVIDER);
+			new CellTable<HouseData>(3, resource, HouseData.KEY_PROVIDER);
 	private SimplePager simplePager = new SimplePager();	
 	private	FlexTable searchSettingsFlexTable = new FlexTable();
 	private TextBox lowerCoordTextBox = new TextBox();
@@ -81,7 +82,7 @@ public class Team_02 implements EntryPoint {
 	private Button logoutBtn = new Button("Log out");
 	private HouseData selectedHouse = null;
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
-
+	private AsyncDataProvider<HouseData> dataProvider;
 	private propertyMap theMap;
 	
 	/**
@@ -109,7 +110,7 @@ public class Team_02 implements EntryPoint {
 		searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
 		searchSettingsFlexTable.setText(0, 2, "-");	
 		searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
-		searchSettingsFlexTable.setText(1, 0, "Land Value Range $");
+		searchSettingsFlexTable.setText(1, 0, "Land Value");
 		searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
 		searchSettingsFlexTable.setText(1, 2,"-");
 		searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
@@ -125,19 +126,17 @@ public class Team_02 implements EntryPoint {
 		searchPanel.add(searchBtn);
 		searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
 		searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
-
 		
 		// Assemble Control Tab panel
 		controlPanel.add(searchPanel, "Search", false);
 		controlPanel.selectTab(0);
 		controlPanel.setAnimationEnabled(true);
 		controlPanel.setHeight("300px");
-		controlPanel.setWidth("400px");
+		controlPanel.setWidth("330px");
 
 	  	// Assemble tableWrapPanel
 	  	tableWrapPanel.add(homesCellTable);
 	  	tableWrapPanel.add(simplePager);
-		tableWrapPanel.setSpacing(5);
 	  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		// Assemble lowerWrapPanel
@@ -155,6 +154,9 @@ public class Team_02 implements EntryPoint {
 		mainPanel.setStyleName("mainPanel");
 		mapContainerPanel.setStyleName("mapContainerPanel");
 		lowerWrapPanel.setStyleName("lowerWrapPanel");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
 		
 		allowEdit();		
 		
@@ -259,17 +261,8 @@ public class Team_02 implements EntryPoint {
 	  	homesCellTable.addColumn(landValColumn, "Current Value");				
 	  	homesCellTable.addColumn(ownerColumn, "Owner");
 	  	homesCellTable.addColumn(priceColumn, "Price");
-	  	homesCellTable.addColumn(isSellingColumn, "Sale");
-	  	homesCellTable.setColumnWidth(pidColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(addrColumn, 40.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(postalColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(coordColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(landValColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(ownerColumn, 30.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(priceColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(isSellingColumn, 20.0, Unit.PX);
-	  	simplePager.setDisplay(homesCellTable);		
-		homesCellTable.setPageSize(3);
+	  	homesCellTable.addColumn(isSellingColumn, "Sale");	  	
+		simplePager.setDisplay(homesCellTable);
 		
 		// Grab database length
 		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
@@ -285,7 +278,7 @@ public class Team_02 implements EntryPoint {
 		houseDataSvc.getHouseDatabaseLength(callback);		
 		
 		// Data provider to populate Table
-		AsyncDataProvider<HouseData> dataProvider = new AsyncDataProvider<HouseData>() {
+		dataProvider = new AsyncDataProvider<HouseData>() {
 			@Override
 			protected void onRangeChanged(HasData<HouseData> display) {
 				final int start = display.getVisibleRange().getStart();
@@ -305,87 +298,90 @@ public class Team_02 implements EntryPoint {
 			}
 		};
 		
-		dataProvider.addDataDisplay(homesCellTable);		
+		dataProvider.addDataDisplay(homesCellTable);
 		
-		/*
+		// Create sort handler, associate sort handler to the table		
+		homesCellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
+			public void onColumnSort(ColumnSortEvent event) {
+				@SuppressWarnings("unchecked")
+				Column<HouseData,?> sortedColumn = (Column<HouseData, ?>) event.getColumn();
+				int sortedIndex = homesCellTable.getColumnIndex(sortedColumn);
+				List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
+				
+				Comparator<HouseData> c = HouseData.HousePidComparator;
+				switch(sortedIndex) {
+				case 0:
+					c = HouseData.HousePidComparator;
+					break;
+				case 1:
+					c = HouseData.HouseAddrComparator;
+					break;
+				case 2:
+					c = HouseData.HousePostalCodeComparator;
+					break;
+				case 3:
+					c = HouseData.HouseCoordinateComparator;
+					break;
+				case 4:
+					c = HouseData.HouseLandValueComparator;
+					break;
+				case 5:
+					c = HouseData.HouseOwnerComparator;
+					break;
+				case 6:
+					c = HouseData.HousePriceComparator;
+					break;
+				case 7:
+					c = HouseData.HouseIsSellingComparator;
+					break;
+				default:
+					break;
+				}
+				if (event.isSortAscending()) {
+					Collections.sort(newData, c);
+				}
+				else {
+					Collections.sort(newData, Collections.reverseOrder(c));
+				}
+				homesCellTable.setRowData(homesCellTable.getPageStart(), newData);
+			}
+		});
+			
+		/* Server side sorting for sprint 2
 		AsyncHandler columnSortHandler = new AsyncHandler(homesCellTable);
 		homesCellTable.addColumnSortHandler(columnSortHandler);
 		*/
 		
-		// Create sort handler, associate sort handler to the table
-		List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
-		ListHandler<HouseData> sortHandler =  
-				new ListHandler<HouseData>(newData);		
+		/* Old Sorting methods
+		List<HouseData> localData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
+		ListHandler<HouseData> sortHandler = new ListHandler<HouseData>(localData);
+		
 		homesCellTable.addColumnSortHandler(sortHandler);
-	
+		
 		// Set comparators for sorting
-		sortHandler.setComparator(pidColumn, new Comparator<HouseData>() {
-			public int compare(HouseData o1, HouseData o2) {
-				return o1.getPID() > o2.getPID() ? 1 : 
-					o1.getPID() == o2.getPID() ? 0 : -1;
-			}
-		});
+		sortHandler.setComparator(pidColumn, HouseData.HousePidComparator);	
+		sortHandler.setComparator(addrColumn, HouseData.HouseAddrComparator);
+		sortHandler.setComparator(postalColumn, HouseData.HousePostalCodeComparator);
+		sortHandler.setComparator(coordColumn, HouseData.HouseCoordinateComparator);
+		sortHandler.setComparator(landValColumn, HouseData.HouseLandValueComparator);
+		sortHandler.setComparator(ownerColumn, HouseData.HouseOwnerComparator);
+		sortHandler.setComparator(priceColumn, HouseData.HousePriceComparator);
+		sortHandler.setComparator(isSellingColumn, HouseData.HouseIsSellingComparator);
+		*/
 		
-		sortHandler.setComparator(addrColumn, new Comparator<HouseData>() {
-			public int compare (HouseData o1, HouseData o2) {
-				int o1space = o1.getAddress().indexOf(" ");
-				int o2space = o2.getAddress().indexOf(" ");
-				String o1StreetName = o1.getAddress().substring(o1space + 1);
-				String o2StreetName = o1.getAddress().substring(o2space + 1);
-				String o1StreetNum = o1.getAddress().substring(0, o1space - 1);
-				String o2StreetNum = o2.getAddress().substring(0, o2space - 1);
-				if (o1StreetName.compareTo(o2StreetName) == 0) {
-					return o1StreetNum.compareTo(o2StreetNum);
-				}
-				return o1StreetName.compareTo(o2StreetName);
-			}
-		});
-		
-		sortHandler.setComparator(postalColumn, new Comparator<HouseData>() {
-			public int compare (HouseData o1, HouseData o2) {
-				return o1.getPostalCode().compareTo(o2.getPostalCode());
-			}
-		});
-		
-		sortHandler.setComparator(coordColumn, new Comparator<HouseData> () {
-			public int compare (HouseData o1, HouseData o2) {
-				return o1.getCoordinate() > o2.getCoordinate() ? 1 : 
-					o1.getCoordinate() == o2.getCoordinate() ? 0 : -1;
-			}
-		});		
-		
-		sortHandler.setComparator(landValColumn, new Comparator<HouseData> () {
-			public int compare (HouseData o1, HouseData o2) {
-				return o1.getLandValue() > o2.getLandValue() ? 1 : 
-					o1.getLandValue() == o2.getLandValue() ? 0 : -1;
-			}
-		});
-			
-		sortHandler.setComparator(ownerColumn, new Comparator<HouseData> () {
-			public int compare (HouseData o1, HouseData o2) {
-				return o1.getOwner().compareTo(o2.getOwner());
-			}
-		});
-		
-		sortHandler.setComparator(priceColumn, new Comparator<HouseData> () {
-			public int compare (HouseData o1, HouseData o2) {
-				return o1.getPrice() > o2.getPrice() ? 1 : 
-					o1.getPrice() == o2.getPrice() ? 0 : -1;
-			}
-		});
-		
-		sortHandler.setComparator(isSellingColumn, new Comparator<HouseData> () {
-			public int compare (HouseData o1, HouseData o2) {
-				if (o1.getIsSelling() == true && o2.getIsSelling() == false)
-					return 1;
-				if (o1.getIsSelling() == o2.getIsSelling())
-					return 0;
-				return -1;
-			}
-		});
-		
+		homesCellTable.setColumnWidth(addrColumn, 120.0, Unit.PX);
+		homesCellTable.setColumnWidth(ownerColumn,100.0, Unit.PX);
+		/*
 		// Set column width
+	  	homesCellTable.setColumnWidth(pidColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(postalColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(coordColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(landValColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(ownerColumn, 30.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(priceColumn, 20.0, Unit.PX);
+	  	homesCellTable.setColumnWidth(isSellingColumn, 20.0, Unit.PX);		
 		homesCellTable.setWidth("auto", true);
+		*/
 	}
 
 	/**
@@ -402,7 +398,6 @@ public class Team_02 implements EntryPoint {
 		editFlexTable.setText(0, 0, "Property Address");
 		editFlexTable.setWidget(0, 1, propAddrLabel);
 		editFlexTable.setText(1, 0, "Price");
-		priceTextBox.setAlignment(TextAlignment.CENTER);
 		editFlexTable.setWidget(1, 1, priceTextBox);
 		editFlexTable.setText(2, 0, "For Sale");
 		editFlexTable.setWidget(2, 1, yesSellingRdBtn);		
@@ -413,6 +408,9 @@ public class Team_02 implements EntryPoint {
 		editFlexTable.getFlexCellFormatter().setColSpan(0, 1, 2);
 		editFlexTable.getFlexCellFormatter().setColSpan(1, 1, 2);
 		editFlexTable.setCellSpacing(15);
+		editFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
+		editFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
+		editFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
 		
 		// Assemble Edit panel
 		editPanel.add(editFlexTable);
@@ -481,6 +479,7 @@ public class Team_02 implements EntryPoint {
 	
 	/**
 	 * Helper to table selection event
+	 * Sets class variable selectedHouse to the given argument
 	 * 
 	 * @param house
 	 */
@@ -554,6 +553,8 @@ public class Team_02 implements EntryPoint {
 			}
 			public void onSuccess(List<HouseData> result) {
 				// TODO Display search results on the table
+				dataProvider.updateRowCount(result.size(), true);
+				dataProvider.updateRowData(0, result);
 			}
 		};
 		
@@ -578,6 +579,7 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
+	 * This is for Sprint 2
 	 * Edit handler.
 	 * Gets user input in the edit tab, checks for valid input,
 	 * then passes on to the server-side edit
@@ -634,11 +636,13 @@ public class Team_02 implements EntryPoint {
 	}
 	
 	/**
-	 * Helper to call server-side refresh upon edit request
+	 * This is for Sprint 2
+	 * Helper to call server-side refresh upon EDIT request
 	 * @param house
 	 */
 	private void refreshHouse(HouseData house) {
 		homesCellTable.redraw();
 		// TODO may need to reimplement
 	}
+	
 }
