@@ -16,6 +16,7 @@ html {
 body {
 	width: 100% !important;	
 	min-height: 700px;
+	color: #555;
 	background-color:#FCFCFC !important;
 	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
@@ -33,10 +34,10 @@ h1 {
 	color: #FCFCFC;
 	position: absolute;
 	font-size: 40px;
-	font-family: Georgia, Times New Roman, serif;
+	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 100;
-	top: 10px;
 	height:70px;
+	padding-top:10px;
 }
 
 h1:before, h1:after {
@@ -65,21 +66,21 @@ h1:after {
 #footer {
 	width: 100%;
 	margin-top: 30px;
-	padding:25px 0;
 	clear: both;
 	background:#05B5BD;
 	text-align:center;
-	height: 50px;
+	height: 60px;
 }
 
 #footer span {
+	top: 40%;
 	font-size: 15px;
 	color: #FCFCFC;
 	font-size:12px;
-	font-family: Georgia, Times New Roman, serif;
+	font-family: Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	text-align: center;
-	padding: 0 auto;
+	vertical-align:middle;
 }
 
 .mainPanel {
@@ -87,10 +88,18 @@ h1:after {
 	clear:both;
 }
 
+#appPanel {
+	overflow-x:hidden !important;
+}
+
 .loginPanel {
 	margin: 20px 0;
 	float: right;
 	clear: right;
+}
+
+.pager {
+	font-size:11px;
 }
 
 .map {
@@ -102,7 +111,11 @@ h1:after {
 	clear: both;
 	margin-top:30px;
 	margin-bottom:30px;
-	border: 3px solid #05B5BD;			
+	padding: 1px;
+	border: 3px solid #F2A43A;
+	-moz-border-radius: 10px;
+  	-webkit-border-radius: 10px;
+  	border-radius: 10px; 
 }
 
 .lowerWrapPanel {
@@ -112,7 +125,7 @@ h1:after {
 
 .searchText {
 	font-size:11px !important;
-	color: #767676;
+	color: #555;
 }
 
 .gwt-Label {
@@ -125,20 +138,56 @@ h1:after {
 	color: #000;
 }
 
+.gwt-TabBar {
+  background: #ccc;
+  padding-top: 6px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0px 0px;  
+}
+.gwt-TabBar .gwt-TabBarFirst {
+  width: 5px;  /* first tab distance from the left */
+}
+.gwt-TabBar .gwt-TabBarRest {
+}
+.gwt-TabBar .gwt-TabBarItem {
+  margin-left: 4px;
+  padding: 4px 8px 4px 8px;
+  cursor: pointer;
+  cursor: hand;
+  color: #white;
+  font-size:12px;
+  font-weight: normal;
+  text-align: center;
+  background: #8E8E8E;
+  -moz-border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  border-radius: 5px 5px 0px 0px;
+}
+.gwt-TabBar .gwt-TabBarItem-selected {
+  cursor: default;
+  background: white;
+  color: #444;
+  font-weight: bold;
+} 
+.gwt-TabBar .gwt-TabBarItem-disabled {
+  cursor: default;
+  color: #999999;
+}
 .gwt-TabPanel {
 	margin-right: 20px;
 }
 
 .gwt-TabPanelBottom {
-	background-color: #FFF;
-}
-
-.gwt-TabBarItem {
-	font-size:11px;
-}
-
-.gwt-TabBarItem-selected {
-	font-size: 11px;
+  background:#fff;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 0px 1px 1px;
+  overflow: hidden;
+  padding: 6px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 10px 10px;  
 }
 
 .gwt-TextBox {
@@ -148,6 +197,38 @@ h1:after {
 }
 
 .gwt-Button {
+  margin: 0;
+  padding: 5px 7px;
+  text-decoration: none;
+  cursor: pointer;
+  cursor: hand;
+  font-size:11px;
+  color: #555;
+  background: #F8F8F8;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px; 
+}
+.gwt-Button:active {
+  border: 1px inset #ccc;
+}
+.gwt-Button:hover {
+  border-color: #939393;
+}
+.gwt-Button[disabled] {
+  cursor: default;
+  color: #888;
+}
+.gwt-Button[disabled]:hover {
+  border: 1px outset #ccc;
+}
+
+.gwt-CheckBox {
+}
+.gwt-CheckBox-disabled {
+  color: #888;
 }
 
 

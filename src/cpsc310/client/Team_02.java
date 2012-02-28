@@ -151,7 +151,7 @@ public class Team_02 implements EntryPoint {
 	  	
 		// Set style
 		loginPanel.setStyleName("loginPanel");		 
-		mainPanel.setStyleName("mainPanel");
+		mainPanel.setStylePrimaryName("mainPanel");
 		mapContainerPanel.setStyleName("mapContainerPanel");
 		lowerWrapPanel.setStyleName("lowerWrapPanel");
 		searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
@@ -263,6 +263,7 @@ public class Team_02 implements EntryPoint {
 	  	homesCellTable.addColumn(priceColumn, "Price");
 	  	homesCellTable.addColumn(isSellingColumn, "Sale");	  	
 		simplePager.setDisplay(homesCellTable);
+		simplePager.setStylePrimaryName("pager");
 		
 		// Grab database length
 		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
