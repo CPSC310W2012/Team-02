@@ -5,23 +5,32 @@ import java.util.Comparator;
 
 import com.google.gwt.view.client.ProvidesKey;
 
+/**
+ * Class representing a single house in the table.
+ * This is a java data transfer object.
+ */
 public class HouseData implements Serializable{
 
+	// Class variables representing 
+	// may change depending on the server implementation of the database and
+	// HouseDataPoint.java
 	private int pid;
 	private int coordinate;
 	private String address;
 	private String postalCode;
-	private int landValue;
+	private double landValue;
 	private String owner;
 	private boolean isSelling;
 	private double price;
 
-	
+	/**
+	 * Constructor for enabling Serializable.
+	 */
 	public HouseData() {
 	}
 	
-	/*
-	 * Constructor
+	/**
+	 * Constructor of the class 
 	 */
 	public HouseData(int pid, String address, String postalCode, int coordinate, 
 			int landValue, String owner, boolean isSelling, double price) {
@@ -37,14 +46,14 @@ public class HouseData implements Serializable{
 	}
 
 	
-	// Key provider for selection
+	// Key provider for table and map selection
 	public static final ProvidesKey<HouseData> KEY_PROVIDER = new ProvidesKey<HouseData>() {
 		public Object getKey (HouseData house) {
 			return house == null ? null : house.getPID(); 
 		}
 	};
 	
-	//getters
+	// Getters
 	public int getPID() {
 		return pid;
 	}
@@ -61,7 +70,7 @@ public class HouseData implements Serializable{
 		return postalCode;
 	}
 
-	public int getLandValue() {
+	public double getLandValue() {
 		return landValue;
 	}
 	
@@ -77,9 +86,41 @@ public class HouseData implements Serializable{
 		return price;
 	}
 	
+	// Setters
+	public void setPID(int PID) {
+		this.pid = PID;
+	}
+	
+	public void setCoordinate(int coordinate) {
+		this.coordinate = coordinate;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
+	}
+	
+	public void setLandValue(double landValue) {
+		this.landValue = landValue;
+	}
+	
+	public void setOwner(String newOwner) {
+		owner = newOwner;
+	}
+
+	public void setIsSelling(boolean sell) {
+		isSelling = sell;
+	}
+
+	public void setPrice(double salePrice) {
+		price = salePrice;
+	}	
 	
 	/**
-	 * Comparator begins (For sorting)
+	 * Comparators for table sorting.
 	 */
 	
 	public static Comparator<HouseData> HousePidComparator =

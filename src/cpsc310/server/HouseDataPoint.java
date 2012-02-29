@@ -1,13 +1,11 @@
 package cpsc310.server;
 
-import java.io.Serializable;
 import com.google.gwt.dev.util.collect.HashMap;
-import com.google.gwt.view.client.ProvidesKey;
 
 /*
  * A single data point value representing a house
  */
-public class HouseDataPoint implements Serializable {
+public class HouseDataPoint {
 
 	// variables
 	// tentatively stable; may be removing or adding additional ones often
@@ -23,23 +21,6 @@ public class HouseDataPoint implements Serializable {
 	private String owner;
 	private boolean isSelling;
 	private double price;
-
-	/*
-	 * Constructor
-	 */
-	public HouseDataPoint(String pid, String address, String postalCode,
-			int coordinate, int landValue, String owner, boolean isSelling,
-			double price) {
-		this.pid = pid;
-		this.coordinate = coordinate;
-		this.address = address;
-		this.postalCode = postalCode;
-		this.landValue = landValue;
-
-		this.owner = owner;
-		this.isSelling = isSelling;
-		this.price = price;
-	}
 
 	/*
 	 * Constructor
@@ -66,16 +47,6 @@ public class HouseDataPoint implements Serializable {
 		isSelling = false;
 		price = 0;
 	}
-
-	public HouseDataPoint() {
-	}
-
-	//
-	public static final ProvidesKey<HouseDataPoint> KEY_PROVIDER = new ProvidesKey<HouseDataPoint>() {
-		public Object getKey(HouseDataPoint house) {
-			return house == null ? null : house.getPID();
-		}
-	};
 
 	// getters
 	public String getPID() {

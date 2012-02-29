@@ -16,7 +16,6 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -86,116 +85,95 @@ public class Team_02 implements EntryPoint {
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
 	private propertyMap theMap;
-	private LoginInfo loginInfo = null;
-	private LoginServiceAsync loginService;
-	private Anchor signInLink = new Anchor("Sign In");
-	private Anchor signOutLink = new Anchor("Sign Out");
 	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {	
-		// Check login status using login service.
-	    loginService = GWT.create(LoginService.class);
-	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
-				      public void onFailure(Throwable error) {
-				      }
-				      public void onSuccess(LoginInfo result) {
-				        loginInfo = result;
-				        buildUI();   
-				      }
-				    });	
-	}
+
+	    // Assemble Login Panel
+	    loginPanel.add(loginBtn);
+		loginPanel.add(logoutBtn);
 		
-private void buildUI(){
-	
-	// Load the login/logout link
-	if(loginInfo.isLoggedIn()){
-		signOutLink.setHref(loginInfo.getLogoutUrl());
-		loginPanel.add(signOutLink);
-	}
-	else{
-		signInLink.setHref(loginInfo.getLoginUrl());
-		loginPanel.add(signInLink);
-	}
-	
-	// Load the map
-	theMap = new propertyMap();
-	theMap.buildUi();
+		// The map
+		theMap = new propertyMap();
+		theMap.buildUi();
+		theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
-	// Assemble map panel
-	mapContainerPanel.add(theMap.getMap());
-	 
-	// Create Cell Table
-	initCellTable();
-							
-	// Create Search Criteria table. **** Possibly replace with HTML form panel
-	searchSettingsFlexTable.setText(0, 0,"Coordinates");
-	searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
-	searchSettingsFlexTable.setText(0, 2, "-");	
-	searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
-	searchSettingsFlexTable.setText(1, 0, "Land Value");
-	searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
-	searchSettingsFlexTable.setText(1, 2,"-");
-	searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
-	searchSettingsFlexTable.setText(2, 0, "Realtor");
-	searchSettingsFlexTable.setWidget(2, 1, ownerTextBox);
-	
-	// Format Search Criteria table
-	searchSettingsFlexTable.getFlexCellFormatter().setColSpan(2, 1, 3);
-	searchSettingsFlexTable.setCellSpacing(10);
-	
-	// Assemble Search panel
-	searchPanel.add(searchSettingsFlexTable);
-	searchPanel.add(searchBtn);
-	searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
-	searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
-	
-	// Assemble Control Tab panel
-	controlPanel.add(searchPanel, "Search", false);
-	controlPanel.selectTab(0);
-	controlPanel.setAnimationEnabled(true);
-	controlPanel.setHeight("300px");
-	controlPanel.setWidth("330px");
+		// Assemble map panel
+		mapContainerPanel.add(theMap.getMap());
+		 
+		// Create Cell Table
+		initCellTable();
+								
+		// Create Search Criteria table.
+		searchSettingsFlexTable.setText(0, 0,"Coordinates");
+		searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
+		searchSettingsFlexTable.setText(0, 2, "-");	
+		searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
+		searchSettingsFlexTable.setText(1, 0, "Land Value");
+		searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
+		searchSettingsFlexTable.setText(1, 2,"-");
+		searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
+		searchSettingsFlexTable.setText(2, 0, "Realtor");
+		searchSettingsFlexTable.setWidget(2, 1, ownerTextBox);
+		
+		// Format Search Criteria table
+		searchSettingsFlexTable.getFlexCellFormatter().setColSpan(2, 1, 3);
+		searchSettingsFlexTable.setCellSpacing(10);
+		
+		// Assemble Search panel
+		searchPanel.add(searchSettingsFlexTable);
+		searchPanel.add(searchBtn);
+		searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
+		searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		// Assemble Control Tab panel
+		controlPanel.add(searchPanel, "Search", false);
+		controlPanel.selectTab(0);
+		controlPanel.setAnimationEnabled(true);
+		controlPanel.setHeight("300px");
+		controlPanel.setWidth("330px");
 
-  	// Assemble tableWrapPanel
-  	tableWrapPanel.add(homesCellTable);
-  	tableWrapPanel.add(simplePager);
-  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
-	
-	// Assemble lowerWrapPanel
-	lowerWrapPanel.add(controlPanel);	  	
-  	lowerWrapPanel.add(tableWrapPanel);
-  	
-	// Assemble Main Panel
-  	mainPanel.setWidth("80%");
-	mainPanel.add(loginPanel);		
-	mainPanel.add(mapContainerPanel);	
-	mainPanel.add(lowerWrapPanel);
-  	
-	// Set style
-	loginPanel.setStyleName("loginPanel");		 
-	mainPanel.setStylePrimaryName("mainPanel");
-	mapContainerPanel.setStyleName("mapContainerPanel");
-	lowerWrapPanel.setStyleName("lowerWrapPanel");
-	searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
-	searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
-	searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
-	
-	if(loginInfo.isLoggedIn()) allowEdit();		
-	
-	// Associate Main panel with the HTML host page
-	RootPanel.get("appPanel").add(mainPanel);
-	
-
-	
-	// Listen for mouse events on Search
-	searchBtn.addClickHandler(new ClickHandler() {
-		public void onClick (ClickEvent event) {
-			searchHouse();
-		}
-	});	
-
+	  	// Assemble tableWrapPanel
+	  	tableWrapPanel.add(homesCellTable);
+	  	tableWrapPanel.add(simplePager);
+	  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		// Assemble lowerWrapPanel
+		lowerWrapPanel.add(controlPanel);	  	
+	  	lowerWrapPanel.add(tableWrapPanel);
+	  	
+		// Assemble Main Panel
+	  	mainPanel.setWidth("80%");
+		mainPanel.add(loginPanel);		
+		mainPanel.add(mapContainerPanel);	
+		mainPanel.add(lowerWrapPanel);
+	  	
+		// Set style
+		loginPanel.setStyleName("loginPanel");		 
+		mainPanel.setStylePrimaryName("mainPanel");
+		mapContainerPanel.setStyleName("mapContainerPanel");
+		lowerWrapPanel.setStyleName("lowerWrapPanel");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
+		searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
+		
+		// Once Login service is implemented, this will be nested in login check
+		// so that Edit panel and edit function is disabled to general users
+		// and only visible to login users.
+		allowEdit();
+		
+		// Associate Main panel with the HTML host page
+		RootPanel.get("appPanel").add(mainPanel);
+		
+		
+		// Listen for mouse events on Search Button
+		searchBtn.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				searchHouse();
+			}
+		});		
 		
 	}
 	
@@ -204,7 +182,7 @@ private void buildUI(){
 	 * Creates cell columns, adds those columns to the table,
 	 * populates the table using dataProvider, creates sort handler,
 	 * sets sort comparators, then sets the column width of the table. 
-	 * Note: sorting and populating will be replaced by server-side methods.
+	 * Note: sorting and populating will be replaced by server-side methods in Sprint 2.
 	 */
 	private void initCellTable() {
 	  	// Create cell columns
@@ -373,41 +351,14 @@ private void buildUI(){
 			}
 		});
 			
-		/* Server side sorting for sprint 2
+		/* Server side sorting for Sprint 2
 		AsyncHandler columnSortHandler = new AsyncHandler(homesCellTable);
 		homesCellTable.addColumnSortHandler(columnSortHandler);
 		*/
 		
-		/* Old Sorting methods
-		List<HouseData> localData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
-		ListHandler<HouseData> sortHandler = new ListHandler<HouseData>(localData);
-		
-		homesCellTable.addColumnSortHandler(sortHandler);
-		
-		// Set comparators for sorting
-		sortHandler.setComparator(pidColumn, HouseData.HousePidComparator);	
-		sortHandler.setComparator(addrColumn, HouseData.HouseAddrComparator);
-		sortHandler.setComparator(postalColumn, HouseData.HousePostalCodeComparator);
-		sortHandler.setComparator(coordColumn, HouseData.HouseCoordinateComparator);
-		sortHandler.setComparator(landValColumn, HouseData.HouseLandValueComparator);
-		sortHandler.setComparator(ownerColumn, HouseData.HouseOwnerComparator);
-		sortHandler.setComparator(priceColumn, HouseData.HousePriceComparator);
-		sortHandler.setComparator(isSellingColumn, HouseData.HouseIsSellingComparator);
-		*/
-		
+		// Set Column width of longer columns.
 		homesCellTable.setColumnWidth(addrColumn, 120.0, Unit.PX);
 		homesCellTable.setColumnWidth(ownerColumn,100.0, Unit.PX);
-		/*
-		// Set column width
-	  	homesCellTable.setColumnWidth(pidColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(postalColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(coordColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(landValColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(ownerColumn, 30.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(priceColumn, 20.0, Unit.PX);
-	  	homesCellTable.setColumnWidth(isSellingColumn, 20.0, Unit.PX);		
-		homesCellTable.setWidth("auto", true);
-		*/
 	}
 
 	/**
@@ -454,7 +405,6 @@ private void buildUI(){
 			}
 		});
 	}
-		
 
 	/**
 	 * Creates selection column which selects/de-selects a HouseDataPoint 
@@ -478,13 +428,12 @@ private void buildUI(){
 				HouseData selected = selectionModel.getSelectedObject();
 				if (selected == null) {
 					propAddrLabel.setText(null);
-					theMap.clearMap();
+					theMap.removeMarker(selectedHouse.getAddress() + " VANCOUVER");
 					setSelectedHouse(null);			
 					return;
 				}
 				propAddrLabel.setText(selected.getAddress());
 				setSelectedHouse(selected);
-				theMap.clearMap();
 				// add marker onto map
 				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
@@ -519,9 +468,14 @@ private void buildUI(){
 	 * Gets user input from search tab and passes to server-side search
 	 */
 	private void searchHouse() {
-		boolean isCoordEmpty = true;
-		boolean isLandValEmpty = true;
+		boolean isCoordRangeValid = true;
+		boolean isLandValRangeValid = true;
 		boolean isOwnerEmpty = true;
+		int lowerLandVal = -1;
+		int upperLandVal = -1;
+		int lowerCoord = -1;
+		int upperCoord = -1;
+		String owner = null;
 		final String lowerCoordInput = lowerCoordTextBox.getText().trim();
 		final String upperCoordInput = upperCoordTextBox.getText().trim();
 		final String lowerLandValInput = lowerLandValTextBox.getText().trim();
@@ -534,39 +488,62 @@ private void buildUI(){
 		
 		String numericAlert = "Only numeric values are allowed for coordinates and land values. \n";
 		String ownerAlert = "Only alphabet characters are allowed for realtor name";
-		String msg = "";
+		String inputErrorMsg = "";
 		boolean checkNumeric = true;
 		boolean checkAlpha = true;
+		
+		String coordRangeAlert = "I need to have both values of coordinate range specified. \n";
+		String landValRangeAlert = "I need to have both values of land value range specified.";
+		String rangeErrorMsg ="";
 	
 		// Coordinates and land values must be numeric value
 		if (!lowerCoordInput.matches(checkDigit) || !upperCoordInput.matches(checkDigit) ||
 				!lowerLandValInput.matches(checkDigit) || !upperLandValInput.matches(checkDigit)) {
 			checkNumeric = false;
-			msg = msg.concat(numericAlert);
+			inputErrorMsg = inputErrorMsg.concat(numericAlert);
 		}		
 		
 		// Realtor name must be alphabetical
 		if (!ownerInput.matches(checkOwner)) {
 			checkAlpha = false;
-			msg = msg.concat(ownerAlert);
+			inputErrorMsg = inputErrorMsg.concat(ownerAlert);
 			ownerTextBox.selectAll();
 		}
 		
+		// Throw error message to user if inputs are invalid. 
 		if (checkNumeric == false || checkAlpha == false) {
-			Window.alert(msg);
+			Window.alert(inputErrorMsg);
+			return;
+		}
+		
+		// Warn user if only one of the coordinate/land value range is given. 
+		// **Will be modified to accommodate one-input range cases in Sprint 2
+		if (lowerCoordInput.isEmpty() ^ upperCoordInput.isEmpty()) {
+			isCoordRangeValid = false;
+			rangeErrorMsg.concat(coordRangeAlert);
+		}
+		else if (lowerLandValInput.isEmpty() ^ upperLandValInput.isEmpty()) {
+			isLandValRangeValid = false;
+			rangeErrorMsg.concat(landValRangeAlert);
+		}
+		
+		// Warn user if user gave only one value of the coordinate/land range.
+		if ((isCoordRangeValid == false) || (isLandValRangeValid == false)) {
+			Window.alert(rangeErrorMsg);
 			return;
 		}
 	
 		// Assemble search criteria
-		if (!lowerCoordInput.isEmpty() && !upperCoordInput.isEmpty()) {
-			isCoordEmpty = false;
-		}
-		else if (!lowerLandValInput.isEmpty() && !upperLandValInput.isEmpty()) {
-			isLandValEmpty = false;
-		}
-		else if (!ownerInput.isEmpty()) {
-			isOwnerEmpty = false;
-		}
+		if (!lowerCoordInput.isEmpty())
+			lowerCoord = Integer.parseInt(lowerCoordInput);
+		if (!upperCoordInput.isEmpty())
+			upperCoord = Integer.parseInt(upperCoordInput);		
+		if (!lowerLandValInput.isEmpty())
+			lowerLandVal = Integer.parseInt(lowerLandValInput);
+		if (!upperLandValInput.isEmpty())
+			upperLandVal = Integer.parseInt(upperLandValInput);
+		if (!ownerInput.isEmpty())
+			owner = ownerInput;		
 		
 		// TODO Server-side search
 		// Initailize the service proxy
@@ -580,30 +557,20 @@ private void buildUI(){
 				Window.alert(caught.getMessage());
 			}
 			public void onSuccess(List<HouseData> result) {
-				// TODO Display search results on the table
-				dataProvider.updateRowCount(result.size(), true);
-				dataProvider.updateRowData(0, result);
+				if (result != null) {
+					dataProvider.updateRowCount(result.size(), true);
+					dataProvider.updateRowData(0, result);
+				}
+				else {
+					dataProvider.updateRowCount(0, true);
+					Window.alert("No result found");
+				}
 			}
 		};
 		
-		// make the call to the house data service
-		if (isLandValEmpty == false) {
-			int lowerLandVal = Integer.parseInt(lowerLandValInput);
-			int upperLandVal = Integer.parseInt(upperLandValInput);
-			houseDataSvc.getHousesByPriceRange(lowerLandVal, upperLandVal, callback);
-		}
-		else if (isCoordEmpty == false) {
-			int lowerCoord = Integer.parseInt(lowerCoordInput);
-			int upperCoord = Integer.parseInt(upperCoordInput);			
-			houseDataSvc.getHousesByCoordRange(lowerCoord, upperCoord, callback);
-		}
-		else if (isOwnerEmpty == false) {
-			String owner = ownerInput;
-			houseDataSvc.getHousesByOwner(owner, callback);
-		}
-		else {
-			return;
-		}
+		// Make the call to the house data service to search for data in the server
+			houseDataSvc.getSearchedHouses(lowerCoord, upperCoord, 
+					lowerLandVal, upperLandVal, owner, callback);
 	}
 
 	/**
@@ -637,10 +604,11 @@ private void buildUI(){
 			isSelling = true;
 		else
 			isSelling = false;
-		// TODO connect to user service to get owner
+		
+		// TODO For Sprint 2. Connect to user service to get owner
 		String owner = "";
 		
-		// TODO Server-side edit
+		// TODO For Sprint 2. Server-side edit.
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -669,8 +637,9 @@ private void buildUI(){
 	 * @param house
 	 */
 	private void refreshHouse(HouseData house) {
-		homesCellTable.redraw();
-		// TODO may need to reimplement
+		// TODO For Sprint 2. Refresh table after edit. table.redraw() will not work
+		// because our table does not draw from local data.
+		// Instead, we will need to use updateRowData().
 	}
 	
 }
