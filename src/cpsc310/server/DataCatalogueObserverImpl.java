@@ -24,58 +24,49 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 
 @SuppressWarnings("serial")
-public class DataCatalogueObserverImpl extends RemoteServiceServlet implements DataCatalogueObserver {
-
-	public List<String> downloadFile() {
-
+public class DataCatalogueObserverImpl extends RemoteServiceServlet implements DataCatalogueObserver
+{
+	/**
+	 * Method to download the .csv file from our server.
+	 * @return a List<String> containing the lines of the .csv file; returns null if failed to retrieve file.
+	 */
+	public List<String> downloadFile()
+	{
 		InputStream fileStream = null;
+		int timeOut = 60000; //timeout value in ms
+		List<String> fileLines;
 		
-		try {
-			/*
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			BasicHttpParams params = new BasicHttpParams();
-			SingleClientConnManager connmgr = new SingleClientConnManager(params, schemeRegistry);
-			
-			HttpClient httpClient = new DefaultHttpClient(connmgr, params);*/
-/*			HttpGet getFile = new HttpGet("http://199.91.152.42/k7npp5ru9e7g/x5i2y6vwizcfup9/property_tax_report.csv");
-			HttpResponse downloadResponse = httpClient.execute(getFile);
-			fileStream = downloadResponse.getEntity().getContent();*/
-			
-			//URL fileLocation = new URL("http://199.91.152.42/k7npp5ru9e7g/x5i2y6vwizcfup9/property_tax_report.csv");
-			//URL fileLocation = new URL("http://199.91.152.42/ocmj38xcy7hg/x5i2y6vwizcfup9/property_tax_report.csv");
-			//URL fileLocation = new URL("http://205.196.121.157/du5ylgd2eyjg/5t07wlt63a0os7f/property_tax_report.txt");
+		try
+		{
 			URL fileLocation = new URL("http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report2.csv");
+			//open connection to the file
 			URLConnection fileConnection = fileLocation.openConnection();
-			fileConnection.setReadTimeout(30000);
+			//set the reading timeout before retrieving and reading from the input stream
+			fileConnection.setReadTimeout(timeOut);
+			//retrieve the input stream and store each line from the file into a list
 			fileStream = fileConnection.getInputStream();
-			List<String> fileLines = IOUtils.readLines(fileStream);
-
-			String fileName = "asdf";//fileLocation.getFile();
+			fileLines = IOUtils.readLines(fileStream);
 			
-			String message;
-			if(fileName.endsWith("zip"))
-				message = "ZIP";
-			else if(fileName.endsWith("csv"))
-				message = "CSV";
-			else
-				message = "what is it?";
-			//String.valueOf(fileConnection.getLastModified());
-			//fileLocation.getFile();
-			//File rawFile = new File("temporary.zip");
-			//System.err.println(byteVersion.toString());
 			return 	fileLines;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;//"I GOT THIS2";
-		} finally {
-			try {
-				if (fileStream != null) {
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		finally
+		{
+			try
+			{
+				//close the filestream since we don't need it anymore
+				if (fileStream != null)
+				{
 					fileStream.close();
 				}
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
-		}	
+		}
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * The async counterpart of <code>GreetingService</code>.
+ * The async counterpart of <code>DataCatalogueObserver</code>.
  */
 public interface DataCatalogueObserverAsync {
 	void downloadFile(AsyncCallback<List<String>> callback)
