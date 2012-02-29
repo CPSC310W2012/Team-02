@@ -16,6 +16,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -85,92 +86,116 @@ public class Team_02 implements EntryPoint {
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
 	private propertyMap theMap;
+	private LoginInfo loginInfo = null;
+	private LoginServiceAsync loginService;
+	private Anchor signInLink = new Anchor("Sign In");
+	private Anchor signOutLink = new Anchor("Sign Out");
 	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {	
+		// Check login status using login service.
+	    loginService = GWT.create(LoginService.class);
+	    loginService.login(GWT.getHostPageBaseURL(), new AsyncCallback<LoginInfo>() {
+				      public void onFailure(Throwable error) {
+				      }
+				      public void onSuccess(LoginInfo result) {
+				        loginInfo = result;
+				        buildUI();   
+				      }
+				    });	
+	}
+		
+private void buildUI(){
+	
+	// Load the login/logout link
+	if(loginInfo.isLoggedIn()){
+		signOutLink.setHref(loginInfo.getLogoutUrl());
+		loginPanel.add(signOutLink);
+	}
+	else{
+		signInLink.setHref(loginInfo.getLoginUrl());
+		loginPanel.add(signInLink);
+	}
+	
+	// Load the map
+	theMap = new propertyMap();
+	theMap.buildUi();
 
-	    // Assemble Login Panel
-	    loginPanel.add(loginBtn);
-		loginPanel.add(logoutBtn);
-		
-		// The map
-		theMap = new propertyMap();
-		theMap.buildUi();
+	// Assemble map panel
+	mapContainerPanel.add(theMap.getMap());
+	 
+	// Create Cell Table
+	initCellTable();
+							
+	// Create Search Criteria table. **** Possibly replace with HTML form panel
+	searchSettingsFlexTable.setText(0, 0,"Coordinates");
+	searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
+	searchSettingsFlexTable.setText(0, 2, "-");	
+	searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
+	searchSettingsFlexTable.setText(1, 0, "Land Value");
+	searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
+	searchSettingsFlexTable.setText(1, 2,"-");
+	searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
+	searchSettingsFlexTable.setText(2, 0, "Realtor");
+	searchSettingsFlexTable.setWidget(2, 1, ownerTextBox);
+	
+	// Format Search Criteria table
+	searchSettingsFlexTable.getFlexCellFormatter().setColSpan(2, 1, 3);
+	searchSettingsFlexTable.setCellSpacing(10);
+	
+	// Assemble Search panel
+	searchPanel.add(searchSettingsFlexTable);
+	searchPanel.add(searchBtn);
+	searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
+	searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
+	
+	// Assemble Control Tab panel
+	controlPanel.add(searchPanel, "Search", false);
+	controlPanel.selectTab(0);
+	controlPanel.setAnimationEnabled(true);
+	controlPanel.setHeight("300px");
+	controlPanel.setWidth("330px");
 
-		// Assemble map panel
-		mapContainerPanel.add(theMap.getMap());
-		 
-		// Create Cell Table
-		initCellTable();
-								
-		// Create Search Criteria table. **** Possibly replace with HTML form panel
-		searchSettingsFlexTable.setText(0, 0,"Coordinates");
-		searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
-		searchSettingsFlexTable.setText(0, 2, "-");	
-		searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
-		searchSettingsFlexTable.setText(1, 0, "Land Value");
-		searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
-		searchSettingsFlexTable.setText(1, 2,"-");
-		searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
-		searchSettingsFlexTable.setText(2, 0, "Realtor");
-		searchSettingsFlexTable.setWidget(2, 1, ownerTextBox);
-		
-		// Format Search Criteria table
-		searchSettingsFlexTable.getFlexCellFormatter().setColSpan(2, 1, 3);
-		searchSettingsFlexTable.setCellSpacing(10);
-		
-		// Assemble Search panel
-		searchPanel.add(searchSettingsFlexTable);
-		searchPanel.add(searchBtn);
-		searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
-		searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		// Assemble Control Tab panel
-		controlPanel.add(searchPanel, "Search", false);
-		controlPanel.selectTab(0);
-		controlPanel.setAnimationEnabled(true);
-		controlPanel.setHeight("300px");
-		controlPanel.setWidth("330px");
+  	// Assemble tableWrapPanel
+  	tableWrapPanel.add(homesCellTable);
+  	tableWrapPanel.add(simplePager);
+  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
+	
+	// Assemble lowerWrapPanel
+	lowerWrapPanel.add(controlPanel);	  	
+  	lowerWrapPanel.add(tableWrapPanel);
+  	
+	// Assemble Main Panel
+  	mainPanel.setWidth("80%");
+	mainPanel.add(loginPanel);		
+	mainPanel.add(mapContainerPanel);	
+	mainPanel.add(lowerWrapPanel);
+  	
+	// Set style
+	loginPanel.setStyleName("loginPanel");		 
+	mainPanel.setStylePrimaryName("mainPanel");
+	mapContainerPanel.setStyleName("mapContainerPanel");
+	lowerWrapPanel.setStyleName("lowerWrapPanel");
+	searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
+	searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
+	searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
+	
+	if(loginInfo.isLoggedIn()) allowEdit();		
+	
+	// Associate Main panel with the HTML host page
+	RootPanel.get("appPanel").add(mainPanel);
+	
 
-	  	// Assemble tableWrapPanel
-	  	tableWrapPanel.add(homesCellTable);
-	  	tableWrapPanel.add(simplePager);
-	  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		// Assemble lowerWrapPanel
-		lowerWrapPanel.add(controlPanel);	  	
-	  	lowerWrapPanel.add(tableWrapPanel);
-	  	
-		// Assemble Main Panel
-	  	mainPanel.setWidth("80%");
-		mainPanel.add(loginPanel);		
-		mainPanel.add(mapContainerPanel);	
-		mainPanel.add(lowerWrapPanel);
-	  	
-		// Set style
-		loginPanel.setStyleName("loginPanel");		 
-		mainPanel.setStylePrimaryName("mainPanel");
-		mapContainerPanel.setStyleName("mapContainerPanel");
-		lowerWrapPanel.setStyleName("lowerWrapPanel");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
-		
-		allowEdit();		
-		
-		// Associate Main panel with the HTML host page
-		RootPanel.get("appPanel").add(mainPanel);
-		
+	
+	// Listen for mouse events on Search
+	searchBtn.addClickHandler(new ClickHandler() {
+		public void onClick (ClickEvent event) {
+			searchHouse();
+		}
+	});	
 
-		
-		// Listen for mouse events on Search
-		searchBtn.addClickHandler(new ClickHandler() {
-			public void onClick (ClickEvent event) {
-				searchHouse();
-			}
-		});		
 		
 	}
 	
@@ -429,6 +454,7 @@ public class Team_02 implements EntryPoint {
 			}
 		});
 	}
+		
 
 	/**
 	 * Creates selection column which selects/de-selects a HouseDataPoint 
