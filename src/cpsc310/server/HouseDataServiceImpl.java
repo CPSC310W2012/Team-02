@@ -23,7 +23,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
-		List<HouseData> result = null;
+		List<HouseData> grab = null;
 		int newRange = range;
 		int end = start + range;
 		
@@ -34,7 +34,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		}
 		
 		// Set the size of returning array.
-		result = new ArrayList<HouseData>(newRange);
+		grab = new ArrayList<HouseData>(newRange);
 		
 		// TODO Get HouseDataPoint objects from database for the specified range.
 		for (int i = start; i < end; i++){
@@ -54,7 +54,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			// call convertToHouseData() and add each object to result
 		}
 		
-		// Change below to return result
+		// Change below to return grab
 		return tmpHouse;
 	}
 
@@ -82,8 +82,13 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		
 		// TODO Search database and grab necessary data.
 		
-		// Count the number of fetched data. Set it to range.
-		result = new ArrayList<HouseData>(range);
+		// If there is search result, count the number of found data. 
+		// Set the number of data to range, create an ArrayList of 
+		// HouseData, where all the results converted into HouseData
+		// is stored for return.
+		if (false) {
+			result = new ArrayList<HouseData>(range);
+		}
 		
 		// Convert the fetched HouseDataPoint data into HouseData and append it to the result list.
 		

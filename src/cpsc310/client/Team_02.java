@@ -85,6 +85,8 @@ public class Team_02 implements EntryPoint {
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
 	private propertyMap theMap;
+	private int databaseLength = 0;
+	private int pageLength = 0;
 	
 	/**
 	 * This is the entry point method.
@@ -268,15 +270,21 @@ public class Team_02 implements EntryPoint {
 		simplePager.setDisplay(homesCellTable);
 		simplePager.setStylePrimaryName("pager");
 		
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+		
 		// Grab database length
 		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
 			@Override
 			public void onFailure (Throwable caught) {
-			Window.alert(caught.getMessage());	
+				Window.alert(caught.getMessage());	
 			}
 			@Override
 			public void onSuccess (Integer result) {
 				homesCellTable.setRowCount(result);
+				databaseLength = result;
 			}
 		};
 		houseDataSvc.getHouseDatabaseLength(callback);		
@@ -287,11 +295,12 @@ public class Team_02 implements EntryPoint {
 			protected void onRangeChanged(HasData<HouseData> display) {
 				final int start = display.getVisibleRange().getStart();
 				int range = display.getVisibleRange().getLength();
+				pageLength = range;
 				
 				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
 					@Override
 					public void onFailure (Throwable caught) {
-					Window.alert(caught.getMessage());	
+						Window.alert(caught.getMessage());	
 					}
 					@Override
 					public void onSuccess (List<HouseData> result) {
@@ -470,7 +479,6 @@ public class Team_02 implements EntryPoint {
 	private void searchHouse() {
 		boolean isCoordRangeValid = true;
 		boolean isLandValRangeValid = true;
-		boolean isOwnerEmpty = true;
 		int lowerLandVal = -1;
 		int upperLandVal = -1;
 		int lowerCoord = -1;
@@ -520,16 +528,42 @@ public class Team_02 implements EntryPoint {
 		// **Will be modified to accommodate one-input range cases in Sprint 2
 		if (lowerCoordInput.isEmpty() ^ upperCoordInput.isEmpty()) {
 			isCoordRangeValid = false;
-			rangeErrorMsg.concat(coordRangeAlert);
+			rangeErrorMsg = rangeErrorMsg.concat(coordRangeAlert);
 		}
 		else if (lowerLandValInput.isEmpty() ^ upperLandValInput.isEmpty()) {
 			isLandValRangeValid = false;
-			rangeErrorMsg.concat(landValRangeAlert);
+			rangeErrorMsg = rangeErrorMsg.concat(landValRangeAlert);
 		}
 		
 		// Warn user if user gave only one value of the coordinate/land range.
 		if ((isCoordRangeValid == false) || (isLandValRangeValid == false)) {
 			Window.alert(rangeErrorMsg);
+			return;
+		}
+		
+		// If user sent empty search, return default (all) data
+		if (lowerCoordInput.isEmpty() && upperCoordInput.isEmpty() &&
+				lowerLandValInput.isEmpty() && upperLandValInput.isEmpty() &&
+				ownerInput.isEmpty()) {
+			
+			// Initialize the service proxy
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+			// Setup Callback
+			AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+				@Override
+				public void onFailure (Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+				@Override
+				public void onSuccess (List<HouseData> result) {
+					dataProvider.updateRowCount(databaseLength, true);
+					dataProvider.updateRowData(0, result);
+					
+				}
+			};
+			houseDataSvc.getHouses(0, pageLength, callback);
 			return;
 		}
 	
@@ -546,7 +580,7 @@ public class Team_02 implements EntryPoint {
 			owner = ownerInput;		
 		
 		// TODO Server-side search
-		// Initailize the service proxy
+		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
 		}
