@@ -35,8 +35,13 @@ public class HouseDataPoint {
 		pid = houseRow.get("PID");
 		pid = pid.replaceAll("-", "");
 		coordinate = Integer.parseInt(houseRow.get("LAND_COORDINATE"));
-		address = Integer.parseInt(houseRow.get("TO_CIVIC_NUMBER")) + " "
-				+ houseRow.get("STREET_NAME");
+		
+		// Check for decimal dots in TO_CIVIC_NUMBER. If there is one, remove.
+		String streetNum = houseRow.get("TO_CIVIC_NUMBER");
+		if (!streetNum.equals(""))
+			streetNum = streetNum.substring(0, streetNum.indexOf("."));
+		
+		address = streetNum + " " + houseRow.get("STREET_NAME");
 		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
 		if (!houseRow.get("CURRENT_LAND_VALUE").isEmpty()) {
 			landValue = Double.parseDouble(houseRow.get("CURRENT_LAND_VALUE"));

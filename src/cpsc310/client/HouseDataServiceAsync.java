@@ -11,6 +11,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * or HouseDataServiceImpl.java.
  */
 public interface HouseDataServiceAsync {
+	public void buildHouseDataPointStore(AsyncCallback<Void> callback);
 	public void getHouses(int start, int range, AsyncCallback<List<HouseData>> callback);
 	public void getSearchedHouses(int lowerCoord, int upperCoord, 
 			int lowerVal, int upperVal, String owner, AsyncCallback<List<HouseData>> callback);

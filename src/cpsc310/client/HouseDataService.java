@@ -13,6 +13,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface HouseDataService extends RemoteService {
 	
 	/**
+	 * This method will be refactored into HouseDataBase.
+	 * At the moment, this builds HouseDataPoint Store 
+	 * by the request module load.
+	 */
+	public void buildHouseDataPointStore();
+	
+	/**
 	 * Get house data for initial drawing of table.
 	 * @param start
 	 * @param range
