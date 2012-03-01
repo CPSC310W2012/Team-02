@@ -35,7 +35,9 @@ public class HouseDataPoint {
 		pid = houseRow.get("PID");
 		pid = pid.replaceAll("-", "");
 		coordinate = Integer.parseInt(houseRow.get("LAND_COORDINATE"));
-		address = Integer.parseInt(houseRow.get("TO_CIVIC_NUMBER")) + " "
+		String tempCivicNumber = houseRow.get("TO_CIVIC_NUMBER");
+		tempCivicNumber = tempCivicNumber.replaceAll("\\.\\d*$", "");
+		address =tempCivicNumber + " "
 				+ houseRow.get("STREET_NAME");
 		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
 		if (!houseRow.get("CURRENT_LAND_VALUE").isEmpty()) {
