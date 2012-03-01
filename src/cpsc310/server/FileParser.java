@@ -1,61 +1,42 @@
 package cpsc310.server;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import au.com.bytecode.opencsv.CSVParser;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dev.util.collect.HashMap;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import cpsc310.client.DataCatalogueObserver;
-import cpsc310.client.DataCatalogueObserverAsync;
+import java.util.HashMap;
 
 public class FileParser {
 
-	private String CSV;
-
 	public FileParser() {
-
-		DataCatalogueObserverAsync observerService = GWT
-				.create(DataCatalogueObserver.class);
-
-		observerService.downloadFile(new AsyncCallback<String>() {
-			public void onFailure(Throwable caught) {
-				// @TODO Error message
-			}
-
-			public void onSuccess(String result) {
-				CSV = result;
-			}
-		});
 	}
 
-	public ArrayList<HashMap<String, String>> getHouseList() {
-		ArrayList<HashMap<String, String>> houseList = new ArrayList<HashMap<String, String>>();
+	/*
+	 * 
+	 */
+	public ArrayList<HouseDataPoint> parseData(List<String> rawFile) {
+
+		ArrayList<HouseDataPoint> houseOutput = new ArrayList<HouseDataPoint>();
 		CSVParser parser = new CSVParser();
 
-		String[] lines = CSV.split(System.getProperty("line.separator"));
+		Iterator<String> itr = rawFile.iterator();
+		String currentLine = itr.next();
+		String[] header;
 		try {
-			String[] header = parser.parseLine(lines[0]);
-			for (int i = 1; i < lines.length; i++) {
+			header = parser.parseLine(currentLine);
+			while (itr.hasNext()) {
 				HashMap<String, String> currentHouse = new HashMap<String, String>();
-				String[] currentString = parser.parseLine(lines[i]);
-				for (int j = 0; j < currentString.length; j++) {
-					currentHouse.put(header[j], currentString[j]);
+				String[] currentParsedLine = parser.parseLine(itr.next());
+				for (int j = 0; j < currentParsedLine.length; j++) {
+					currentHouse.put(header[j], currentParsedLine[j]);
 				}
-				houseList.add(currentHouse);
+				houseOutput.add(new HouseDataPoint(currentHouse));
 			}
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
-
-		return houseList;
+		return houseOutput;
 	}
-
 }

@@ -10,5 +10,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("observer")
 public interface DataCatalogueObserver extends RemoteService {
-	List<String> downloadFile() throws IllegalArgumentException;
+	List<String> downloadFile(String urlLink) throws IllegalArgumentException;
 }

@@ -5,9 +5,10 @@ import junit.framework.JUnit4TestAdapter;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-		AdvancedTests.class,
+		ObserverTests.class,
         BasicTests.class,
         ParameterizedTest.class
         })
