@@ -1,6 +1,7 @@
 package cpsc310.server;
 
-import com.google.gwt.dev.util.collect.HashMap;
+import java.util.HashMap;
+import java.util.regex.*;
 
 /*
  * A single data point value representing a house
@@ -32,8 +33,9 @@ public class HouseDataPoint {
 	public HouseDataPoint(HashMap<String, String> houseRow) {
 		// Variables to be set by house data
 		pid = houseRow.get("PID");
+		pid = pid.replaceAll("-", "");
 		coordinate = Integer.parseInt(houseRow.get("LAND_COORDINATE"));
-		address = houseRow.get("TO_CIVIC_NUMBER") + " "
+		address = Integer.parseInt(houseRow.get("TO_CIVIC_NUMBER")) + " "
 				+ houseRow.get("STREET_NAME");
 		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
 		if (!houseRow.get("CURRENT_LAND_VALUE").isEmpty()) {

@@ -5,41 +5,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import au.com.bytecode.opencsv.CSVParser;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dev.util.collect.HashMap;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import cpsc310.client.DataCatalogueObserver;
-import cpsc310.client.DataCatalogueObserverAsync;
+import java.util.HashMap;
 
 public class FileParser {
 
-	private List<String> CSV;
-
 	public FileParser() {
-
-		DataCatalogueObserverAsync observerService = GWT
-				.create(DataCatalogueObserver.class);
-		observerService.downloadFile(
-				"http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report2.csv",
-				new AsyncCallback<List<String>>() {
-					public void onFailure(Throwable caught) {
-						// @TODO Error message
-					}
-
-					public void onSuccess(List<String> result) {
-						CSV = result;
-					}
-				});
 	}
 
 	/*
 	 * 
 	 */
-	public ArrayList<HashMap<String, String>> getHouseList() {
-		ArrayList<HashMap<String, String>> houseList = new ArrayList<HashMap<String, String>>();
+	public ArrayList<HouseDataPoint> parseData(List<String> rawFile) {
+
+		ArrayList<HouseDataPoint> houseOutput = new ArrayList<HouseDataPoint>();
 		CSVParser parser = new CSVParser();
 
-		Iterator<String> itr = CSV.iterator();
+		Iterator<String> itr = rawFile.iterator();
 		String currentLine = itr.next();
 		String[] header;
 		try {
@@ -50,13 +31,12 @@ public class FileParser {
 				for (int j = 0; j < currentParsedLine.length; j++) {
 					currentHouse.put(header[j], currentParsedLine[j]);
 				}
-				houseList.add(currentHouse);
+				houseOutput.add(new HouseDataPoint(currentHouse));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return houseList;
+		return houseOutput;
 	}
-
 }
