@@ -37,7 +37,7 @@ public interface HouseDataService extends RemoteService {
 	 * @return list of House data within specified coordinates
 	 */
 	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord, 
-			int lowerVal, int upperVal, String owner);
+			double lowerLandVal, double upperLandVal, String owner);
 		
 	/**
 	 * Helper to table drawing to figure out how many rows need to exist.
