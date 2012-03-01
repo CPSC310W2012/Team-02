@@ -8,6 +8,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * The async counterpart of <code>DataCatalogueObserver</code>.
  */
 public interface DataCatalogueObserverAsync {
-	void downloadFile(AsyncCallback<List<String>> callback)
+	void downloadFile(String urlLink, AsyncCallback<List<String>> callback)
 			throws IllegalArgumentException;
 }
