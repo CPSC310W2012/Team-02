@@ -83,7 +83,7 @@ public class Team_02 implements EntryPoint {
 	private HouseData selectedHouse = null;
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
-	private propertyMap theMap;
+	private PropertyMap theMap;
 	private int databaseLength = 0;
 	private int pageLength = 0;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -155,7 +155,7 @@ public class Team_02 implements EntryPoint {
 		}
 		
 		// The map
-		theMap = new propertyMap();
+		theMap = new PropertyMap();
 		theMap.buildUi();
 		//theMap.findLocation("4572 3RD AVE W VANCOUVER");
 

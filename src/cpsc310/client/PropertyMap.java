@@ -11,13 +11,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class propertyMap {
+public class PropertyMap {
 	private MapWidget map;
 
 	/**
 	 * Constructor
 	 */
-	public propertyMap() {
+	public PropertyMap() {
 		map = new MapWidget();
 	}
 
