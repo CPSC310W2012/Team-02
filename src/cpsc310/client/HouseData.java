@@ -14,7 +14,7 @@ public class HouseData implements Serializable{
 	// Class variables representing 
 	// may change depending on the server implementation of the database and
 	// HouseDataPoint.java
-	private int pid;
+	private String pid;
 	private int coordinate;
 	private String address;
 	private String postalCode;
@@ -32,7 +32,7 @@ public class HouseData implements Serializable{
 	/**
 	 * Constructor of the class 
 	 */
-	public HouseData(int pid, String address, String postalCode, int coordinate, 
+	public HouseData(String pid, String address, String postalCode, int coordinate, 
 			int landValue, String owner, boolean isSelling, double price) {
 		this.pid = pid;
 		this.coordinate = coordinate;
@@ -54,7 +54,7 @@ public class HouseData implements Serializable{
 	};
 	
 	// Getters
-	public int getPID() {
+	public String getPID() {
 		return pid;
 	}
 
@@ -87,7 +87,7 @@ public class HouseData implements Serializable{
 	}
 	
 	// Setters
-	public void setPID(int PID) {
+	public void setPID(String PID) {
 		this.pid = PID;
 	}
 	
@@ -126,8 +126,7 @@ public class HouseData implements Serializable{
 	public static Comparator<HouseData> HousePidComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
-			return house1.getPID() > house2.getPID() ? 1 : 
-				house1.getPID() == house2.getPID() ? 0 : -1;
+			return house1.getPID().compareTo(house2.getPID());
 		}
 	};
 	

@@ -13,6 +13,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface HouseDataService extends RemoteService {
 	
 	/**
+	 * This method will be refactored into HouseDataBase.
+	 * At the moment, this builds HouseDataPoint Store 
+	 * by the request module load.
+	 */
+	public void buildHouseDataPointStore();
+	
+	/**
 	 * Get house data for initial drawing of table.
 	 * @param start
 	 * @param range
@@ -30,7 +37,7 @@ public interface HouseDataService extends RemoteService {
 	 * @return list of House data within specified coordinates
 	 */
 	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord, 
-			int lowerVal, int upperVal, String owner);
+			double lowerLandVal, double upperLandVal, String owner);
 		
 	/**
 	 * Helper to table drawing to figure out how many rows need to exist.

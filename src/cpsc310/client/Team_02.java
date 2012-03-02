@@ -16,6 +16,7 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -64,7 +65,7 @@ public class Team_02 implements EntryPoint {
 	private VerticalPanel tableWrapPanel = new VerticalPanel();	
 	private CellTable.Resources resource = GWT.create(CellTableResources.class);
 	private CellTable<HouseData> homesCellTable = 
-			new CellTable<HouseData>(3, resource, HouseData.KEY_PROVIDER);
+			new CellTable<HouseData>(15, resource, HouseData.KEY_PROVIDER);
 	private SimplePager simplePager = new SimplePager();	
 	private	FlexTable searchSettingsFlexTable = new FlexTable();
 	private TextBox lowerCoordTextBox = new TextBox();
@@ -87,15 +88,71 @@ public class Team_02 implements EntryPoint {
 	private propertyMap theMap;
 	private int databaseLength = 0;
 	private int pageLength = 0;
+	private LoginServiceAsync loginService = GWT.create(LoginService.class);
+	private LoginInfo loginInfo = null;
+	private boolean isLoginServiceAvailable = false;
+	private boolean isEditable = false;
+	private int currentStartItem = 0;
 	
 	/**
 	 * This is the entry point method.
 	 */
-	public void onModuleLoad() {	
-
-	    // Assemble Login Panel
-	    loginPanel.add(loginBtn);
-		loginPanel.add(logoutBtn);
+	public void onModuleLoad() {		
+		// Check login status using login service.
+		if (loginService == null) {
+			loginService = GWT.create(LoginService.class);
+		}
+		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997" below.
+	    loginService.login(GWT.getHostPageBaseURL() + "Team_02.html?gwt.codesvr=127.0.0.1:9997", 
+	    		new AsyncCallback<LoginInfo>() {
+		      public void onFailure(Throwable error) {
+		    	  Window.alert("Login service could not be loaded.");
+		    	  buildUI();
+		      }
+		      public void onSuccess(LoginInfo result) {
+		        loginInfo = result;
+		        isLoginServiceAvailable = true;
+		        buildUI();
+		      }
+		    });
+	}
+	
+	/**
+	 * Builds the application's UI
+	 */
+	private void buildUI () {
+		
+		// Enable login/logout only if the login service is available.
+		if (isLoginServiceAvailable == true) {
+			// Set Login Panel
+			loginPanel.add(loginBtn);
+			loginPanel.add(logoutBtn);
+			
+			// Load the login/logout button depending on login/logout status
+	        if(loginInfo.isLoggedIn()){
+				loginBtn.setVisible(false);
+				loginBtn.setEnabled(false);
+				isEditable = true;
+			}
+			else{
+				logoutBtn.setVisible(false);
+				logoutBtn.setVisible(false);
+			}
+					
+			 // Listen for mouse events on Login
+			loginBtn.addClickHandler(new ClickHandler() {
+				public void onClick (ClickEvent event) {
+					Window.Location.assign(loginInfo.getLoginUrl());
+				}
+			});
+			
+			// Listen for mouse events on Logout
+			logoutBtn.addClickHandler(new ClickHandler() {
+				public void onClick (ClickEvent event) {
+					Window.Location.assign(loginInfo.getLogoutUrl());
+				}
+			});
+		}
 		
 		// The map
 		theMap = new propertyMap();
@@ -107,6 +164,9 @@ public class Team_02 implements EntryPoint {
 		 
 		// Create Cell Table
 		initCellTable();
+		
+		// Initialize table selection
+		initCellTableSelection();			
 								
 		// Create Search Criteria table.
 		searchSettingsFlexTable.setText(0, 0,"Coordinates");
@@ -161,10 +221,11 @@ public class Team_02 implements EntryPoint {
 		searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
 		searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
 		
-		// Once Login service is implemented, this will be nested in login check
-		// so that Edit panel and edit function is disabled to general users
-		// and only visible to login users.
-		allowEdit();
+		// Enable edit function only if login service is available AND
+		// the user is logged in.
+		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
+			allowEdit();
+		}
 		
 		// Associate Main panel with the HTML host page
 		RootPanel.get("appPanel").add(mainPanel);
@@ -186,12 +247,12 @@ public class Team_02 implements EntryPoint {
 	 * sets sort comparators, then sets the column width of the table. 
 	 * Note: sorting and populating will be replaced by server-side methods in Sprint 2.
 	 */
-	private void initCellTable() {
+	private void initCellTable() {		
 	  	// Create cell columns
-	  	Column<HouseData, Number> pidColumn = 
-	  			new Column<HouseData, Number>(new NumberCell(NumberFormat.getFormat("0"))) {
+	  	TextColumn<HouseData> pidColumn = 
+	  			new TextColumn<HouseData>() {
 	  		@Override
-	  		public Number getValue(HouseData house) {
+	  		public String getValue(HouseData house) {
 	  			return house.getPID();
 	  		}
 	  	};	  	
@@ -273,7 +334,7 @@ public class Team_02 implements EntryPoint {
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
-		}
+		}		
 		
 		// Grab database length
 		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
@@ -293,7 +354,7 @@ public class Team_02 implements EntryPoint {
 		dataProvider = new AsyncDataProvider<HouseData>() {
 			@Override
 			protected void onRangeChanged(HasData<HouseData> display) {
-				final int start = display.getVisibleRange().getStart();
+				currentStartItem = display.getVisibleRange().getStart();
 				int range = display.getVisibleRange().getLength();
 				pageLength = range;
 				
@@ -304,10 +365,10 @@ public class Team_02 implements EntryPoint {
 					}
 					@Override
 					public void onSuccess (List<HouseData> result) {
-						updateRowData(start, result);
+						updateRowData(currentStartItem, result);
 					}
 				};
-				houseDataSvc.getHouses(start, range, callback);
+				houseDataSvc.getHouses(currentStartItem, range, callback);
 			}
 		};
 		
@@ -376,10 +437,7 @@ public class Team_02 implements EntryPoint {
 	 * Then creates Edit criteria tab and adds to the main controlTab.
 	 */
 	private void allowEdit() {
-		
-		// Initialize table selection
-		initCellTableSelection();	
-		
+				
 		// Create Edit Criteria table.
 		editFlexTable.setText(0, 0, "Property Address");
 		editFlexTable.setWidget(0, 1, propAddrLabel);
@@ -436,13 +494,20 @@ public class Team_02 implements EntryPoint {
 			public void onSelectionChange(SelectionChangeEvent event) {
 				HouseData selected = selectionModel.getSelectedObject();
 				if (selected == null) {
-					propAddrLabel.setText(null);
-					theMap.removeMarker(selectedHouse.getAddress() + " VANCOUVER");
+					if (isEditable == true) {
+						propAddrLabel.setText(null);
+					}
+					theMap.clearMap();
 					setSelectedHouse(null);			
 					return;
 				}
-				propAddrLabel.setText(selected.getAddress());
+				if (isEditable == true) {
+					propAddrLabel.setText(selected.getAddress());
+				}
 				setSelectedHouse(selected);
+				// clear map before proceeding to add new point
+				// TODO: implement adding multiple points on map if multiple houses are selected
+				theMap.clearMap();
 				// add marker onto map
 				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
@@ -479,8 +544,8 @@ public class Team_02 implements EntryPoint {
 	private void searchHouse() {
 		boolean isCoordRangeValid = true;
 		boolean isLandValRangeValid = true;
-		int lowerLandVal = -1;
-		int upperLandVal = -1;
+		double lowerLandVal = -1;
+		double upperLandVal = -1;
 		int lowerCoord = -1;
 		int upperCoord = -1;
 		String owner = null;
@@ -521,6 +586,13 @@ public class Team_02 implements EntryPoint {
 		// Throw error message to user if inputs are invalid. 
 		if (checkNumeric == false || checkAlpha == false) {
 			Window.alert(inputErrorMsg);
+			return;
+		}
+		
+		// Warn upperCoord/upperLandVal must not be less than lowerCoord/lowerLandVal
+		if (upperCoordInput.compareTo(lowerCoordInput) == -1 ||
+				upperLandValInput.compareTo(lowerLandValInput) == -1) {
+			Window.alert("Upper values cannot be greater than lower values");
 			return;
 		}
 		
@@ -573,9 +645,9 @@ public class Team_02 implements EntryPoint {
 		if (!upperCoordInput.isEmpty())
 			upperCoord = Integer.parseInt(upperCoordInput);		
 		if (!lowerLandValInput.isEmpty())
-			lowerLandVal = Integer.parseInt(lowerLandValInput);
+			lowerLandVal = Double.parseDouble(lowerLandValInput);
 		if (!upperLandValInput.isEmpty())
-			upperLandVal = Integer.parseInt(upperLandValInput);
+			upperLandVal = Double.parseDouble(upperLandValInput);
 		if (!ownerInput.isEmpty())
 			owner = ownerInput;		
 		
@@ -640,7 +712,7 @@ public class Team_02 implements EntryPoint {
 			isSelling = false;
 		
 		// TODO For Sprint 2. Connect to user service to get owner
-		String owner = "";
+		String owner = "John Doe";
 		
 		// TODO For Sprint 2. Server-side edit.
 		// Initialize the service proxy
@@ -654,26 +726,23 @@ public class Team_02 implements EntryPoint {
 				Window.alert(caught.getMessage());
 			}
 			public void onSuccess(Void result) {
-				// TODO Display edit results on the table
+				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+					@Override
+					public void onFailure (Throwable caught) {
+						Window.alert(caught.getMessage());
+					}
+					@Override
+					public void onSuccess (List<HouseData> result) {
+						dataProvider.updateRowData(currentStartItem, result);
+						
+					}
+				};
+				houseDataSvc.getHouses(0, pageLength, callback);
 			}
 		};
 		
 		// make the call to the house data service
 		houseDataSvc.updateHouses(owner, price, isSelling, house, callback);
-				
-		// Refresh table
-		refreshHouse(house);
-	}
-	
-	/**
-	 * This is for Sprint 2
-	 * Helper to call server-side refresh upon EDIT request
-	 * @param house
-	 */
-	private void refreshHouse(HouseData house) {
-		// TODO For Sprint 2. Refresh table after edit. table.redraw() will not work
-		// because our table does not draw from local data.
-		// Instead, we will need to use updateRowData().
 	}
 	
 }

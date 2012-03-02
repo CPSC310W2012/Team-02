@@ -19,8 +19,27 @@ import cpsc310.client.HouseData;
  */
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
-
-	private List<String> rawData;
+	
+	// Currently we store whole file on module load.
+	private DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
+	private List<String> rawData = observerService.downloadFile("http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report3.csv");
+	private List<HouseDataPoint> store = new ArrayList<HouseDataPoint> (rawData.size());
+	
+	/**
+	 * This method will be refactored into HouseDataBase.
+	 * At the moment, this builds HouseDataPoint Store 
+	 * by the request module load.
+	 */
+	public void buildHouseDataPointStore() {
+		// Parse raw data
+		FileParser parser = new FileParser();
+		Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
+				
+		// Convert HouseDataPoint into HouseData
+		for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
+			store.add(houserItr.next());
+		}
+	}
 
 	/**
 	 * Get house data for initial drawing of table. Returning list must be
@@ -33,6 +52,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
+		buildHouseDataPointStore();
+		
 		List<HouseData> grab = null;
 		int newRange = range;
 		int end = start + range;
@@ -42,30 +63,23 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			end = getHouseDatabaseLength();
 			newRange = end - start;
 		}
-
+		
 		// Set the size of returning array.
 		grab = new ArrayList<HouseData>(newRange);
 
 		// TODO Get HouseDataPoint objects from database for the specified
-		// range. Currently whole file.
-
-		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
-		rawData = observerService.downloadFile("http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report3.csv");
-
-		List<HouseData> tmpHouse = new ArrayList<HouseData>();
-
-		FileParser parser = new FileParser();
-
-		Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
-
+		// range. Currently get it from the store.
+		Iterator<HouseDataPoint> houserItr = store.iterator();
+				
 		// Convert HouseDataPoint into HouseData
 		for (int i = start; (i < end) && (houserItr.hasNext()); i++) {
-			tmpHouse.add(convertToHouseData(houserItr.next()));
+			grab.add(convertToHouseData(houserItr.next()));
 		}
 
 		// Change below to return grab
-		return tmpHouse;
+		return grab;
 	}
+	
 
 	/**
 	 * Get house data within specified criteria. If user did not specify
@@ -82,26 +96,51 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord,
-			int lowerVal, int upperVal, String owner) {
-		List<HouseData> result = null;
-		int range = 0;
+			double lowerLandVal, double upperLandVal, String owner) {
+		List<HouseData> result = new ArrayList <HouseData> (store.size());
+		boolean searchCoord = false;
+		boolean searchLandVal = false;
+		boolean searchOwner = false;
 
 		// If user did not specify coordinate range or land value range,
 		// lowerCoord, upperCoord, lowerVal, upperVal will be -1!!
-
-		// TODO Search database and grab necessary data.
-
-		// If there is search result, count the number of found data.
-		// Set the number of data to range, create an ArrayList of
-		// HouseData, where all the results converted into HouseData
-		// is stored for return.
-		if (false) {
-			result = new ArrayList<HouseData>(range);
+		if (lowerCoord != -1 || upperCoord != -1) {
+			searchCoord = true;
+		}
+		if (lowerLandVal != -1 || upperLandVal != -1) {
+			searchLandVal = true;
+		}
+		if (owner != null) {
+			searchOwner = true;
 		}
 
-		// Convert the fetched HouseDataPoint data into HouseData and append it
-		// to the result list.
-
+		// TODO Search database and grab necessary data.
+		Iterator<HouseDataPoint> houserItr = store.iterator();
+		HouseDataPoint check = null;
+		
+		// Convert HouseDataPoint into HouseData
+		for (int i = 0; (i < store.size()) && (houserItr.hasNext()); i++) {
+			check = houserItr.next();
+			if (searchCoord == true) {
+				if ((check.getCoordinate() > lowerCoord) && 
+						(check.getCoordinate() < upperCoord))
+					result.add(convertToHouseData(check));
+			}
+			
+			if (searchLandVal == true) {
+				if ((check.getLandValue() > lowerLandVal) && 
+							(check.getLandValue() < upperLandVal)) {
+					result.add(convertToHouseData(check));
+				}		
+			}
+			
+			if (searchOwner == true) {
+				if (check.getOwner().equals(owner)) {
+					result.add(convertToHouseData(check));
+				}
+			}	
+		}
+			
 		return result;
 	}
 
@@ -113,7 +152,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public int getHouseDatabaseLength() {
 		// TODO get database length
-		int databaseLength = 4;
+		int databaseLength = rawData.size();
 
 		return databaseLength;
 	}
@@ -140,6 +179,16 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	public void updateHouses(String Owner, double price, boolean isSelling,
 			HouseData house) {
 		// TODO Update HousePointData data in database
+		Iterator<HouseDataPoint> houserItr = store.iterator();
+		HouseDataPoint next = null;
+		for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
+			next = houserItr.next();
+			if (house.getPID().equals(next.getPID())) {
+				next.setIsSelling(isSelling);
+				next.setOwner(Owner);
+				next.setPrice(price);
+			}
+		}
 	}
 
 	/**
@@ -153,7 +202,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	private HouseData convertToHouseData(HouseDataPoint house) {
 		HouseData converted = new HouseData();
 
-		converted.setPID(Integer.parseInt(house.getPID()));
+		converted.setPID(house.getPID());
 		converted.setAddress(house.getAddress());
 		converted.setPostalCode(house.getPostalCode());
 		converted.setCoordinate(house.getCoordinate());
