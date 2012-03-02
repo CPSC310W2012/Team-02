@@ -103,7 +103,7 @@ public class Team_02 implements EntryPoint {
 			loginService = GWT.create(LoginService.class);
 		}
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997" below.
-	    loginService.login(GWT.getHostPageBaseURL() + "Team_02.html?gwt.codesvr=127.0.0.1:9997", 
+	    loginService.login(GWT.getHostPageBaseURL()+ "Team_02.html?gwt.codesvr=127.0.0.1:9997", 
 	    		new AsyncCallback<LoginInfo>() {
 		      public void onFailure(Throwable error) {
 		    	  Window.alert("Login service could not be loaded.");
@@ -157,7 +157,7 @@ public class Team_02 implements EntryPoint {
 		// The map
 		theMap = new propertyMap();
 		theMap.buildUi();
-		theMap.findLocation("4572 3RD AVE W VANCOUVER");
+		//theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
 		// Assemble map panel
 		mapContainerPanel.add(theMap.getMap());
@@ -697,7 +697,7 @@ public class Team_02 implements EntryPoint {
 		}
 		
 		// Price input must be numerical
-		if (!priceInput.matches("|[0-9]*")) {
+		if (!priceInput.matches("^[0-9]+$")) {
 			Window.alert("Only non-decimal numeric value is allowed for price.");
 			priceTextBox.selectAll();
 			return;
