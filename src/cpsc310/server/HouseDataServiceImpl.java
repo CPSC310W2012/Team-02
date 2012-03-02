@@ -49,7 +49,6 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Get house data for initial drawing of table. Returning list must be
 	 * ArrayList because of Google RPC's Serialization policy.
-	 * 
 	 * @param start
 	 * @param range
 	 * @return list of HouseData within specified range TODO: Implement JDO
@@ -74,7 +73,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 		// TODO Get HouseDataPoint objects from database for the specified
 		// range. Currently get it from the store.
-		Iterator<HouseDataPoint> houserItr = store.iterator();
+		List<HouseDataPoint> fetch = new ArrayList<HouseDataPoint> (store.subList(start, end));
+		Iterator<HouseDataPoint> houserItr = fetch.iterator();
 				
 		// Convert HouseDataPoint into HouseData
 		for (int i = start; (i < end) && (houserItr.hasNext()); i++) {
@@ -92,11 +92,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 * upperVal will be -1. In Sprint 2, this function will be modified to
 	 * include more criteria, and range cases.
 	 * 
-	 * @param lowerCoord
-	 * @param upperCoord
-	 * @param lowerVal
-	 * @param upperVal
-	 * @param owner
+	 * @param lowerCoord - lower range for coordinate of house
+	 * @param upperCoord - upper range for coordinate of house
+	 * @param lowerVal - lower asking price of house
+	 * @param upperVal - upper asking price of house
+	 * @param owner - the realtor that is in charge of the house.
 	 * @return list of House data within specified coordinates
 	 */
 	@Override
@@ -140,18 +140,22 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			}
 			
 			if (searchOwner == true) {
-				if (check.getOwner().equals(owner)) {
-					result.add(convertToHouseData(check));
+				if (check.getOwner() != null) {
+					if (check.getOwner().equals(owner)) {
+						result.add(convertToHouseData(check));
+					}
 				}
 			}	
 		}
+		
+		if (result.isEmpty())
+			return null;
 			
 		return result;
 	}
 
 	/**
 	 * Helper to table drawing to figure out how many rows need to exist.
-	 * 
 	 * @return size of database
 	 */
 	@Override
@@ -199,10 +203,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Helper to convert HouseDataPoint into HouseDataPoint (data transfer
 	 * object).
-	 * 
-	 * @param house
-	 *            HouseDataPoint to convert into HouseData
-	 * @return HouseData object
+	 * @param house - HouseDataPoint to convert into HouseData
+	 * @return the converted HouseDataPoint (returned as a HouseData object)
 	 */
 	private HouseData convertToHouseData(HouseDataPoint house) {
 		HouseData converted = new HouseData();
@@ -218,5 +220,4 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 		return converted;
 	}
-
 }
