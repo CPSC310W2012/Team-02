@@ -18,10 +18,15 @@ public class HouseDataPoint {
 	// Variables to be set by house data
 	@Id
 	private String pid;
+	
+	//@Todo remove field; is useless
 	private int coordinate;
+	
 	private String address;
 	private String postalCode;
 	private double landValue;
+	
+	//@add additional interesting information like house built date
 
 	// User specified data
 	private String owner;

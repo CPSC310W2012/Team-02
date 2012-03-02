@@ -2,6 +2,7 @@ package cpsc310.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import au.com.bytecode.opencsv.CSVParser;
@@ -33,6 +34,8 @@ public class FileParser {
 		try {
 			//grab the values of the title for each column
 			header = parser.parseLine(currentLine);
+			//stores PIDs to check for duplicates
+			HashSet<String> PIDs = new HashSet<String>();
 			while (itr.hasNext()) {
 				//store the values of each house into a HashMap to create
 				//HouseDataPoint objects
@@ -41,7 +44,12 @@ public class FileParser {
 				for (int j = 0; j < currentParsedLine.length; j++) {
 					currentHouse.put(header[j], currentParsedLine[j]);
 				}
-				houseOutput.add(new HouseDataPoint(currentHouse));
+				//check for duplicates
+				if( !PIDs.contains(currentHouse.get("PID")))
+				{
+					PIDs.add(currentHouse.get("PID"));
+					houseOutput.add(new HouseDataPoint(currentHouse));
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

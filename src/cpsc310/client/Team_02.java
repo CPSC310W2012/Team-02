@@ -560,9 +560,9 @@ public class Team_02 implements EntryPoint {
 		final String upperLandValInput = upperLandValTextBox.getText().trim();
 		final String ownerInput = ownerTextBox.getText().trim().toUpperCase();
 		
-		String checkDigit = "|[0-9]+[/.]?[0-9]*";
+		String checkDigit = "\\d*";
 		//String checkPostalCode = "|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]";
-		String checkOwner = "|[A-Z]+[ ]?[A-Z]*";
+		String checkOwner = "[A-Za-z\\s]*";
 		
 		String numericAlert = "Only numeric values are allowed for coordinates and land values. \n";
 		String ownerAlert = "Only alphabet characters are allowed for realtor name";

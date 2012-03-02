@@ -54,4 +54,14 @@ public class ParserTests {
 		assertTrue(house.getPostalCode().equals("A1A 1A1"));
 		assertTrue(house.getLandValue() == 0); //should be 0 since value is blank
 	}
+	
+	@Test //Should only have 1 instance of the Same PID
+	public void testDuplicatePID() {
+		testList.add("PID,LAND_COORDINATE,TO_CIVIC_NUMBER,STREET_NAME,PROPERTY_POSTAL_CODE,CURRENT_LAND_VALUE");
+		testList.add("1234,5679,4545,Fake Street,A1A 1A1,");
+		testList.add("1235,5679,4545,Fake Street,A1A 1A1,");
+		testList.add("1234,5679,4545,Fake Street,A1A 1A1,");
+		houses = fileParser.parseData(testList);
+		assertTrue(houses.size() == 2);
+	}
 }
