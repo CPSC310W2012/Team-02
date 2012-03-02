@@ -3,15 +3,20 @@ package cpsc310.server;
 import java.util.HashMap;
 import java.util.regex.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /*
  * A single data point value representing a house
  */
+@Entity
 public class HouseDataPoint {
 
 	// variables
 	// tentatively stable; may be removing or adding additional ones often
 	// early on
 	// Variables to be set by house data
+	@Id
 	private String pid;
 	private int coordinate;
 	private String address;

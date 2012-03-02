@@ -13,12 +13,17 @@ import cpsc310.client.DataCatalogueObserver;
 import cpsc310.client.DataCatalogueObserverAsync;
 import cpsc310.client.HouseDataService;
 import cpsc310.client.HouseData;
+//import com.googlecode.objectify.Key;
 
 /**
  * Server side methods to fetch house data
  */
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
+	
+	//objectify objects
+//	ObjectifyService.register(DataBaseIndexer.class);
+//    ObjectifyService.register(HouseDataPoint.class);
 	
 	// Currently we store whole file on module load.
 	private DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
