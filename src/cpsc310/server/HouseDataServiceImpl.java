@@ -69,7 +69,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 		// TODO Get HouseDataPoint objects from database for the specified
 		// range. Currently get it from the store.
-		Iterator<HouseDataPoint> houserItr = store.iterator();
+		List<HouseDataPoint> fetch = new ArrayList<HouseDataPoint> (store.subList(start, end));
+		Iterator<HouseDataPoint> houserItr = fetch.iterator();
 				
 		// Convert HouseDataPoint into HouseData
 		for (int i = start; (i < end) && (houserItr.hasNext()); i++) {
@@ -135,11 +136,16 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			}
 			
 			if (searchOwner == true) {
-				if (check.getOwner().equals(owner)) {
-					result.add(convertToHouseData(check));
+				if (check.getOwner() != null) {
+					if (check.getOwner().equals(owner)) {
+						result.add(convertToHouseData(check));
+					}
 				}
 			}	
 		}
+		
+		if (result.isEmpty())
+			return null;
 			
 		return result;
 	}
