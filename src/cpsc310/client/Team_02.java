@@ -497,7 +497,7 @@ public class Team_02 implements EntryPoint {
 					if (isEditable == true) {
 						propAddrLabel.setText(null);
 					}
-					theMap.removeMarker(selectedHouse.getAddress() + " VANCOUVER");
+					theMap.clearMap();
 					setSelectedHouse(null);			
 					return;
 				}
@@ -505,6 +505,9 @@ public class Team_02 implements EntryPoint {
 					propAddrLabel.setText(selected.getAddress());
 				}
 				setSelectedHouse(selected);
+				// clear map before proceeding to add new point
+				// TODO: implement adding multiple points on map if multiple houses are selected
+				theMap.clearMap();
 				// add marker onto map
 				theMap.findLocation(selected.getAddress() + " VANCOUVER");
 			}
