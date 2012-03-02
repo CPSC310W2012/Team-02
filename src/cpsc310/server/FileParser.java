@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import au.com.bytecode.opencsv.CSVParser;
 import java.util.HashMap;
+import java.util.regex.*;
 
 public class FileParser {
 
@@ -45,7 +46,7 @@ public class FileParser {
 					currentHouse.put(header[j], currentParsedLine[j]);
 				}
 				//check for duplicates
-				if( !PIDs.contains(currentHouse.get("PID")))
+				if((currentHouse.get("PID").matches("^[\\d\\-]+$")) && (!PIDs.contains(currentHouse.get("PID"))))
 				{
 					PIDs.add(currentHouse.get("PID"));
 					houseOutput.add(new HouseDataPoint(currentHouse));

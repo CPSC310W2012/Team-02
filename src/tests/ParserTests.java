@@ -64,4 +64,12 @@ public class ParserTests {
 		houses = fileParser.parseData(testList);
 		assertTrue(houses.size() == 2);
 	}
+	
+	@Test
+	public void testEmptyID() {
+		testList.add("PID,LAND_COORDINATE,TO_CIVIC_NUMBER,STREET_NAME,PROPERTY_POSTAL_CODE,CURRENT_LAND_VALUE");
+		testList.add(",5679,4545,Fake Street,A1A 1A1,");
+		houses = fileParser.parseData(testList);
+		assertTrue(houses.size() == 0);
+	}
 }

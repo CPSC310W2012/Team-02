@@ -13,19 +13,22 @@ public class DataBaseIndexer {
 	
 	@Id
 	private String name;
-	
-	private ArrayList<HouseDataPoint> houses;
+	private ArrayList<String> houses;
 	
 	public DataBaseIndexer(){
 		name = "DataBaseIndexer";
-		houses = new ArrayList<HouseDataPoint>();
+		houses = new ArrayList<String>();
 	}
 	
-	public void addToIndex(HouseDataPoint house){
+	public void addToIndex(String house){
 		houses.add(house);
 	}
 	
-	public ArrayList<HouseDataPoint> getHouses(){
+	public ArrayList<String> getHouses(){
 		return houses;
+	}
+	
+	public int size(){
+		return houses.size();
 	}
 }
