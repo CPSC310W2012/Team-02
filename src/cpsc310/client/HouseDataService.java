@@ -29,11 +29,11 @@ public interface HouseDataService extends RemoteService {
 	
 	/**
 	 * Get house data within specified coordinate range.
-	 * @param lowerCoord
-	 * @param upperCoord
-	 * @param lowerVal
-	 * @param upperVal
-	 * @param owner
+	 * @param lowerCoord - lower range for coordinate of house
+	 * @param upperCoord - upper range for coordinate of house
+	 * @param lowerVal - lower asking price of house
+	 * @param upperVal - upper asking price of house
+	 * @param owner - realtor of the house
 	 * @return list of House data within specified coordinates
 	 */
 	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord, 

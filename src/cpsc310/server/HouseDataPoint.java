@@ -23,12 +23,11 @@ public class HouseDataPoint {
 	private boolean isSelling;
 	private double price;
 
-	/*
+	/**
 	 * Constructor
-	 * 
-	 * @pre: a hashMap Object(keys are table headers)
-	 * 
-	 * @post: a houseDataPoint Object
+	 * @pre houseRow != null;
+	 * @post true;
+	 * @param houseRow - the HashMap containing the information for a house
 	 */
 	public HouseDataPoint(HashMap<String, String> houseRow) {
 		// Variables to be set by house data

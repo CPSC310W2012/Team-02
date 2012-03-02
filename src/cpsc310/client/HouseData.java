@@ -30,7 +30,15 @@ public class HouseData implements Serializable{
 	}
 	
 	/**
-	 * Constructor of the class 
+	 * Constructor of the class
+	 * @param pid - the PID of the house.
+	 * @param address - the address of the house.
+	 * @param postalCode - the postalCode of the house.
+	 * @param coordinate - the map coordinate of the house.
+	 * @param landValue - the value of the land the house resides on.
+	 * @param owner - the realtor that is in charge of the house.
+	 * @param isSelling - if true house is for sale; otherwise false
+	 * @param price - asking price of the house.
 	 */
 	public HouseData(String pid, String address, String postalCode, int coordinate, 
 			int landValue, String owner, boolean isSelling, double price) {
@@ -123,6 +131,7 @@ public class HouseData implements Serializable{
 	 * Comparators for table sorting.
 	 */
 	
+	//Comparator for PIDs
 	public static Comparator<HouseData> HousePidComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
@@ -130,6 +139,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for house addresses
 	public static Comparator<HouseData> HouseAddrComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
@@ -147,6 +157,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for postal codes
 	public static Comparator<HouseData> HousePostalCodeComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
@@ -154,6 +165,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for house coordinates
 	public static Comparator<HouseData> HouseCoordinateComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
@@ -162,6 +174,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for the value of the land the house resides on
 	public static Comparator<HouseData> HouseLandValueComparator = 
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
@@ -170,6 +183,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for the realtor of the house
 	public static Comparator<HouseData> HouseOwnerComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
@@ -177,6 +191,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for house prices
 	public static Comparator<HouseData> HousePriceComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
@@ -185,6 +200,7 @@ public class HouseData implements Serializable{
 		}
 	};
 	
+	//Comparator for whether or not a house is for sale
 	public static Comparator<HouseData> HouseIsSellingComparator = 
 			new Comparator<HouseData> () {
 		public int compare (HouseData o1, HouseData o2) {

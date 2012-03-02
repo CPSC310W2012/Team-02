@@ -23,7 +23,6 @@ public class propertyMap {
 
 	/**
 	 * Sets up the map centered on Vancouver
-	 * 
 	 */
 	public void buildUi() {
 		// Open a map centered on Vancouver
@@ -36,9 +35,7 @@ public class propertyMap {
 
 	/**
 	 * Finds the location and plots it on the map
-	 * 
-	 * @param location - string representation of the address
-	 *          
+	 * @param location - string representation of the address         
 	 */
 	public void findLocation(final String location) {
 		LatLngCallback callback = new LatLngCallback() {
@@ -58,7 +55,6 @@ public class propertyMap {
 
 	/**
 	 * Adds a marker to the map
-	 * 
 	 * @param point  latitude and longitude
 	 * @param location  string representation of the location to be displayed in overlay
 	 */
@@ -90,9 +86,7 @@ public class propertyMap {
 	
 	/**
 	 * TODO: Method that removes one marker given the string location
-	 * 
-	 * @param location - string representation of the address
-	 *          
+	 * @param location - string representation of the address         
 	 */
 	public void removeMarker(final String location) {
 		/*

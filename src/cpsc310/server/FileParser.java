@@ -12,7 +12,7 @@ public class FileParser {
 	public FileParser() {
 	}
 
-	/*
+	/**
 	 * Method to parse the lines of the house data csv file and store the information
 	 * into an ArrayList<HouseDataPoint> object.
 	 * @pre rawFile != null;
