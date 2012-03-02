@@ -721,7 +721,7 @@ public class Team_02 implements EntryPoint {
 			isSelling = false;
 		
 		// TODO For Sprint 2. Connect to user service to get owner
-		String owner = "John Doe";
+		String owner = "JOHN DOE";
 		
 		// TODO For Sprint 2. Server-side edit.
 		// Initialize the service proxy
