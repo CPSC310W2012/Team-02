@@ -132,7 +132,7 @@ public class HouseData implements Serializable{
 	 */
 	
 	//Comparator for PIDs
-	public static Comparator<HouseData> HousePidComparator =
+	public final static Comparator<HouseData> HousePidComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getPID().compareTo(house2.getPID());
@@ -140,7 +140,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for house addresses
-	public static Comparator<HouseData> HouseAddrComparator =
+	public final static Comparator<HouseData> HouseAddrComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
 			String[] addr1 = house1.getAddress().split("[ ]");
@@ -158,7 +158,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for postal codes
-	public static Comparator<HouseData> HousePostalCodeComparator =
+	public final static Comparator<HouseData> HousePostalCodeComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getPostalCode().compareTo(house2.getPostalCode());
@@ -166,7 +166,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for house coordinates
-	public static Comparator<HouseData> HouseCoordinateComparator =
+	public final static Comparator<HouseData> HouseCoordinateComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getCoordinate() > house2.getCoordinate() ? 1 : 
@@ -175,7 +175,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for the value of the land the house resides on
-	public static Comparator<HouseData> HouseLandValueComparator = 
+	public final static Comparator<HouseData> HouseLandValueComparator = 
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getLandValue() > house2.getLandValue() ? 1 : 
@@ -184,7 +184,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for the realtor of the house
-	public static Comparator<HouseData> HouseOwnerComparator =
+	public final static Comparator<HouseData> HouseOwnerComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getOwner().compareTo(house2.getOwner());
@@ -192,7 +192,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for house prices
-	public static Comparator<HouseData> HousePriceComparator =
+	public final static Comparator<HouseData> HousePriceComparator =
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
 			return house1.getPrice() > house2.getPrice() ? 1 : 
@@ -201,7 +201,7 @@ public class HouseData implements Serializable{
 	};
 	
 	//Comparator for whether or not a house is for sale
-	public static Comparator<HouseData> HouseIsSellingComparator = 
+	public final static Comparator<HouseData> HouseIsSellingComparator = 
 			new Comparator<HouseData> () {
 		public int compare (HouseData o1, HouseData o2) {
 			if (o1.getIsSelling() == true && o2.getIsSelling() == false)
