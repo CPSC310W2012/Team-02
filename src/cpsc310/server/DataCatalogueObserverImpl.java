@@ -13,8 +13,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 @SuppressWarnings("serial")
-public class DataCatalogueObserverImpl extends RemoteServiceServlet implements DataCatalogueObserver
-{
+public class DataCatalogueObserverImpl extends RemoteServiceServlet implements DataCatalogueObserver {
 	/**
 	 * Method to download a file from a server.  Caution: the link provided to the parameter urlLink
 	 * must be for the desired file object, otherwise the http request may return other objects on
@@ -24,14 +23,12 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 	 * @param urlLink - the http link to retrieve a file from a server.
 	 * @return a List<String> containing the lines of the .csv file; returns null if failed to retrieve file.
 	 */
-	public List<String> downloadFile(String urlLink)
-	{
+	public List<String> downloadFile(String urlLink) {
 		InputStream fileStream = null;
 		int timeOut = 60000; //timeout value in ms (60 seconds)
 		List<String> fileLines;
 		
-		try
-		{
+		try {
 			URL fileLocation = new URL(urlLink);
 			//open connection to the file
 			URLConnection fileConnection = fileLocation.openConnection();
@@ -44,22 +41,17 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 			
 			return 	fileLines;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			return null;
 		}
-		finally
-		{
-			try
-			{
+		finally	{
+			try	{
 				//close the filestream since we don't need it anymore
-				if (fileStream != null)
-				{
+				if (fileStream != null) {
 					fileStream.close();
 				}
 			}
-			catch (IOException e)
-			{
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

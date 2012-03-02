@@ -26,5 +26,4 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
     }
     return loginInfo;
   }
-
 }

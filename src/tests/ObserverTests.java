@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cpsc310.server.DataCatalogueObserverImpl;
+import exceptions.DownloadFailedException;
 
 public class ObserverTests {
 

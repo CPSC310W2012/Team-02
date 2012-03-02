@@ -16,7 +16,6 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -45,7 +44,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 
 
 
@@ -93,6 +91,8 @@ public class Team_02 implements EntryPoint {
 	private boolean isLoginServiceAvailable = false;
 	private boolean isEditable = false;
 	private int currentStartItem = 0;
+	private List<HouseData> currentHouseList = null;
+	private boolean isSearching = false;
 	
 	/**
 	 * This is the entry point method.
@@ -103,7 +103,7 @@ public class Team_02 implements EntryPoint {
 			loginService = GWT.create(LoginService.class);
 		}
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997" below.
-	    loginService.login(GWT.getHostPageBaseURL() + "Team_02.html?gwt.codesvr=127.0.0.1:9997", 
+	    loginService.login(GWT.getHostPageBaseURL()+ "Team_02.html?gwt.codesvr=127.0.0.1:9997", 
 	    		new AsyncCallback<LoginInfo>() {
 		      public void onFailure(Throwable error) {
 		    	  Window.alert("Login service could not be loaded.");
@@ -157,7 +157,7 @@ public class Team_02 implements EntryPoint {
 		// The map
 		theMap = new propertyMap();
 		theMap.buildUi();
-		theMap.findLocation("4572 3RD AVE W VANCOUVER");
+		//theMap.findLocation("4572 3RD AVE W VANCOUVER");
 
 		// Assemble map panel
 		mapContainerPanel.add(theMap.getMap());
@@ -325,7 +325,7 @@ public class Team_02 implements EntryPoint {
 	  	homesCellTable.addColumn(postalColumn, "Postal Code");		
 	  	homesCellTable.addColumn(coordColumn, "Land Coordinate");		
 	  	homesCellTable.addColumn(landValColumn, "Current Value");				
-	  	homesCellTable.addColumn(ownerColumn, "Owner");
+	  	homesCellTable.addColumn(ownerColumn, "Realtor");
 	  	homesCellTable.addColumn(priceColumn, "Price");
 	  	homesCellTable.addColumn(isSellingColumn, "Sale");	  	
 		simplePager.setDisplay(homesCellTable);
@@ -344,7 +344,7 @@ public class Team_02 implements EntryPoint {
 			}
 			@Override
 			public void onSuccess (Integer result) {
-				homesCellTable.setRowCount(result);
+				dataProvider.updateRowCount(result, true);
 				databaseLength = result;
 			}
 		};
@@ -357,6 +357,12 @@ public class Team_02 implements EntryPoint {
 				currentStartItem = display.getVisibleRange().getStart();
 				int range = display.getVisibleRange().getLength();
 				pageLength = range;
+				
+				if (isSearching) {
+					int end = currentHouseList.size();
+					homesCellTable.setRowData(currentStartItem, currentHouseList.subList(currentStartItem, end));
+					return;
+				}
 				
 				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
 					@Override
@@ -371,7 +377,6 @@ public class Team_02 implements EntryPoint {
 				houseDataSvc.getHouses(currentStartItem, range, callback);
 			}
 		};
-		
 		dataProvider.addDataDisplay(homesCellTable);
 		
 		// Create sort handler, associate sort handler to the table		
@@ -630,9 +635,9 @@ public class Team_02 implements EntryPoint {
 				}
 				@Override
 				public void onSuccess (List<HouseData> result) {
+					isSearching = false;
 					dataProvider.updateRowCount(databaseLength, true);
 					dataProvider.updateRowData(0, result);
-					
 				}
 			};
 			houseDataSvc.getHouses(0, pageLength, callback);
@@ -664,11 +669,15 @@ public class Team_02 implements EntryPoint {
 			}
 			public void onSuccess(List<HouseData> result) {
 				if (result != null) {
+					currentHouseList = result;
+					isSearching = true;					
 					dataProvider.updateRowCount(result.size(), true);
 					dataProvider.updateRowData(0, result);
 				}
 				else {
+					result = new ArrayList<HouseData> ();
 					dataProvider.updateRowCount(0, true);
+					dataProvider.updateRowData(0, result);
 					Window.alert("No result found");
 				}
 			}
@@ -697,7 +706,7 @@ public class Team_02 implements EntryPoint {
 		}
 		
 		// Price input must be numerical
-		if (!priceInput.matches("|[0-9]*")) {
+		if (!priceInput.matches("^[0-9]+$")) {
 			Window.alert("Only non-decimal numeric value is allowed for price.");
 			priceTextBox.selectAll();
 			return;
@@ -712,7 +721,7 @@ public class Team_02 implements EntryPoint {
 			isSelling = false;
 		
 		// TODO For Sprint 2. Connect to user service to get owner
-		String owner = "John Doe";
+		String owner = "JOHN DOE";
 		
 		// TODO For Sprint 2. Server-side edit.
 		// Initialize the service proxy
