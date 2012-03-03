@@ -6,6 +6,7 @@ import cpsc310.client.DataCatalogueObserver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -41,7 +42,10 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 			
 			return 	fileLines;
 		}
-		catch (Exception e) {
+		catch(MalformedURLException e) {
+			return null;
+		}
+		catch (IOException e) {
 			return null;
 		}
 		finally	{
