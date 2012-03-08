@@ -75,7 +75,7 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 		//retrieve file's last modified date
 		long serverModified = fileConnection.getLastModified();
 			
-		return serverModified == lastModified;
+		return serverModified <= lastModified;
 	}
 	
 	/**
