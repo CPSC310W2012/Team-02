@@ -7,34 +7,67 @@ import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.streetview.LatLngStreetviewCallback;
+import com.google.gwt.maps.client.streetview.Pov;
+import com.google.gwt.maps.client.streetview.StreetviewClient;
+import com.google.gwt.maps.client.streetview.StreetviewPanoramaOptions;
+import com.google.gwt.maps.client.streetview.StreetviewPanoramaWidget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PropertyMap {
 	private MapWidget map;
+	private StreetviewPanoramaWidget panorama;
+	private StreetviewClient svClient;
 
 	/**
 	 * Constructor
+	 * Instantiates two instances of a map - standard and streetview
+	 * 
+	 * @param location - location you want the map centered on
+	 * 
 	 */
-	public PropertyMap() {
-		map = new MapWidget();
+
+	public PropertyMap(LatLng location) {
+		buildStreetViewMap(location);
+		buildStandardMap(location);
 	}
+
 
 	/**
-	 * Sets up the map centered on Vancouver
+	 * Sets up the streetview map centered on provided location
+	 * 
+	 * @param location - the location to center the map on
 	 */
-	public void buildUi() {
-		// Open a map centered on Vancouver
-		LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-		map.setCenter(vancouver, 10);
-		map.setSize("100%", "100%");
-		// Add some controls for the zoom level
-		map.addControl(new LargeMapControl());
+	public void buildStreetViewMap(LatLng location)
+	{
+		 StreetviewPanoramaOptions options = StreetviewPanoramaOptions.newInstance();
+		 options.setLatLng(location);
+		 svClient = new StreetviewClient();
+		 panorama = new StreetviewPanoramaWidget(options);
+		 panorama.setSize("500px", "500px");
 	}
-
+	
+	/**
+	 * Sets up the standard map centered on provided location
+	 * 
+	 * @param location - the location to center the map on
+	 */
+	public void buildStandardMap(LatLng location)
+	{
+		map = new MapWidget();
+		map.setCenter(location, 10);
+		map.setSize("500px", "500px");
+		// Add some controls for the zoom level
+		map.addControl(new LargeMapControl());		
+	}
+	
+	
 	/**
 	 * Finds the location and plots it on the map
+	 * changes the street-view too
+	 * 
 	 * @param location - string representation of the address         
 	 */
 	public void findLocation(final String location) {
@@ -47,6 +80,7 @@ public class PropertyMap {
 			public void onSuccess(LatLng point) {
 				// add the location onto the map
 				addMarker(point, location);
+				refreshStreetView(point);
 			}
 		};
 		Geocoder geocoder = new Geocoder();
@@ -71,6 +105,29 @@ public class PropertyMap {
 	
 	
 	/**
+	 * Changes streetview location given location coordinates
+	 *
+	 * @param location  latitude and longitude
+	 */
+	
+	private void refreshStreetView(LatLng location)
+	{
+		svClient.getNearestPanoramaLatLng(location,
+	              new LatLngStreetviewCallback() {
+	                @Override
+	                public void onFailure() {
+	                // streetview is not available
+	                }
+
+	                @Override
+	                public void onSuccess(LatLng point) {
+	                  panorama.setLocationAndPov(point, Pov.newInstance());
+	                }
+	              });
+	}
+	
+	
+	/**
 	 * Clears all of the markers from the map
 	 */
 	public void clearMap() {
@@ -78,30 +135,28 @@ public class PropertyMap {
 	}
 
 	/**
-	 * Returns reference to the MapWidget
+	 * Returns reference to the standard map
 	 */
 	public MapWidget getMap() {
 		return this.map;
 	}
 	
 	/**
+	 * Returns reference to the streetView map
+	 */
+	public StreetviewPanoramaWidget getStreetViewMap() {
+		return this.panorama;
+	}
+	
+	
+	/**
 	 * TODO: Method that removes one marker given the string location
 	 * @param location - string representation of the address         
 	 */
 	public void removeMarker(final String location) {
-		/*
-		 * Window.alert("removing: " + location); LatLngCallback callback = new
-		 * LatLngCallback() {
-		 * 
-		 * public void onFailure() { //address was not found. do nothing //
-		 * insert some error handling here // popup message?
-		 * Window.alert("marker not found, failed to remove"); }
-		 * 
-		 * public void onSuccess(LatLng point) { // removes the location onto
-		 * the map Window.alert("remove overlay is not working.."); Marker
-		 * marker = new Marker(point); map.removeOverlay(marker); } }; Geocoder
-		 * geocoder = new Geocoder(); geocoder.getLatLng(location, callback);
-		 * map.clearOverlays();
-		*/
+
 	}
+
+
+
 }

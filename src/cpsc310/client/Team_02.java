@@ -55,7 +55,7 @@ public class Team_02 implements EntryPoint {
 
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel loginPanel = new HorizontalPanel();	
-	private SimplePanel mapContainerPanel = new SimplePanel();	
+	private HorizontalPanel mapContainerPanel = new HorizontalPanel();	
 	private TabPanel controlPanel = new TabPanel();	
 	private VerticalPanel searchPanel = new VerticalPanel();
 	private VerticalPanel editPanel = new VerticalPanel();	
@@ -154,12 +154,12 @@ public class Team_02 implements EntryPoint {
 			});
 		}
 		
-		// The map
-		theMap = new PropertyMap();
-		theMap.buildUi();
-		//theMap.findLocation("4572 3RD AVE W VANCOUVER");
+		// Open a map centered on Vancouver
+		LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
+		theMap = new PropertyMap(vancouver);
 
 		// Assemble map panel
+		mapContainerPanel.add(theMap.getStreetViewMap());
 		mapContainerPanel.add(theMap.getMap());
 		 
 		// Create Cell Table

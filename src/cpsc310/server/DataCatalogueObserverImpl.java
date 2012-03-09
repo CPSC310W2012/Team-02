@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 
 @SuppressWarnings("serial")
 public class DataCatalogueObserverImpl extends RemoteServiceServlet implements DataCatalogueObserver {
+
 	/**
 	 * Method to download a file from a server.  Caution: the link provided to the parameter urlLink
 	 * must be for the desired file object, otherwise the http request may return other objects on
@@ -32,8 +33,7 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 		try {
 			URL fileLocation = new URL(urlLink);
 			//open connection to the file
-			URLConnection fileConnection = fileLocation.openConnection();
-			//TO DO: Implement checking to see if latest version of file is already possessed.		
+			URLConnection fileConnection = fileLocation.openConnection();		
 			//set the reading timeout before retrieving and reading from the input stream
 			fileConnection.setReadTimeout(timeOut);
 			//retrieve the input stream and store each line from the file into a list
@@ -41,11 +41,7 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 			fileLines = IOUtils.readLines(fileStream);
 			
 			return 	fileLines;
-		}
-		catch(MalformedURLException e) {
-			return null;
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 		finally	{
@@ -54,10 +50,49 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 				if (fileStream != null) {
 					fileStream.close();
 				}
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Method to check if a file on a server has been updated.
+	 * @pre (urlLink != null) && (lastModified != null);
+	 * @post true;
+	 * @param urlLink - the http link to retrieve a file from a server.
+	 * @param lastModified - the value returned from a call to .getLastModified() on the
+	 * 						 file of interest; i.e. the last modified date of the file
+	 * 						 in possession.
+	 * @return true is file is up to date; otherwise, false.
+	 * @throws IOException - if an error occurred when trying to connect to the file.
+	 */
+	public boolean haveLatestUpdate(String urlLink, long lastModified) throws IOException   {
+		
+		URL fileLocation = new URL(urlLink);
+		//open connection to the file
+		URLConnection fileConnection = fileLocation.openConnection();
+		//retrieve file's last modified date
+		long serverModified = fileConnection.getLastModified();
+			
+		return serverModified <= lastModified;
+	}
+	
+	/**
+	 * Method to retrieve the last modified date of a file from a server.
+	 * @pre urlLink != null;
+	 * @post true;
+	 * @param urlLink - the http link to retrieve a file from a server.
+	 * @return the last modified date of the file from the given URL or 0 if not known. 
+	 * @throws IOException - if an error occurred when trying to connect to the file.
+	 */
+	public long getServerFileLastModifiedDate(String urlLink) throws IOException {
+		
+		URL fileLocation = new URL(urlLink);
+		//open connection to the file
+		URLConnection fileConnection = fileLocation.openConnection();
+		
+		//return file's last modified date
+		return fileConnection.getLastModified();
 	}
 }
