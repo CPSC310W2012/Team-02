@@ -20,6 +20,15 @@ public class DataBaseIndexer {
 		houses = new ArrayList<String>();
 	}
 	
+	public boolean hasIndex(String house)
+	{
+		if(houses.contains(house))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	public void addToIndex(String house){
 		houses.add(house);
 	}

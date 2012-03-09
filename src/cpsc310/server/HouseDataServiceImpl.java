@@ -8,6 +8,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
 
 import cpsc310.client.DataCatalogueObserver;
 import cpsc310.client.DataCatalogueObserverAsync;
@@ -219,5 +221,42 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		converted.setPrice(house.getPrice());
 
 		return converted;
+	}
+	
+	/*
+	 * Populates database given a URL
+	 */
+	public void initilizeDataStorage(String URL) {
+		// Get Data
+		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
+		
+		// Store in DataStore
+		Objectify ofy = ObjectifyService.begin();
+		DataBaseIndexer dbIndex;
+		try{
+		dbIndex = ofy.get(DataBaseIndexer.class,"DataBaseIndexer");
+		}
+		catch(Exception e){
+			// objectify objects
+			ObjectifyService.register(HouseDataPoint.class);
+			ObjectifyService.register(DataBaseIndexer.class);
+			List<String> rawData = observerService.downloadFile(URL);
+
+			// Parse raw data
+			FileParser parser = new FileParser();
+			Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
+			
+			dbIndex = new DataBaseIndexer();
+			ofy.put(houserItr.next());
+			while (houserItr.hasNext()) {
+				HouseDataPoint currentHouse = houserItr.next();
+				if(dbIndex.hasIndex(currentHouse.getPID()))
+				{
+					dbIndex.addToIndex(currentHouse.getPID());
+					ofy.put(currentHouse);
+				}
+			}
+			ofy.put(dbIndex);
+		}
 	}
 }
