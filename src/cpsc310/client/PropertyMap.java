@@ -3,6 +3,7 @@ package cpsc310.client;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -60,7 +61,7 @@ public class PropertyMap {
 		map.setCenter(location, 10);
 		map.setSize("500px", "500px");
 		// Add some controls for the zoom level
-		map.addControl(new LargeMapControl());		
+		map.addControl(new LargeMapControl3D());		
 	}
 	
 	
