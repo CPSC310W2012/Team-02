@@ -45,6 +45,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
+import cpsc310.server.HouseDataServiceImpl;
+
 
 
 /**
@@ -80,6 +82,9 @@ public class Team_02 implements EntryPoint {
 	private RadioButton noSellingRdBtn = new RadioButton("isSelling", "No");
 	private Button loginBtn = new Button("Login");
 	private Button logoutBtn = new Button("Log out");
+	private Button uploadBtn = new Button("Upload");
+	private TextBox uploadFileTextBox = new TextBox();
+	private HorizontalPanel uploadPanel = new HorizontalPanel();
 	private HouseData selectedHouse = null;
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
@@ -93,6 +98,7 @@ public class Team_02 implements EntryPoint {
 	private int currentStartItem = 0;
 	private List<HouseData> currentHouseList = null;
 	private boolean isSearching = false;
+	//private HouseDataServiceImpl hdServ = new HouseDataServiceImpl();
 	
 	/**
 	 * This is the entry point method.
@@ -206,11 +212,16 @@ public class Team_02 implements EntryPoint {
 		lowerWrapPanel.add(controlPanel);	  	
 	  	lowerWrapPanel.add(tableWrapPanel);
 	  	
+	  	// Assemble uploadPanel
+	  	uploadPanel.add(uploadFileTextBox);
+	  	uploadPanel.add(uploadBtn);
+	  	
 		// Assemble Main Panel
 	  	mainPanel.setWidth("80%");
 		mainPanel.add(loginPanel);		
 		mainPanel.add(mapContainerPanel);	
 		mainPanel.add(lowerWrapPanel);
+		mainPanel.add(uploadPanel);
 	  	
 		// Set style
 		loginPanel.setStyleName("loginPanel");		 
@@ -237,6 +248,28 @@ public class Team_02 implements EntryPoint {
 				searchHouse();
 			}
 		});		
+		
+		// Listen for mouse events on Upload Button
+		// for testing purposes, given URL 
+		uploadBtn.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				String URL = uploadFileTextBox.getText();
+				if(URL.length()>1){
+					
+					AsyncCallback<Void> callback = new AsyncCallback<Void> () {
+						@Override
+						public void onFailure (Throwable caught) {
+							Window.alert(caught.getMessage());	
+						}
+						@Override
+						public void onSuccess (Void result) {
+						}
+					};
+					houseDataSvc.initilizeDataStorage(URL, callback);
+				}
+				else Window.alert("URL invalid");
+			}
+		});	
 		
 	}
 	
