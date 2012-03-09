@@ -2,6 +2,7 @@ package cpsc310.client;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -59,4 +60,7 @@ public interface HouseDataService extends RemoteService {
 	 * @param house
 	 */
 	public void updateHouses(String Owner, double price, boolean isSelling, HouseData house);
+	
+	//@TODO: Java doc
+	public void initilizeDataStorage(String URL);
 }

@@ -18,4 +18,5 @@ public interface HouseDataServiceAsync {
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 	public void sortHouses(AsyncCallback<Void> callback);
 	public void updateHouses(String Owner, double price, boolean isSelling, HouseData house, AsyncCallback<Void> callback);
+	public void initilizeDataStorage(String URL, AsyncCallback<Void> callback);
 }
