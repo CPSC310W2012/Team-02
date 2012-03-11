@@ -13,8 +13,11 @@ import exceptions.DownloadFailedException;
 
 public class ObserverTests {
 
+	//tests to ensure that the observer works correctly
+	
 	private DataCatalogueObserverImpl observerService;
 	private String ourURL = "http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report3.csv";
+	private String zipURL = "http://www.ugrad.cs.ubc.ca/~y0c7/property_tax_report_csv.zip";
 	private String validURL	= "http://www.archive.org/download/2011-04-vancouver-bc-opendata-site/vancouverdata.2011.04.txt";
 	private String invalidURL = "http://www.ugrad.cs.ubc.ca/~y0c7/fakefile.csv";;
 	private String malformedURL = "this_is_not_a_URL/~y0c7/property_tax_report3.csv";
@@ -30,20 +33,26 @@ public class ObserverTests {
 	
 	@Test
 	public void testCorrectURL() {
-		List<String> csvFile = observerService.downloadFile(validURL);
-		assertTrue(csvFile != null);
+		List<String> textFile = observerService.downloadFile(validURL);
+		assertNotNull(textFile);
+	}
+	
+	@Test
+	public void testCorrectZipURL() {
+		List<String> zipFile = observerService.downloadFile(zipURL);
+		assertNotNull(zipFile);
 	}
 	
 	@Test
 	public void testIncorrectURL() {
 		List<String> csvFile = observerService.downloadFile(invalidURL);
-		assertTrue(csvFile == null);
+		assertNull(csvFile);
 	}
 
 	@Test
 	public void testGetLastModifiedGoodURL() throws IOException {
 		long modifiedDate = observerService.getServerFileLastModifiedDate(ourURL);
-		assertTrue(modifiedDate == actualModifiedDate);
+		assertEquals(actualModifiedDate, modifiedDate);
 	}
 	
 	@Test (expected = IOException.class)
