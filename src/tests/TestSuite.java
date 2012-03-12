@@ -9,7 +9,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 		ObserverTests.class,
-		ParserTests.class
+		ParserTests.class,
+		IntegrationTests.class
         })
         
 public class TestSuite {

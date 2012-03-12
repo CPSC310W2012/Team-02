@@ -1,5 +1,6 @@
 package tests;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -14,9 +15,12 @@ import cpsc310.server.HouseDataPoint;
 
 public class ParserTests {
 
+	//tests to ensure that the file parser works correctly
+	
 	private FileParser fileParser;
 	private ArrayList<HouseDataPoint> houses;
-	List<String> testList;
+	private List<String> testList;
+	private HouseDataPoint house;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -38,7 +42,7 @@ public class ParserTests {
 	public void testOneEntryList() {
 		testList.add("PID,Address,Price");
 		houses = fileParser.parseData(testList);
-		assertTrue(houses.size() == 0);
+		assertEquals(0, houses.size());
 	}
 	
 	@Test //should be size of 1 since first line is used for titles of columns
@@ -61,7 +65,7 @@ public class ParserTests {
 		testList.add("1235,5679,4545,Fake Street,A1A 1A1,");
 		testList.add("1234,5679,4545,Fake Street,A1A 1A1,");
 		houses = fileParser.parseData(testList);
-		assertTrue(houses.size() == 2);
+		assertEquals(2, houses.size());
 	}
 	
 	@Test
@@ -69,6 +73,6 @@ public class ParserTests {
 		testList.add("PID,LAND_COORDINATE,TO_CIVIC_NUMBER,STREET_NAME,PROPERTY_POSTAL_CODE,CURRENT_LAND_VALUE");
 		testList.add(",5679,4545,Fake Street,A1A 1A1,");
 		houses = fileParser.parseData(testList);
-		assertTrue(houses.size() == 0);
+		assertEquals(0, houses.size());
 	}
 }

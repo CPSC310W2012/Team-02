@@ -18,10 +18,6 @@ public class HouseDataPoint {
 	// Variables to be set by house data
 	@Id
 	private String pid;
-	
-	//@Todo remove field; is useless
-	private int coordinate;
-	
 	private String address;
 	private String postalCode;
 	private double landValue;
@@ -43,7 +39,6 @@ public class HouseDataPoint {
 		// Variables to be set by house data
 		pid = houseRow.get("PID");
 		pid = pid.replaceAll("-", "");
-		coordinate = Integer.parseInt(houseRow.get("LAND_COORDINATE"));
 		String tempCivicNumber = houseRow.get("TO_CIVIC_NUMBER");
 		tempCivicNumber = tempCivicNumber.replaceAll("\\.\\d*$", "");
 		address =tempCivicNumber + " "
@@ -64,10 +59,6 @@ public class HouseDataPoint {
 	// getters
 	public String getPID() {
 		return pid;
-	}
-
-	public int getCoordinate() {
-		return coordinate;
 	}
 
 	public String getAddress() {

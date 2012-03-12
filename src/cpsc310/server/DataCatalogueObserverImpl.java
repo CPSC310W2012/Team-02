@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
 
@@ -27,6 +28,7 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 	 */
 	public List<String> downloadFile(String urlLink) {
 		InputStream fileStream = null;
+		ZipInputStream zipStream = null;
 		int timeOut = 60000; //timeout value in ms (60 seconds)
 		List<String> fileLines;
 		
@@ -38,7 +40,17 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 			fileConnection.setReadTimeout(timeOut);
 			//retrieve the input stream and store each line from the file into a list
 			fileStream = fileConnection.getInputStream();
-			fileLines = IOUtils.readLines(fileStream);
+			
+			String fileName = fileLocation.getFile();
+			
+			if(fileName.endsWith("zip")) {
+				zipStream = new ZipInputStream(fileStream);
+				zipStream.getNextEntry();
+				fileLines = IOUtils.readLines(zipStream);
+			}
+			else {
+				fileLines = IOUtils.readLines(fileStream);
+			}
 			
 			return 	fileLines;
 		} catch (IOException e) {
@@ -46,6 +58,10 @@ public class DataCatalogueObserverImpl extends RemoteServiceServlet implements D
 		}
 		finally	{
 			try	{
+				//close the zipstream since we don't need it anymore
+				if(zipStream != null) {
+					zipStream.close();
+				}
 				//close the filestream since we don't need it anymore
 				if (fileStream != null) {
 					fileStream.close();

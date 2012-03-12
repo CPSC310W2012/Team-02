@@ -128,12 +128,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// Convert HouseDataPoint into HouseData
 		for (int i = 0; (i < store.size()) && (houserItr.hasNext()); i++) {
 			check = houserItr.next();
-			if (searchCoord == true) {
-				if ((check.getCoordinate() > lowerCoord) && 
-						(check.getCoordinate() < upperCoord))
-					result.add(convertToHouseData(check));
-			}
-			
+
 			if (searchLandVal == true) {
 				if ((check.getLandValue() > lowerLandVal) && 
 							(check.getLandValue() < upperLandVal)) {
@@ -214,7 +209,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		converted.setPID(house.getPID());
 		converted.setAddress(house.getAddress());
 		converted.setPostalCode(house.getPostalCode());
-		converted.setCoordinate(house.getCoordinate());
+		//@TODO remove from house data
+		converted.setCoordinate(1234);
 		converted.setLandValue(house.getLandValue());
 		converted.setOwner(house.getOwner());
 		converted.setIsSelling(house.getIsSelling());
@@ -230,6 +226,14 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// Get Data
 		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
 		
+		// try to register
+		try{
+			ObjectifyService.register(HouseDataPoint.class);
+		}
+		catch(Exception e){
+			// already registered
+		}
+		
 		// Store in DataStore
 		Objectify ofy = ObjectifyService.begin();
 		DataBaseIndexer dbIndex;
@@ -237,26 +241,25 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		dbIndex = ofy.get(DataBaseIndexer.class,"DataBaseIndexer");
 		}
 		catch(Exception e){
-			// objectify objects
-			ObjectifyService.register(HouseDataPoint.class);
-			ObjectifyService.register(DataBaseIndexer.class);
-			List<String> rawData = observerService.downloadFile(URL);
-
-			// Parse raw data
-			FileParser parser = new FileParser();
-			Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
-			
 			dbIndex = new DataBaseIndexer();
-			ofy.put(houserItr.next());
-			while (houserItr.hasNext()) {
-				HouseDataPoint currentHouse = houserItr.next();
-				if(dbIndex.hasIndex(currentHouse.getPID()))
-				{
-					dbIndex.addToIndex(currentHouse.getPID());
-					ofy.put(currentHouse);
-				}
-			}
-			ofy.put(dbIndex);
 		}
+		// objectify objects
+		List<String> rawData = observerService.downloadFile(URL);
+		
+		// Parse raw data
+		FileParser parser = new FileParser();
+		Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
+		
+		dbIndex = new DataBaseIndexer();
+		ofy.put(houserItr.next());
+		while (houserItr.hasNext()) {
+			HouseDataPoint currentHouse = houserItr.next();
+			if(!dbIndex.hasIndex(currentHouse.getPID()))
+			{
+				dbIndex.addToIndex(currentHouse.getPID());
+				ofy.put(currentHouse);
+			}
+		}
+		ofy.put(dbIndex);
 	}
 }
