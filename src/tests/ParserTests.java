@@ -49,7 +49,6 @@ public class ParserTests {
 		assertTrue(houses.size() == 1);
 		HouseDataPoint house = houses.get(0);
 		assertTrue(house.getPID().equals("1234"));
-		assertTrue(house.getCoordinate() == 5679);
 		assertTrue(house.getAddress().equals("4545 Fake Street"));
 		assertTrue(house.getPostalCode().equals("A1A 1A1"));
 		assertTrue(house.getLandValue() == 0); //should be 0 since value is blank
