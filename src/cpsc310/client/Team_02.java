@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -16,78 +17,82 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.FlowPanel;
+
 
 
 
 /**
- * Entry point classes define onModuleLoad().
+ * Main EntryPoint class. UI is built, client-side request is handled. 
  */
-
 public class Team_02 implements EntryPoint {
-
-	private VerticalPanel mainPanel = new VerticalPanel();
-	private HorizontalPanel loginPanel = new HorizontalPanel();	
-	private HorizontalPanel mapContainerPanel = new HorizontalPanel();	
-	private TabPanel controlPanel = new TabPanel();	
-	private VerticalPanel searchPanel = new VerticalPanel();
-	private VerticalPanel editPanel = new VerticalPanel();	
-	private HorizontalPanel lowerWrapPanel = new HorizontalPanel();
-	private VerticalPanel tableWrapPanel = new VerticalPanel();	
-	private HouseTable houseTable = HouseTable.createHouseTable();
-	private CellTable<HouseData> homesCellTable;
-	private SimplePager simplePager = new SimplePager();	
-	private	FlexTable searchSettingsFlexTable = new FlexTable();
-	private TextBox lowerCoordTextBox = new TextBox();
-	private TextBox upperCoordTextBox = new TextBox();
+	private LayoutPanel mainPanel = new LayoutPanel();
+	private DockLayoutPanel submainPanel = new DockLayoutPanel(Unit.PX);
+	private SplitLayoutPanel mapContainerPanel = new SplitLayoutPanel();
+	private PropertyMap theMap;	
+	private FlowPanel sidePanel = new FlowPanel();
+	private FlowPanel sidePanelContentWrap = new FlowPanel();
+	private Button hideShowSidePanelButton = new Button("-");
+	private boolean isSidePanelHidden = false;	
+	private FlowPanel loginPanel = new FlowPanel();	
+	private Button loginBtn = new Button("Login");
+	private Button logoutBtn = new Button("Log out");	
+	private FlowPanel searchPanel = new FlowPanel();	
+	private FlowPanel searchSettingPanel = new FlowPanel();
+	private TextBox addressTextBox = new TextBox();
+	private TextBox postalCodeTextBox = new TextBox();
 	private TextBox lowerLandValTextBox = new TextBox();
 	private TextBox upperLandValTextBox = new TextBox();
-	private TextBox ownerTextBox = new TextBox();	
-	private Button searchBtn = new Button("Search");
-	private FlexTable editFlexTable = new FlexTable();
-	private Button editBtn = new Button("Edit");
-	private TextBox priceTextBox = new TextBox();
-	private Label propAddrLabel = new Label();
+	private TextBox yearBuiltTextBox = new TextBox();
+	private TextBox lowerPriceTextBox = new TextBox();
+	private TextBox upperPriceTextBox = new TextBox();	
+	private TextBox ownerTextBox = new TextBox();
 	private RadioButton yesSellingRdBtn = new RadioButton("isSelling", "Yes");
 	private RadioButton noSellingRdBtn = new RadioButton("isSelling", "No");
-	private Button loginBtn = new Button("Login");
-	private Button logoutBtn = new Button("Log out");
-	private Button uploadBtn = new Button("Upload");
-	private TextBox uploadFileTextBox = new TextBox();
+	private RadioButton unknownSellingRdBtn = new RadioButton("isSelling", "All");
+	private Button searchBtn = new Button("Search");
 	private HorizontalPanel uploadPanel = new HorizontalPanel();
-	private Set<HouseData> selectedHouse = null;
+	private Button uploadBtn = new Button("Upload");
+	private TextBox uploadFileTextBox = new TextBox();		
+	private FlowPanel tableWrapPanel = new FlowPanel();
+	private Button hideShowTablePanelButton = new Button("-");
+	private boolean isTablePanelHidden = false;		
+	private HouseTable houseTable = HouseTable.createHouseTable();
+	private SimplePager simplePager = new SimplePager();	
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
-	private PropertyMap theMap;
-	private int databaseLength = 0;
-	private int pageLength = 0;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	private LoginInfo loginInfo = null;
 	private boolean isLoginServiceAvailable = false;
 	private boolean isEditable = false;
-	private List<HouseData> currentHouseList = null;
 	private boolean isSearching = false;
-	
-	//private HouseDataServiceImpl hdServ = new HouseDataServiceImpl();
+	private int databaseLength = 0;
+	private int pageLength = 0;	
+	private Set<HouseData> selectedHouses = null;	
+	private List<HouseData> currentHouseList = null;
 	
 	/**
-	 * This is the entry point method.
+	 * Entry point method. Initializes login service.
+	 * Upon completion of asynchronous request to login service,
+	 * UI is built. 
 	 */
-	public void onModuleLoad() {		
+	public void onModuleLoad() {
 		// Check login status using login service.
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
@@ -105,13 +110,145 @@ public class Team_02 implements EntryPoint {
 		        buildUI();
 		      }
 		    });
+	
 	}
 	
-	/**
-	 * Builds the application's UI
-	 */
-	private void buildUI () {
+	
+	private void buildUI() {
+	    
+		// Add login panel
+		addLoginPanel();
 		
+		// Open a map centered on Vancouver
+		LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
+		theMap = new PropertyMap(vancouver);
+		
+		// Initialize selection model for map and table
+		initSelection();		
+				
+		// Enable edit function only if login service is available AND
+		// the user is logged in.
+		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
+			houseTable.enableEdit();
+		}
+		mainPanel.setHeight(Window.getClientHeight() + "px");
+		submainPanel.setHeight(Window.getClientHeight() + "px");
+	  	sidePanel.add(new HTML ("<div id ='header'><h1>iVan</br>Homes</br>Prices</h1></div>"));		
+		hideShowSidePanelButton.setStyleName("hideShowButton");
+		hideShowSidePanelButton.addStyleDependentName("vertical");
+	  	sidePanel.add(hideShowSidePanelButton);
+		sidePanelContentWrap.setStyleName("sidePanelContentWrap");
+		sidePanel.add(sidePanelContentWrap);
+		submainPanel.addWest(sidePanel, 230);
+		
+		tableWrapPanel.setStyleName("tableWrapPanel");
+	  	
+	  	submainPanel.addSouth(tableWrapPanel, 300);
+	  	hideShowTablePanelButton.setStyleName("hideShowButton");
+	  	hideShowTablePanelButton.addStyleDependentName("horizontal");
+	  	tableWrapPanel.add(hideShowTablePanelButton);
+	  	tableWrapPanel.add(houseTable.getHouseTable());
+	  	tableWrapPanel.add(simplePager);
+	  	
+		// Create Cell Table & attach pager to table
+		simplePager.setDisplay(houseTable.getHouseTable());
+		simplePager.setStylePrimaryName("pager");		
+		
+		// Assemble map panel
+		mapContainerPanel.addWest(theMap.getStreetViewMap(), 500);
+		mapContainerPanel.add(theMap.getMap());
+		mapContainerPanel.setStyleName("mapContainerPanel");
+		submainPanel.add(mapContainerPanel);		
+		
+	  	
+		
+	  	sidePanelContentWrap.add(loginPanel);
+	  	sidePanelContentWrap.add(new HTML("<br />"));
+	  	// Assemble search panel
+	 	addSearchPanel();
+	 	sidePanelContentWrap.add(new HTML("<br />"));
+	  	sidePanelContentWrap.add(uploadPanel);
+	  	sidePanelContentWrap.add(new HTML("<br />"));
+	  	sidePanel.add(new HTML ("<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
+	  	mainPanel.add(submainPanel);
+	  	mainPanel.setWidgetLeftWidth(submainPanel, 0, Unit.PCT, 100, Unit.PCT);
+	  	
+	  	// Set style
+	  	loginPanel.setStyleName("loginPanel");
+	  	
+	  	// Assemble uploadPanel
+	  	uploadPanel.add(uploadFileTextBox);
+	  	uploadPanel.add(uploadBtn);
+	  	
+		// Listen for mouse events on Upload Button
+		// for testing purposes, given URL 
+		uploadBtn.addClickHandler(new ClickHandler() {
+			public void onClick (ClickEvent event) {
+				String URL = uploadFileTextBox.getText();
+				if(URL.length()>1){
+					
+					AsyncCallback<Void> callback = new AsyncCallback<Void> () {
+						@Override
+						public void onFailure (Throwable caught) {
+							Window.alert(caught.getMessage());	
+						}
+						@Override
+						public void onSuccess (Void result) {
+						}
+					};
+					houseDataSvc.initilizeDataStorage(URL, callback);
+				}
+				else Window.alert("URL invalid");
+			}
+		});
+		
+		
+		hideShowSidePanelButton.addClickHandler(new ClickHandler () {
+			public void onClick (ClickEvent event) {
+				if (!isSidePanelHidden) {
+					isSidePanelHidden = true;
+					hideShowSidePanelButton.setText("+");
+					submainPanel.setWidgetSize(sidePanel, 20);
+					submainPanel.animate(300);	  
+				}
+				else {
+					isSidePanelHidden = false;
+					hideShowSidePanelButton.setText("-");
+					submainPanel.setWidgetSize(sidePanel, 230);
+					submainPanel.animate(300);
+				}
+			}
+		});
+	  	
+		hideShowTablePanelButton.addClickHandler(new ClickHandler () {
+			public void onClick (ClickEvent event) {
+				if (!isTablePanelHidden) {
+					isTablePanelHidden = true;
+					hideShowTablePanelButton.setText("+");
+					submainPanel.setWidgetSize(tableWrapPanel, 20);
+					submainPanel.animate(300);	  
+				}
+				else {
+					isTablePanelHidden = false;
+					hideShowTablePanelButton.setText("-");
+					submainPanel.setWidgetSize(tableWrapPanel, 300);
+					submainPanel.animate(300);
+				}
+			}
+		});
+	  	
+	  	// Associate Main panel with the HTML host page		
+	 	RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+	 	rootLayoutPanel.add(mainPanel);
+		
+	}
+	
+	
+	/**
+	 * Helper to buildUI(). Assembles login panel which holds login/logout buttons.
+	 * TODO: add user info
+	 */
+	private void addLoginPanel() {
 		// Enable login/logout only if the login service is available.
 		if (isLoginServiceAvailable == true) {
 			// Set Login Panel
@@ -142,127 +279,68 @@ public class Team_02 implements EntryPoint {
 					Window.Location.assign(loginInfo.getLogoutUrl());
 				}
 			});
-		}
+		}		
+	}
+	
+	/**
+	 * Helper to buildUI(). Build search panel.
+	 */
+	private void addSearchPanel() {
 		
-		// Open a map centered on Vancouver
-		LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-		theMap = new PropertyMap(vancouver);
-
-		// Assemble map panel
-		mapContainerPanel.add(theMap.getStreetViewMap());
-		mapContainerPanel.add(theMap.getMap());
-		 
 		
-		// Initialize selection model for map and table
-		initSelection();		
-				
-		// Create Cell Table
-		homesCellTable = houseTable.getHouseTable();
-		simplePager.setDisplay(homesCellTable);
-		simplePager.setStylePrimaryName("pager");	
-								
-		// Create Search Criteria table.
-		searchSettingsFlexTable.setText(0, 0,"Coordinates");
-		searchSettingsFlexTable.setWidget(0, 1, lowerCoordTextBox);
-		searchSettingsFlexTable.setText(0, 2, "-");	
-		searchSettingsFlexTable.setWidget(0, 3, upperCoordTextBox);
-		searchSettingsFlexTable.setText(1, 0, "Land Value");
-		searchSettingsFlexTable.setWidget(1, 1, lowerLandValTextBox);
-		searchSettingsFlexTable.setText(1, 2,"-");
-		searchSettingsFlexTable.setWidget(1, 3, upperLandValTextBox);
-		searchSettingsFlexTable.setText(2, 0, "Realtor");
-		searchSettingsFlexTable.setWidget(2, 1, ownerTextBox);
-		
-		// Format Search Criteria table
-		searchSettingsFlexTable.getFlexCellFormatter().setColSpan(2, 1, 3);
-		searchSettingsFlexTable.setCellSpacing(10);
-		
-		// Assemble Search panel
-		searchPanel.add(searchSettingsFlexTable);
-		searchPanel.add(searchBtn);
-		searchPanel.setCellVerticalAlignment(searchBtn, HasVerticalAlignment.ALIGN_MIDDLE);
-		searchPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		// Assemble Control Tab panel
-		controlPanel.add(searchPanel, "Search", false);
-		controlPanel.selectTab(0);
-		controlPanel.setAnimationEnabled(true);
-		controlPanel.setHeight("300px");
-		controlPanel.setWidth("330px");
-
-	  	// Assemble tableWrapPanel
-	  	tableWrapPanel.add(homesCellTable);
-	  	tableWrapPanel.add(simplePager);
-	  	tableWrapPanel.setCellHorizontalAlignment(simplePager, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		// Assemble lowerWrapPanel
-		lowerWrapPanel.add(controlPanel);	  	
-	  	lowerWrapPanel.add(tableWrapPanel);
+		searchPanel.setStyleName("searchPanel");
+	  	searchSettingPanel.setStyleName("searchSettingPanel");
 	  	
-	  	// Assemble uploadPanel
-	  	uploadPanel.add(uploadFileTextBox);
-	  	uploadPanel.add(uploadBtn);
+	  	searchSettingPanel.add(new HTML("<div class='border'></div>"));
+	  	searchSettingPanel.add(new Label("Address"));	  	
+	  	searchSettingPanel.add(addressTextBox);
+	  	addressTextBox.addStyleDependentName("longer");
+	  	searchSettingPanel.add(new Label("Postal Code"));
+	  	searchSettingPanel.add(postalCodeTextBox);
+	  	searchSettingPanel.add(new Label("Land Value"));
+	  	searchSettingPanel.add(lowerLandValTextBox);
+	  	lowerLandValTextBox.setText("min");
+	  	lowerLandValTextBox.addStyleDependentName("before");
+	  	lowerLandValTextBox.addClickHandler(new ClickHandler() {
+	  		public void onClick (ClickEvent event) {
+	  			lowerLandValTextBox.setText("");
+	  			lowerLandValTextBox.removeStyleDependentName("before");
+	  		}
+	  	});
+	  	searchSettingPanel.add(upperLandValTextBox);
+	  	searchSettingPanel.add(new Label("Year Built"));
+	  	searchSettingPanel.add(yearBuiltTextBox);
+	  	searchSettingPanel.add(new Label("Price"));
+	  	searchSettingPanel.add(lowerPriceTextBox);
+	  	searchSettingPanel.add(upperPriceTextBox);
+	  	searchSettingPanel.add(new Label("Realtor"));
+	  	searchSettingPanel.add(ownerTextBox);
+	  	searchSettingPanel.add(new Label("For Sale"));
+	  	searchSettingPanel.add(yesSellingRdBtn);
+	  	searchSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
+	  	searchSettingPanel.add(noSellingRdBtn);
+	  	searchSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
+	  	searchSettingPanel.add(unknownSellingRdBtn);
+	  	unknownSellingRdBtn.setValue(true);
 	  	
-		// Assemble Main Panel
-	  	mainPanel.setWidth("80%");
-		mainPanel.add(loginPanel);		
-		mainPanel.add(mapContainerPanel);	
-		mainPanel.add(lowerWrapPanel);
-		mainPanel.add(uploadPanel);
-	  	
-		// Set style
-		loginPanel.setStyleName("loginPanel");		 
-		mainPanel.setStylePrimaryName("mainPanel");
-		mapContainerPanel.setStyleName("mapContainerPanel");
-		lowerWrapPanel.setStyleName("lowerWrapPanel");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
-		searchSettingsFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
-		
-		// Enable edit function only if login service is available AND
-		// the user is logged in.
-		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
-			allowEdit();
-		}
-		
-		// Associate Main panel with the HTML host page
-		RootPanel.get("appPanel").add(mainPanel);
-		
+	  	searchPanel.add(searchSettingPanel);
+	  	searchPanel.add(new HTML("<br />"));
+	  	searchPanel.add(searchBtn);
+	  	sidePanelContentWrap.add(searchPanel);
 		
 		// Listen for mouse events on Search Button
 		searchBtn.addClickHandler(new ClickHandler() {
 			public void onClick (ClickEvent event) {
 				searchHouse();
 			}
-		});		
-		
-		// Listen for mouse events on Upload Button
-		// for testing purposes, given URL 
-		uploadBtn.addClickHandler(new ClickHandler() {
-			public void onClick (ClickEvent event) {
-				String URL = uploadFileTextBox.getText();
-				if(URL.length()>1){
-					
-					AsyncCallback<Void> callback = new AsyncCallback<Void> () {
-						@Override
-						public void onFailure (Throwable caught) {
-							Window.alert(caught.getMessage());	
-						}
-						@Override
-						public void onSuccess (Void result) {
-						}
-					};
-					houseDataSvc.initilizeDataStorage(URL, callback);
-				}
-				else Window.alert("URL invalid");
-			}
-		});	
-		
+		});
 	}
 	
+	
 	/**
-	 * Creates selection column which selects/de-selects a HouseDataPoint 
-	 * upon clicking the check box.
+	 * Create MultiSelectionModel and attach to map and table.
+	 * Attachment of selection model enables display of selected houses in map, and
+	 * editing of houses in table.
 	 */
 	private void initSelection() {
 		
@@ -270,80 +348,38 @@ public class Team_02 implements EntryPoint {
 		final MultiSelectionModel<HouseData> selectionModel = 
 				new MultiSelectionModel<HouseData> (HouseData.KEY_PROVIDER);
 		
-		// Handle selection event. Upon selection the address label in the edit panel 
-		// is updated with the selected house address.
+		// Handle selection event. Upon selection selected houses get displayed on map.
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				selectedHouse = selectionModel.getSelectedSet();
-				if (selectedHouse == null) {
+				selectedHouses = selectionModel.getSelectedSet();
+				if (selectedHouses.isEmpty()) {
 					if (isEditable == true) {
-						propAddrLabel.setText(null);
+						
 					}
 					theMap.clearMap();	
 					return;
 				}
 				if (isEditable == true) {
-					//propAddrLabel.setText(selected.getAddress());
+					
 				}
 				// clear map before proceeding to add new point
-				// TODO: implement adding multiple points on map if multiple houses are selected
 				theMap.clearMap();
 				// add marker onto map
-				for (HouseData house : selectedHouse)
+				for (HouseData house : selectedHouses)
 					theMap.findLocation(house.getAddress() + " VANCOUVER");
 			}
 		});
 		
-		// Attach selection model to table.
+		// Attach selection model to table to enable synchronous selection between map and table.
 		houseTable.enableSelection(selectionModel);
 	}
-
 	
-	/**
-	 * Enables Edit function in the app. Called upon user login.
-	 * To enable edit, initializes selection in the CellTable.
-	 * Then creates Edit criteria tab and adds to the main controlTab.
-	 */
-	private void allowEdit() {
-				
-		// Create Edit Criteria table.
-		editFlexTable.setText(0, 0, "Property Address");
-		editFlexTable.setWidget(0, 1, propAddrLabel);
-		editFlexTable.setText(1, 0, "Price");
-		editFlexTable.setWidget(1, 1, priceTextBox);
-		editFlexTable.setText(2, 0, "For Sale");
-		editFlexTable.setWidget(2, 1, yesSellingRdBtn);		
-		editFlexTable.setWidget(2, 2, noSellingRdBtn);		
-		noSellingRdBtn.setValue(true);
-		
-		// Format Edit Criteria Table
-		editFlexTable.getFlexCellFormatter().setColSpan(0, 1, 2);
-		editFlexTable.getFlexCellFormatter().setColSpan(1, 1, 2);
-		editFlexTable.setCellSpacing(15);
-		editFlexTable.getCellFormatter().setStyleName(0, 0, "searchText");
-		editFlexTable.getCellFormatter().setStyleName(1, 0, "searchText");
-		editFlexTable.getCellFormatter().setStyleName(2, 0, "searchText");
-		
-		// Assemble Edit panel
-		editPanel.add(editFlexTable);
-		editPanel.add(editBtn);
-		editPanel.setCellVerticalAlignment(editBtn, HasVerticalAlignment.ALIGN_MIDDLE);
-		editPanel.setCellHorizontalAlignment(editBtn, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		// Add Edit tab to the controlPanel
-		controlPanel.add(editPanel, "Edit", false);
-		
-		// Listen for mouse events on Edit
-		editBtn.addClickHandler(new ClickHandler() {
-			public void onClick (ClickEvent event) {
-				//editHouse();
-			}
-		});
-	}	
 	
 	/**
 	 * Gets user input from search tab and passes to server-side search
+	 * TODO: refactor into input validation, criteria assembly, and asynch search request
+	 * TODO: add additional search criteria to reflect everything on searchsettingspanel
 	 */
 	private void searchHouse() {
 		boolean isCoordRangeValid = true;
@@ -353,8 +389,8 @@ public class Team_02 implements EntryPoint {
 		int lowerCoord = -1;
 		int upperCoord = -1;
 		String owner = null;
-		final String lowerCoordInput = lowerCoordTextBox.getText().trim();
-		final String upperCoordInput = upperCoordTextBox.getText().trim();
+		final String lowerCoordInput = lowerPriceTextBox.getText().trim();
+		final String upperCoordInput = upperPriceTextBox.getText().trim();
 		final String lowerLandValInput = lowerLandValTextBox.getText().trim();
 		final String upperLandValInput = upperLandValTextBox.getText().trim();
 		final String ownerInput = ownerTextBox.getText().trim().toUpperCase();
@@ -455,7 +491,6 @@ public class Team_02 implements EntryPoint {
 		if (!ownerInput.isEmpty())
 			owner = ownerInput;		
 		
-		// TODO Server-side search
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -480,78 +515,9 @@ public class Team_02 implements EntryPoint {
 				}
 			}
 		};
-		
 		// Make the call to the house data service to search for data in the server
 			houseDataSvc.getSearchedHouses(lowerCoord, upperCoord, 
 					lowerLandVal, upperLandVal, owner, callback);
 	}
-
-	/**
-	 * This is for Sprint 2
-	 * Edit handler.
-	 * Gets user input in the edit tab, checks for valid input,
-	 * then passes on to the server-side edit
-	 */
-	/*
-	private void editHouse() {
-		final String priceInput = priceTextBox.getText().trim();
-		final boolean isSellingInput = yesSellingRdBtn.getValue();
-		final HouseData house = selectedHouse;  
-		
-		// Check for selection
-		if (house == null) {
-			Window.alert("Please select a house to edit");
-			return;
-		}
-		
-		// Price input must be numerical
-		if (!priceInput.matches("^[0-9]+$")) {
-			Window.alert("Only non-decimal numeric value is allowed for price.");
-			priceTextBox.selectAll();
-			return;
-		}
-		
-		// Assemble edit request
-		double price = Double.parseDouble(priceInput);
-		boolean isSelling;
-		if (isSellingInput == true) 
-			isSelling = true;
-		else
-			isSelling = false;
-		
-		// TODO For Sprint 2. Connect to user service to get owner
-		String owner = "JOHN DOE";
-		
-		// TODO For Sprint 2. Server-side edit.
-		// Initialize the service proxy
-		if (houseDataSvc == null) {
-			houseDataSvc = GWT.create(HouseDataService.class);
-		}
-		
-		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-			public void onSuccess(Void result) {
-				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
-					@Override
-					public void onFailure (Throwable caught) {
-						Window.alert(caught.getMessage());
-					}
-					@Override
-					public void onSuccess (List<HouseData> result) {
-						dataProvider.updateRowData(currentStartItem, result);
-						
-					}
-				};
-				houseDataSvc.getHouses(0, pageLength, callback);
-			}
-		};
-		
-		// make the call to the house data service
-		houseDataSvc.updateHouses(owner, price, isSelling, house, callback);
-	}
-	*/
 	
 }

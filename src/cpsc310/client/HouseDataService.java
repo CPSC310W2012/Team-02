@@ -1,6 +1,7 @@
 package cpsc310.client;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -52,14 +53,16 @@ public interface HouseDataService extends RemoteService {
 	public void sortHouses();
 	
 	/**
-	 * For Sprint 2. Add/update user specified information about the specified data
+	 * Add/update user specified information about the specified data
 	 * in the database.
-	 * @param Owner
-	 * @param price
-	 * @param isSelling
-	 * @param house
+	 * @param Owner - name of realtor
+	 * @param price - price of house
+	 * @param isSelling - for-sale indicator
+	 * @param houses - set of houses to update
+	 * @param switchValue - 0 for updating owner; 1 for updating price; 2 for updating isSelling
 	 */
-	public void updateHouses(String Owner, double price, boolean isSelling, HouseData house);
+	public void updateHouses(String Owner, double price, boolean isSelling, Set<HouseData> houses,
+			int switchValue);
 	
 	//@TODO: Java doc
 	public void initilizeDataStorage(String URL);

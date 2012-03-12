@@ -3,6 +3,7 @@ package cpsc310.server;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dev.util.collect.HashMap;
@@ -178,26 +179,39 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * For Sprint 2. Add/update user specified information about the specified
-	 * data in the database.
-	 * 
-	 * @param Owner
-	 * @param price
-	 * @param isSelling
-	 * @param house
+	 * Add/update user specified information about the specified data
+	 * in the database.
+	 * @param Owner - name of realtor
+	 * @param price - price of house
+	 * @param isSelling - for-sale indicator
+	 * @param houses - set of houses to update
+	 * @param switchValue - 0 for updating owner; 1 for updating price; 2 for updating isSelling
 	 */
 	@Override
 	public void updateHouses(String Owner, double price, boolean isSelling,
-			HouseData house) {
+			Set<HouseData> houses, int switchValue) {
+		
 		// TODO Update HousePointData data in database
-		Iterator<HouseDataPoint> houserItr = store.iterator();
-		HouseDataPoint next = null;
-		for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
-			next = houserItr.next();
-			if (house.getPID().equals(next.getPID())) {
-				next.setIsSelling(isSelling);
-				next.setOwner(Owner);
-				next.setPrice(price);
+		for (HouseData house : houses) {
+			Iterator<HouseDataPoint> houserItr = store.iterator();
+			HouseDataPoint next = null;
+			for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
+				next = houserItr.next();
+				if (house.getPID().equals(next.getPID())) {
+					switch (switchValue) {
+					case 0:
+						next.setOwner(Owner);
+						break;
+					case 1:
+						next.setPrice(price);
+						break;
+					case 2:
+						next.setIsSelling(isSelling);
+						break;
+					default:
+						break;
+					}
+				}
 			}
 		}
 	}

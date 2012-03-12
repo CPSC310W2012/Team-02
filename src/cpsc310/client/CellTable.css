@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 .cellTableWidget {
+	width:100%;
 }
 
 .cellTableFirstColumnHeader {
@@ -26,7 +27,6 @@
 }
 .cellTableCell {
 	color: #555;
-	width: 90px !important;
 	height: 20px;
 	padding: 5px 6px;
 	font-size:11px;
@@ -34,6 +34,8 @@
 	white-space: nowrap;
 	border: none;
 	font-family: Helvetica, Arial, sans-serif;
+	cursor: pointer;
+  	cursor: hand;
 }
 .cellTableSortableHeader {
 	text-decoration:none;
@@ -48,7 +50,7 @@
 	background-color: #EDEDED;
 }
 .cellTableHoveredRow {
-	background: transparent;
+	background: #B7EBED;
 }
 .cellTableHoveredRowCell {
 	background: transparent;

@@ -3,10 +3,15 @@ package cpsc310.client;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -18,13 +23,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionModel;
 
+
 /**
- * 
- * All the table drawing methods in Team_02.java will be refactored 
- * into this class for a clean up.
- *
+ * Singleton class which encapsulates the CellTable on main UI.
  */
 public class HouseTable {
 	
@@ -33,18 +37,31 @@ public class HouseTable {
 	private CellTable.Resources resource = GWT.create(CellTableResources.class);	
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
-	private SelectionModel<HouseData> selectionModel;
+	private MultiSelectionModel<HouseData> selectionModel;
 	private int currentStartItem = 0;
 	private int pageLength = 0;
 	private int databaseLength = 0;
 	private List<HouseData> currentHouseList = null;
-	private boolean isSearching = false;	
+	private boolean isSearching = false;
+	private Column<HouseData, String> ownerColumn;
+	private Column<HouseData, String> priceColumn;
+	private Column<HouseData, String> isSellingColumn;
+	private SelectionCell editSellingCell;
+	private List<String> category = new ArrayList<String>(2); 
 
 	
+	/**
+	 * Singleton constructor. Create one CellTable which contains HouseData. 
+	 */
 	private HouseTable() {
 		homesCellTable = createCellTable();
 	}
 	
+	/**
+	 * Create only one instance for HouseTable
+	 * 
+	 * @return singleton HouseTable instance
+	 */
 	public static HouseTable createHouseTable() {
 		if (houseTable == null) {
 			houseTable = new HouseTable();
@@ -53,64 +70,55 @@ public class HouseTable {
 	}
 	
 	/**
-	 * Creates homesCellTable.
-	 * Creates cell columns, adds those columns to the table,
-	 * populates the table using dataProvider, creates sort handler,
-	 * sets sort comparators, then sets the column width of the table. 
-	 * Note: sorting and populating will be replaced by server-side methods in Sprint 2.
+	 * Build CellTable<HouseData>, assemble sorting, and populate table with HouseData
+	 * fetched from server.
+	 * 
+	 * @return populated CellTable<HouseData> with sorting ability
 	 */
 	private CellTable<HouseData> createCellTable() {
-		homesCellTable = new CellTable<HouseData>(15, resource, HouseData.KEY_PROVIDER);	  	
-
-		addColumns(homesCellTable);
-		createSort(homesCellTable);
-		populateTable(homesCellTable);
+		homesCellTable = new CellTable<HouseData>(9, resource, HouseData.KEY_PROVIDER);	  	
+		addColumns();
+		createSort();
+		populateTable();
 		return homesCellTable;
 	}
 	
-	private void addColumns(CellTable<HouseData> cellTable) {
+	/**
+	 * Helper to createCellTable(). Adds columns to the table.
+	 */
+	private void addColumns() {
 		
-		// Create cell columns
-	  	TextColumn<HouseData> pidColumn = 
-	  			new TextColumn<HouseData>() {
+		// PID column
+	  	TextColumn<HouseData> pidColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			return house.getPID();
 	  		}
 	  	};
-	  	cellTable.addColumn(pidColumn, "PID");
+	  	homesCellTable.addColumn(pidColumn, "PID");
 	  	pidColumn.setSortable(true);
 	  	
-	  	TextColumn<HouseData> addrColumn = 
-	  			new TextColumn<HouseData>() {
+	  	// Address column
+	  	TextColumn<HouseData> addrColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			return house.getAddress();
 	  		}
 	  	};
-	  	cellTable.addColumn(addrColumn, "Address");		
+	  	homesCellTable.addColumn(addrColumn, "Address");		
 	  	addrColumn.setSortable(true);
 	  	
-	  	TextColumn<HouseData> postalColumn = 
-	  			new TextColumn<HouseData>() {
+	  	// Postal code column
+	  	TextColumn<HouseData> postalColumn = new TextColumn<HouseData>() {
 			@Override
 			public String getValue(HouseData house) {
 				return house.getPostalCode();
 			}
 		};
-		cellTable.addColumn(postalColumn, "Postal Code");		
+		homesCellTable.addColumn(postalColumn, "Postal Code");		
 	  	postalColumn.setSortable(true);
-	  	
-	  	Column<HouseData, Number> coordColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getCoordinate();
-	  		}
-	  	};
-	  	cellTable.addColumn(coordColumn, "Land Coordinate");
-	  	coordColumn.setSortable(true);
-	  	
+	  		  	
+	  	// Land Value column
 	  	Column<HouseData, Number> landValColumn = 
 	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
@@ -118,31 +126,36 @@ public class HouseTable {
 	  			return house.getLandValue();
 	  		}
 	  	};
-	  	cellTable.addColumn(landValColumn, "Current Value");				
-	  	landValColumn.setSortable(true);	  	
+	  	homesCellTable.addColumn(landValColumn, "Current Value");				
+	  	landValColumn.setSortable(true);  	
 	  	
-	  	TextColumn<HouseData> ownerColumn = 
-	  			new TextColumn<HouseData>() {
+	  	
+	  	/* User specified column begins.
+	  	 * User specified columns are class variables because enableEdit() needs to
+	  	 * replace following columns with editable cells.
+	  	 */
+	  	// Realtor column 
+	  	ownerColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			return house.getOwner();
 	  		}
 	  	};
-	  	cellTable.addColumn(ownerColumn, "Realtor");
+	  	homesCellTable.addColumn(ownerColumn, "Realtor");
 	  	ownerColumn.setSortable(true);
 	  	
-	  	Column<HouseData, Number> priceColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
+	  	// Price column
+	  	priceColumn = new TextColumn<HouseData>() {
 	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getPrice();
+	  		public String getValue(HouseData house) {
+	  			return Double.toString(house.getPrice());
 	  		}
 	  	};
-	  	cellTable.addColumn(priceColumn, "Price");
+	  	homesCellTable.addColumn(priceColumn, "Price");
 	  	priceColumn.setSortable(true);	  		  
 	  	
-	  	TextColumn<HouseData> isSellingColumn = 
-	  			new TextColumn<HouseData>() {
+	  	// For Sale column
+	  	isSellingColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			if (house.getIsSelling())
@@ -150,28 +163,15 @@ public class HouseTable {
 	  			return "";
 	  		}
 	  	};
-	  	cellTable.addColumn(isSellingColumn, "Sale");
+	  	homesCellTable.addColumn(isSellingColumn, "Sale");
 	  	isSellingColumn.setSortable(true);
-	  	
-	  	// Create checkBox column		
- 		final Column<HouseData, Boolean> selectRowColumn = 
- 				new Column<HouseData, Boolean>(new CheckboxCell(true, false)) {
- 			@Override
- 			public Boolean getValue(HouseData house) {
- 				return selectionModel.isSelected(house);
- 			}
- 		};
- 		
- 		// Add checkBox column to the table
- 		homesCellTable.setColumnWidth(selectRowColumn, 10.0, Unit.PX);
- 		homesCellTable.addColumn(selectRowColumn, "Select");	  	
-	  	
-	  	// Set Column width of longer columns.
- 		cellTable.setColumnWidth(addrColumn, 120.0, Unit.PX);
- 		cellTable.setColumnWidth(ownerColumn,100.0, Unit.PX);	  	
+	  	  	
 	}
-		
-	private void populateTable(final CellTable<HouseData> cellTable) {
+	
+	/**
+	 * Helper to createTable(). Populate table with data fetched by rpc call to the server.
+	 */
+	private void populateTable() {
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -201,7 +201,7 @@ public class HouseTable {
 				
 				if (isSearching) {
 					int end = currentHouseList.size();
-					cellTable.setRowData(currentStartItem, currentHouseList.subList(currentStartItem, end));
+					homesCellTable.setRowData(currentStartItem, currentHouseList.subList(currentStartItem, end));
 					return;
 				}
 				
@@ -221,15 +221,19 @@ public class HouseTable {
 		dataProvider.addDataDisplay(homesCellTable);		
 		
 	}
-	
-	private void createSort(final CellTable<HouseData> cellTable) {
+		
+	/**
+	 * Helper to createTable(). Creates ColumnSortEvent.Handler for homesCellTable,
+	 * attaches comparators to enable sorting, and attaches the hander to the table.
+	 */
+	private void createSort() {
 		// Create sort handler, associate sort handler to the table		
-		cellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
+		homesCellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
 			public void onColumnSort(ColumnSortEvent event) {
 				@SuppressWarnings("unchecked")
 				Column<HouseData,?> sortedColumn = (Column<HouseData, ?>) event.getColumn();
-				int sortedIndex = cellTable.getColumnIndex(sortedColumn);
-				List<HouseData> newData = new ArrayList<HouseData>(cellTable.getVisibleItems());
+				int sortedIndex = homesCellTable.getColumnIndex(sortedColumn);
+				List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
 				
 				Comparator<HouseData> c = HouseData.HousePidComparator;
 				switch(sortedIndex) {
@@ -243,18 +247,15 @@ public class HouseTable {
 					c = HouseData.HousePostalCodeComparator;
 					break;
 				case 3:
-					c = HouseData.HouseCoordinateComparator;
-					break;
-				case 4:
 					c = HouseData.HouseLandValueComparator;
 					break;
-				case 5:
+				case 4:
 					c = HouseData.HouseOwnerComparator;
 					break;
-				case 6:
+				case 5:
 					c = HouseData.HousePriceComparator;
 					break;
-				case 7:
+				case 6:
 					c = HouseData.HouseIsSellingComparator;
 					break;
 				default:
@@ -266,7 +267,7 @@ public class HouseTable {
 				else {
 					Collections.sort(newData, Collections.reverseOrder(c));
 				}
-				cellTable.setRowData(cellTable.getPageStart(), newData);
+				homesCellTable.setRowData(homesCellTable.getPageStart(), newData);
 			}
 		});
 			
@@ -276,25 +277,124 @@ public class HouseTable {
 		*/		
 	}
 	
+	// Getter begins
+	/**
+	 * Getter for CellTable.
+	 * @return CellTable<HouseData>
+	 */
 	public CellTable<HouseData> getHouseTable() {
 		return this.homesCellTable;
 	}
 	
+	/**
+	 * Getter for page length
+	 * @return length of a cell table page
+	 */
 	public int getPageLength() {
 		return this.pageLength;
 	}
 	
+	/**
+	 * Getter for start item
+	 * @return index of current start item in the table
+	 */
 	public int getCurrentStartItem() {
 		return this.currentStartItem;
 	}
 	
-	public void enableSelection (SelectionModel<HouseData> model) {
+	/**
+	 * Attach selection model to homesCellTable
+	 * @param model MultiSelectionModel
+	 */
+	public void enableSelection (MultiSelectionModel<HouseData> model) {
 		// Associate the selection model with the table
-		homesCellTable.setSelectionModel(model, 
-				DefaultSelectionEventManager.<HouseData> createCheckboxManager());
+		homesCellTable.setSelectionModel(model);
 		selectionModel = model;
 	}
 	
+	/**
+	 * Enable edit by replacing current User Specified columns
+	 * with editable cells and category cells.
+	 */
+	public void enableEdit() {
+		selectionModel.getSelectedSet();
+		
+		this.homesCellTable.removeColumn(ownerColumn);
+		final EditTextCell editOwnerCell = new EditTextCell();
+		ownerColumn = 
+	  			new Column<HouseData, String>(editOwnerCell) {
+	  		@Override
+	  		public String getValue(HouseData house) {
+	  			return house.getOwner();
+	  		}
+	  	};
+	  	ownerColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
+	  		 public void update(int index, HouseData house, String owner) {
+	  			 int switchValue = 0;
+	  			 if (validateInput(owner, switchValue) == 0) {
+	  				editOwnerCell.clearViewData(HouseData.KEY_PROVIDER.getKey(house));
+	  				homesCellTable.redraw();
+	  				Window.alert("Only alphabet characters are allowed for realtor name");
+	  				return;
+	  			 }
+	  			 editHouse(owner, "", "", helpMultiEdit(house), switchValue);
+	  		 }
+	  	});
+	  	this.homesCellTable.addColumn(ownerColumn, "Realtor");
+	  	ownerColumn.setSortable(true);
+	  	
+	  	this.homesCellTable.removeColumn(priceColumn);
+	  	final EditTextCell editPriceCell = new EditTextCell();
+	  	priceColumn = 
+	  			new Column<HouseData, String>(editPriceCell) {
+	  		@Override
+	  		public String getValue(HouseData house) {
+	  			return Double.toString(house.getPrice());
+	  		}
+	  	};
+	  	priceColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
+	  		 public void update(int index, HouseData house, String price) {
+	  			 int switchValue = 1;
+	  			 if (validateInput(price, switchValue) == 0) {
+	  				editPriceCell.clearViewData(HouseData.KEY_PROVIDER.getKey(house));
+	  				homesCellTable.redraw();
+	  				Window.alert("Only non-decimal numeric value is allowed for price.");
+	  				return;
+	  			 }
+	  			 editHouse("", price, "", helpMultiEdit(house), switchValue);
+	  		 }
+	  	});
+	  	this.homesCellTable.addColumn(priceColumn, "Price");
+	  	priceColumn.setSortable(true);	  		  
+	  	
+	  	this.homesCellTable.removeColumn(isSellingColumn);
+	  	category.add("Yes");
+	  	category.add("No");
+	  	editSellingCell = new SelectionCell(category);
+	  	isSellingColumn = new Column<HouseData, String> (editSellingCell) {
+	  		@Override
+	  		public String getValue(HouseData house) {
+	  			if (house.getIsSelling())
+	  				return category.get(0);
+	  			return category.get(1);
+	  		}
+	  	};
+	  	isSellingColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
+	  		 public void update(int index, HouseData house, String isSelling) {
+	  			 int switchValue = 2;
+	  			 editHouse("", "", isSelling, helpMultiEdit(house), switchValue);
+	  		 }
+	  	});
+	  	this.homesCellTable.addColumn(isSellingColumn, "For Sale");
+	}
+	
+	/**
+	 * Update table. If updateWhole is true, just repopulate the table with the initial data
+	 * @param houses - list of houses to populate the table
+	 * @param size - number of houses in the list
+	 * @param start - index of the start item in the table
+	 * @param updateWhole - true if resetting the table to the initial view
+	 */
 	public void updateTable(List<HouseData> houses, int size, int start, boolean updateWhole) {
 		if (updateWhole) {
 			dataProvider.updateRowCount(databaseLength, true);
@@ -305,9 +405,126 @@ public class HouseTable {
 		dataProvider.updateRowData(start, houses);
 	}
 	
+	/**
+	 * Notify homesCellTable in HouseTable that search is in effect.
+	 * If search is in effect, the cell table will display locally stored
+	 * search results in currentHouseList.
+	 * @param isSearching - true if search is in effect
+	 * @param searchResults - results of search to display in table
+	 */
 	public void setSearch(boolean isSearching, List<HouseData> searchResults) {
 		this.isSearching = isSearching;
 		this.currentHouseList = searchResults;
 	}
 	
+	/**
+	 * Expand the page size of the table.
+	 * @param pageSize - size of the page to which the table will expand
+	 */
+	public void expandElement(int pageSize) {
+		this.homesCellTable.setPageSize(pageSize);
+	}
+	
+	/**
+	 * Helper to Edit function to enable multiedit.
+	 * @param house - house object in which the edit is currently invoked 
+	 * @return set of house data specified by selection to edit 
+	 */
+	private Set<HouseData> helpMultiEdit(HouseData house) {
+		Set<HouseData> set;
+		if (selectionModel.getSelectedSet().size() > 1) {
+			set = selectionModel.getSelectedSet();
+		}
+		else {
+			set = new HashSet<HouseData>(1);
+			set.add(house);
+		}
+		return set;
+	}
+	
+	/**
+	 * Validate edit input
+	 * @param input - user input into edit cell
+	 * @param switchValue - 0 for ownerInput, 1 for priceInput
+	 * @return int value 1 if input is valid; 0 if input is invalid; 
+	 * -1 if input does not fall into neither cases.
+	 */
+	private int validateInput (String input, int switchValue) {
+		int check = -1;
+		switch (switchValue) {
+		case 0:
+			if (!input.matches("[A-Za-z\\s]*")) {
+				check = 0;
+			}
+			else {
+				check = 1;
+			}
+			return check;
+		case 1:
+			// Price input must be numerical
+			if (!input.matches("\\d*")) {
+				check = 0;
+			}
+			else {
+				check = 1;
+			}
+			return check;
+		default:
+			return check;
+		}
+	}
+	
+	/**
+	 * Asynchronous call to update HouseDataPoint in the server database.
+	 * @param owner - name of the realtor
+	 * @param priceInput - price of the house
+	 * @param isSellingInput - for-sale indicator
+	 * @param houses - set of houses to update
+	 * @param switchValue - 0 for updating owner; 1 for updating price; 2 for updating isSelling
+	 */
+	private void editHouse(String owner, String priceInput, String isSellingInput, 
+			Set<HouseData> houses, int switchValue) {
+		
+		// Assemble edit request
+		double price;
+		if (priceInput.isEmpty())	
+			price = 0;
+		else	
+			price = Double.parseDouble(priceInput);
+		
+		boolean isSelling;
+		if (isSellingInput.equals("Yes")) 
+			isSelling = true;
+		else
+			isSelling = false;		
+		
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+		
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(Void result) {
+				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+					@Override
+					public void onFailure (Throwable caught) {
+						Window.alert(caught.getMessage());
+					}
+					@Override
+					public void onSuccess (List<HouseData> result) {
+						dataProvider.updateRowData(currentStartItem, result);
+						
+					}
+				};
+				houseDataSvc.getHouses(0, pageLength, callback);
+			}
+		};
+				
+		// make the call to the house data service
+		houseDataSvc.updateHouses(owner, price, isSelling, houses, switchValue, callback);
+	}
 }

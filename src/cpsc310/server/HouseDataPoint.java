@@ -56,7 +56,7 @@ public class HouseDataPoint {
 		}
 
 		// User specified data
-		owner = null;
+		owner = "";
 		isSelling = false;
 		price = 0;
 	}

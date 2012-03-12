@@ -47,7 +47,7 @@ public class PropertyMap {
 		 options.setLatLng(location);
 		 svClient = new StreetviewClient();
 		 panorama = new StreetviewPanoramaWidget(options);
-		 panorama.setSize("500px", "500px");
+		 panorama.setSize("100%", "100%");
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class PropertyMap {
 	{
 		map = new MapWidget();
 		map.setCenter(location, 10);
-		map.setSize("500px", "500px");
+		map.setSize("100%", "100%");
 		// Add some controls for the zoom level
 		map.addControl(new LargeMapControl3D());		
 	}

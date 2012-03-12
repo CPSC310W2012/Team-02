@@ -8,60 +8,30 @@
 	position: relative;
 }
 
-html {
-	width: 100% !important;
-	overflow-x: hidden;
-}
-
 body {
 	width: 100% !important;	
-	min-height: 700px;
-	color: #555;
+	color: #515151;
 	background-color:#FCFCFC !important;
 	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
-	overflow-x: hidden;
 }
 
 #header {
-	width:80%;
-	margin: 0 auto;
+	background:#00B4FF;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	margin-right: 20px;
+	text-align: center;
 }
 
 h1 {
-	background:#05B5BD;
-	z-index:-1;
+	margin: 0 30px;	
 	color: #FCFCFC;
-	position: absolute;
-	font-size: 40px;
+	font-size: 35px;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 100;
-	height:70px;
-	padding-top:10px;
 }
 
-h1:before, h1:after {
-	content:"";
-	position: absolute;
-	background: #05B5BD;
-	top:0;
-	bottom:0;
-	width:9999px;
-}
-
-h1:before {
-	right:100%;
-}
-
-h1:after {
-	left:100%;
-}
-
-.clear {
-	width:100%;
-	height:30px;
-	clear:both;	
-}
 
 a {
 	font-size: 17px;
@@ -71,17 +41,16 @@ a {
 
 #footer {
 	width: 100%;
-	margin-top: 30px;
 	clear: both;
-	background:#05B5BD;
 	text-align:center;
 	height: 60px;
+	vertical-align:middle;
 }
 
 #footer span {
 	top: 40%;
 	font-size: 15px;
-	color: #FCFCFC;
+	color: #515151;
 	font-size:12px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-weight: bold;
@@ -90,48 +59,30 @@ a {
 }
 
 .mainPanel {
-	margin:0 auto;
-	clear:both;
-}
-
-#appPanel {
-	overflow-x:hidden !important;
 }
 
 .loginPanel {
-	margin: 25px 0;
-	float: right;
-	clear: right;
+	margin-top: 30px;
 }
 
 .pager {
 	font-size:11px;
-}
-
-.map {
-	clear:both;
+	margin:0 auto;
 }
 
 .mapContainerPanel {
-	height: 500px;
+	width:100%;
+	height:100%;
 	clear: both;
-	margin-top:30px;
-	margin-bottom:30px;
 	padding: 1px;
-	border: 3px solid #F2A43A;
 	-moz-border-radius: 10px;
   	-webkit-border-radius: 10px;
   	border-radius: 10px; 
 }
 
-.lowerWrapPanel {
-	margin-top: 20px 0;	
-	clear: both;
-}
-
 .searchText {
 	font-size:11px !important;
-	color: #555;
+	color: #515151;
 }
 
 .gwt-Label {
@@ -197,9 +148,17 @@ a {
 }
 
 .gwt-TextBox {
-	width: 90px;
+	width: 80px;
 	height: 20px;
 	font-size: 11px !important;
+}
+
+.gwt-TextBox-before {
+	color:#EEEEEE;
+}
+
+.gwt-TextBox-longer {
+	width: 170px;
 }
 
 .gwt-Button {
@@ -231,10 +190,66 @@ a {
   border: 1px outset #ccc;
 }
 
-.gwt-CheckBox {
+
+.searchPanel {
+	width: 100%;
+	background-color:#FCFCFC;
 }
-.gwt-CheckBox-disabled {
-  color: #888;
+.sidePanelContentWrap {
+	padding-left: 25px;
+}
+.searchSettingPanel {
+	width: 100%;
+	clear: both;
 }
 
+.hideShowButton-horizontal {
+	width: 100%;
+	height: 20px;
+	top: 0;
+	left: 0;
+	-moz-border-radius-topleft: 20px;
+	-webkit-border-top-left-radius: 20px;
+	border-top-left-radius: 20px; 
+	-moz-border-radius-topright: 20px;
+	-webkit-border-top-right-radius: 20px;
+	border-top-right-radius: 20px; 
+}
+.hideShowButton-vertical {
+	width:20px;
+	height: 100%;
+	top: 0;
+	right: 0;
+	-moz-border-radius-topright: 20px;
+	-webkit-border-top-right-radius: 20px;
+	border-top-right-radius: 20px; 
+	-moz-border-radius-bottomright: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+	border-bottom-right-radius: 20px; 
+	
+}
+.hideShowButton {
+	position: absolute;
+	z-index: 1000;	
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size:20px;
+	font-weight:bold;
+	color: #555;
+	background: #FCFCFC;
+	border:none;	
+}
+
+.hideShowButton:active {
+	border:none;
+}
+
+.hideShowButton:hover {
+	border-color: #939393;
+}
+.tableWrapPanel {
+	padding-top: 25px;
+	background-color:#FCFCFC;
+}
 
