@@ -53,7 +53,6 @@ public class IntegrationTests {
 		house = houses.get(0);
 		assertEquals("014900009", house.getPID());
 		assertEquals("1185 12TH AVE E", house.getAddress());
-		assertEquals(67022255, house.getCoordinate());
 		assertFalse(house.getIsSelling());
 		assertEquals(634000.0, house.getLandValue(), 0);
 		assertNull(house.getOwner());
