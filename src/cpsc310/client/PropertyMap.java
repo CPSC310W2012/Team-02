@@ -1,9 +1,11 @@
 package cpsc310.client;
 
+import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
+import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -93,15 +95,30 @@ public class PropertyMap {
 	 * @param point  latitude and longitude
 	 * @param location  string representation of the location to be displayed in overlay
 	 */
-	private void addMarker(LatLng point, String location)
+	private void addMarker(final LatLng point, final String location)
 	{
-		Marker marker = new Marker(point);
+		final Marker marker = new Marker(point);
 		map.addOverlay(marker);
 		map.setCenter(point);
-		VerticalPanel panel = new VerticalPanel();
-		InfoWindowContent content = new InfoWindowContent(panel);
-		panel.add(new Label(location));
-		map.getInfoWindow().open(marker, content);
+//		VerticalPanel panel = new VerticalPanel();
+//		InfoWindowContent content = new InfoWindowContent(panel);
+//		panel.add(new Label(location));
+		map.getInfoWindow().open(marker, new InfoWindowContent(location.toLowerCase()));
+		refreshStreetView(point);
+		
+		marker.addMarkerClickHandler(new MarkerClickHandler() {
+		      public void onClick(MarkerClickEvent event) {
+		        try{
+		    	  map.getInfoWindow().open(marker, new InfoWindowContent(location.toLowerCase()));
+		    	  refreshStreetView(point);
+		        }
+		        catch (Exception e)
+		        {
+		        	Window.alert(e.getMessage());
+		        }
+		        
+		      }
+		    });
 	}
 	
 	
