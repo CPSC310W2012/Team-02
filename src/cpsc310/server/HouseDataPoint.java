@@ -177,8 +177,7 @@ public class HouseDataPoint {
 		String currentNumer = number;
 		if (!currentNumer.equals("")) {
 			//clean up entries
-			number = currentNumer.replaceAll("\"", "");
-			number = currentNumer.replaceAll("\\.\\d$", "");
+			number = currentNumer.replaceAll("\\..+$", "");
 			return Integer.parseInt(number);
 		}
 		return -1;
