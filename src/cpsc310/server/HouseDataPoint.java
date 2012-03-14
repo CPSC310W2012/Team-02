@@ -176,7 +176,7 @@ public class HouseDataPoint {
 	 *            - a string with only numeric characters
 	 */
 	private int validateOptionalIntField(String number) {
-		if (number != null) {
+		if (!number.equals("")) {
 			return Integer.parseInt(number);
 		}
 		return -1;
