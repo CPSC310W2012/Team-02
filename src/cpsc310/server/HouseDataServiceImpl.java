@@ -105,51 +105,53 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord,
 			double lowerLandVal, double upperLandVal, String owner) {
-		List<HouseData> result = new ArrayList <HouseData> (store.size());
-		boolean searchCoord = false;
-		boolean searchLandVal = false;
-		boolean searchOwner = false;
-
-		// If user did not specify coordinate range or land value range,
-		// lowerCoord, upperCoord, lowerVal, upperVal will be -1!!
-		if (lowerCoord != -1 || upperCoord != -1) {
-			searchCoord = true;
-		}
-		if (lowerLandVal != -1 || upperLandVal != -1) {
-			searchLandVal = true;
-		}
-		if (owner != null) {
-			searchOwner = true;
-		}
-
-		// TODO Search database and grab necessary data.
-		Iterator<HouseDataPoint> houserItr = store.iterator();
-		HouseDataPoint check = null;
-		
-		// Convert HouseDataPoint into HouseData
-		for (int i = 0; (i < store.size()) && (houserItr.hasNext()); i++) {
-			check = houserItr.next();
-
-			if (searchLandVal == true) {
-				if ((check.getLandValue() > lowerLandVal) && 
-							(check.getLandValue() < upperLandVal)) {
-					result.add(convertToHouseData(check));
-				}		
-			}
-			
-			if (searchOwner == true) {
-				if (check.getOwner() != null) {
-					if (check.getOwner().equals(owner)) {
-						result.add(convertToHouseData(check));
-					}
-				}
-			}	
-		}
-		
-		if (result.isEmpty())
-			return null;
-			
-		return result;
+		//@TODO rework method to work with new houseDataPoints
+//		List<HouseData> result = new ArrayList <HouseData> (store.size());
+//		boolean searchCoord = false;
+//		boolean searchLandVal = false;
+//		boolean searchOwner = false;
+//
+//		// If user did not specify coordinate range or land value range,
+//		// lowerCoord, upperCoord, lowerVal, upperVal will be -1!!
+//		if (lowerCoord != -1 || upperCoord != -1) {
+//			searchCoord = true;
+//		}
+//		if (lowerLandVal != -1 || upperLandVal != -1) {
+//			searchLandVal = true;
+//		}
+//		if (owner != null) {
+//			searchOwner = true;
+//		}
+//
+//		// TODO Search database and grab necessary data.
+//		Iterator<HouseDataPoint> houserItr = store.iterator();
+//		HouseDataPoint check = null;
+//		
+//		// Convert HouseDataPoint into HouseData
+//		for (int i = 0; (i < store.size()) && (houserItr.hasNext()); i++) {
+//			check = houserItr.next();
+//
+//			if (searchLandVal == true) {
+//				if ((check.getLandValue() > lowerLandVal) && 
+//							(check.getLandValue() < upperLandVal)) {
+//					result.add(convertToHouseData(check));
+//				}		
+//			}
+//			
+//			if (searchOwner == true) {
+//				if (check.getOwner() != null) {
+//					if (check.getOwner().equals(owner)) {
+//						result.add(convertToHouseData(check));
+//					}
+//				}
+//			}	
+//		}
+//		
+//		if (result.isEmpty())
+//			return null;
+//			
+//		return result;
+		return null;
 	}
 
 	/**
@@ -187,28 +189,28 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			Set<HouseData> houses, int switchValue) {
 		
 		// TODO Update HousePointData data in database
-		for (HouseData house : houses) {
-			Iterator<HouseDataPoint> houserItr = store.iterator();
-			HouseDataPoint next = null;
-			for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
-				next = houserItr.next();
-				if (house.getPID().equals(next.getPID())) {
-					switch (switchValue) {
-					case 0:
-						next.setOwner(Owner);
-						break;
-					case 1:
-						next.setPrice(price);
-						break;
-					case 2:
-						next.setIsSelling(isSelling);
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		}
+//		for (HouseData house : houses) {
+//			Iterator<HouseDataPoint> houserItr = store.iterator();
+//			HouseDataPoint next = null;
+//			for (int i = 0; (i < rawData.size()) && (houserItr.hasNext()); i++) {
+//				next = houserItr.next();
+//				if (house.getPID().equals(next.getPID())) {
+//					switch (switchValue) {
+//					case 0:
+//						next.setOwner(Owner);
+//						break;
+//					case 1:
+//						next.setPrice(price);
+//						break;
+//					case 2:
+//						next.setIsSelling(isSelling);
+//						break;
+//					default:
+//						break;
+//					}
+//				}
+//			}
+//		}
 	}
 
 	/**
@@ -219,13 +221,14 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	private HouseData convertToHouseData(HouseDataPoint house) {
 		HouseData converted = new HouseData();
-
-		converted.setPID(house.getPID());
-		converted.setAddress(house.getAddress());
+		
+		//@TODO fix to reflect new HouseDataPoints
+		
+		converted.setPID("FILLER");
+		converted.setAddress("FILLER");
 		converted.setPostalCode(house.getPostalCode());
-		//@TODO remove from house data
 		converted.setCoordinate(1234);
-		converted.setLandValue(house.getLandValue());
+		converted.setLandValue(house.getCurrentLandValue());
 		converted.setOwner(house.getOwner());
 		converted.setIsSelling(house.getIsSelling());
 		converted.setPrice(house.getPrice());
@@ -234,12 +237,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 	
 	/*
-	 * Populates database given a URL
+	 * initilizes DataStore Objects
 	 */
-	public void initilizeDataStorage(String URL) {
+	public void initilizeDataStorage() {
 		// Get Data
-		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
-		
+		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();		
 		// try to register
 		try{
 			ObjectifyService.register(HouseDataPoint.class);
@@ -247,33 +249,5 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		catch(Exception e){
 			// already registered
 		}
-		
-		// Store in DataStore
-		Objectify ofy = ObjectifyService.begin();
-		DataBaseIndexer dbIndex;
-		try{
-		dbIndex = ofy.get(DataBaseIndexer.class,"DataBaseIndexer");
-		}
-		catch(Exception e){
-			dbIndex = new DataBaseIndexer();
-		}
-		// objectify objects
-		List<String> rawData = observerService.downloadFile(URL);
-		
-		// Parse raw data
-		FileParser parser = new FileParser();
-		Iterator<HouseDataPoint> houserItr = parser.parseData(rawData).iterator();
-		
-		dbIndex = new DataBaseIndexer();
-		ofy.put(houserItr.next());
-		while (houserItr.hasNext()) {
-			HouseDataPoint currentHouse = houserItr.next();
-			if(!dbIndex.hasIndex(currentHouse.getPID()))
-			{
-				dbIndex.addToIndex(currentHouse.getPID());
-				ofy.put(currentHouse);
-			}
-		}
-		ofy.put(dbIndex);
 	}
 }

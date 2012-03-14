@@ -20,5 +20,4 @@ public interface HouseDataServiceAsync {
 	public void sortHouses(AsyncCallback<Void> callback);
 	public void updateHouses(String Owner, double price, 
 			boolean isSelling, Set<HouseData> houses, int switchValue, AsyncCallback<Void> callback);
-	public void initilizeDataStorage(String URL, AsyncCallback<Void> callback);
 }

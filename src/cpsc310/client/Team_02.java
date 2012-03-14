@@ -176,29 +176,6 @@ public class Team_02 implements EntryPoint {
 	  	// Assemble uploadPanel
 	  	uploadPanel.add(uploadFileTextBox);
 	  	uploadPanel.add(uploadBtn);
-	  	
-		// Listen for mouse events on Upload Button
-		// for testing purposes, given URL 
-		uploadBtn.addClickHandler(new ClickHandler() {
-			public void onClick (ClickEvent event) {
-				String URL = uploadFileTextBox.getText();
-				if(URL.length()>1){
-					
-					AsyncCallback<Void> callback = new AsyncCallback<Void> () {
-						@Override
-						public void onFailure (Throwable caught) {
-							Window.alert(caught.getMessage());	
-						}
-						@Override
-						public void onSuccess (Void result) {
-						}
-					};
-					houseDataSvc.initilizeDataStorage(URL, callback);
-				}
-				else Window.alert("URL invalid");
-			}
-		});
-		
 		
 		hideShowSidePanelButton.addClickHandler(new ClickHandler () {
 			public void onClick (ClickEvent event) {

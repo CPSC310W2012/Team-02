@@ -63,7 +63,4 @@ public interface HouseDataService extends RemoteService {
 	 */
 	public void updateHouses(String Owner, double price, boolean isSelling, Set<HouseData> houses,
 			int switchValue);
-	
-	//@TODO: Java doc
-	public void initilizeDataStorage(String URL);
 }
