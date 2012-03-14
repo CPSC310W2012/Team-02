@@ -55,7 +55,7 @@ public class FileParser {
 						+ " " + currentHouse.get("STREET_NAME");
 				if (validateLine(currentHouse)) {
 					int currentLandValue = Integer.parseInt(currentHouse
-							.get("CURRENT_LAND_VALUE"));
+							.get("CURRENT_LAND_VALUE").replaceAll("\\.\\d*$", ""));
 					if (houseIDs.containsKey(currentHouseID)) {
 						if (houseIDs.get(currentHouseID).getCurrentLandValue() < currentLandValue) {
 							houseIDs.put(currentHouseID, new HouseDataPoint(

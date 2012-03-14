@@ -1,7 +1,6 @@
 package cpsc310.server;
 
 import java.util.HashMap;
-import java.util.regex.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -57,21 +56,20 @@ public class HouseDataPoint {
 	 */
 	public HouseDataPoint(HashMap<String, String> houseRow) {
 		// Variables to be set by house data
-		String tempCivicNumber = houseRow.get("TO_CIVIC_NUMBER");
-		tempCivicNumber = tempCivicNumber.replaceAll("\\.\\d*$", "");
-		civicNumber = Integer.parseInt(tempCivicNumber);
+		civicNumber = convertNumberToInt(houseRow.get("TO_CIVIC_NUMBER"));
 		streetName = houseRow.get("STREET_NAME");
 		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
-		currentLandValue = Integer.parseInt(houseRow.get("CURRENT_LAND_VALUE"));
-		currentImprovementValue = Integer.parseInt(houseRow
+		currentLandValue = convertNumberToInt(houseRow
+				.get("CURRENT_LAND_VALUE"));
+		currentImprovementValue = convertNumberToInt(houseRow
 				.get("CURRENT_IMPROVEMENT_VALUE"));
-		assessmentYear = Integer.parseInt(houseRow.get("ASSESSMENT_YEAR"));
-		previousLandValue = validateOptionalIntField(houseRow
+		assessmentYear = convertNumberToInt(houseRow.get("ASSESSMENT_YEAR"));
+		previousLandValue = convertNumberToInt(houseRow
 				.get("PREVIOUS_LAND_VALUE"));
-		previousImporvementValue = validateOptionalIntField(houseRow
+		previousImporvementValue = convertNumberToInt(houseRow
 				.get("PREVIOUS_IMPROVEMENT_VALUE"));
-		yearBuilt = validateOptionalIntField(houseRow.get("YEAR_BUILT"));
-		bigImprovementYear = validateOptionalIntField(houseRow
+		yearBuilt = convertNumberToInt(houseRow.get("YEAR_BUILT"));
+		bigImprovementYear = convertNumberToInt(houseRow
 				.get("BIG_IMPROVEMENT_YEAR"));
 
 		houseID = civicNumber + " " + streetName;
@@ -173,10 +171,14 @@ public class HouseDataPoint {
 	 * @pre a string with only numeric values or null is passed
 	 * @post a integer is returned, -1 is return upon a null value
 	 * @param number
-	 *            - a string with only numeric characters
+	 *            - a string that represents a number
 	 */
-	private int validateOptionalIntField(String number) {
-		if (!number.equals("")) {
+	private int convertNumberToInt(String number) {
+		String currentNumer = number;
+		if (!currentNumer.equals("")) {
+			//clean up entries
+			number = currentNumer.replaceAll("\"", "");
+			number = currentNumer.replaceAll("\\.\\d$", "");
 			return Integer.parseInt(number);
 		}
 		return -1;
