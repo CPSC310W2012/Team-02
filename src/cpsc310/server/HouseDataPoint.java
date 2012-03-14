@@ -2,7 +2,6 @@ package cpsc310.server;
 
 import java.util.HashMap;
 import java.util.regex.*;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -12,65 +11,122 @@ import javax.persistence.Id;
 @Entity
 public class HouseDataPoint {
 
-	// variables
-	// tentatively stable; may be removing or adding additional ones often
-	// early on
-	// Variables to be set by house data
+	// Program Created entries:
+	// Composite of (TO_CIVIC_NUMBER + " " + STREET_NAME) if duplicates exist
+	// take entry with highest CURRENT_LAND_VALUE
 	@Id
-	private String pid;
-	private String address;
-	private String postalCode;
-	private double landValue;
-	
-	//@add additional interesting information like house built date
-
-	// User specified data
+	private String houseID;
+	// null until Specifed on house edit to currently logged in google account
 	private String owner;
+	// 0 until User Specifed on house edit
+	private int price;
 	private boolean isSelling;
-	private double price;
+	private double latitude;
+	private double longitude;
+
+	// From File entries:
+	// TO_CIVIC_NUMBER: Always in file, if not do not add
+	private int civicNumber;
+	// STREET_NAME: Always in file, if not do not add
+	private String streetName;
+	// PROPERTY_POSTAL_CODE: If missing add when user updates house
+	private String postalCode;
+	// CURRENT_LAND_VALUE: Always in file, if not do not add
+	private int currentLandValue;
+	// CURRENT_IMPROVEMENT_VALUE: Should always be in file, but optional
+	private int currentImprovementValue;
+	// ASSESSMENT_YEAR: Should always be in file, but optional
+	private int assessmentYear;
+	// PREVIOUS_LAND_VALUE: Optional
+	private int previousLandValue;
+	// PREVIOUS_IMPROVEMENT_VALUE: Optional
+	private int previousImporvementValue;
+	// YEAR_BUILT: Optional
+	private int yearBuilt;
+	// BIG_IMPROVEMENT_YEAR: Optional
+	private int bigImprovementYear;
 
 	/**
 	 * Constructor
-	 * @pre houseRow != null;
+	 * 
+	 * @pre in houseRow <TO_CIVIC_NUMBER> and <STREET_NAME> and
+	 *      <CURRENT_LAND_VALUE> != null;
 	 * @post true;
-	 * @param houseRow - the HashMap containing the information for a house
+	 * @param houseRow
+	 *            - the HashMap containing the information for a house
 	 */
 	public HouseDataPoint(HashMap<String, String> houseRow) {
 		// Variables to be set by house data
-		pid = houseRow.get("PID");
-		pid = pid.replaceAll("-", "");
 		String tempCivicNumber = houseRow.get("TO_CIVIC_NUMBER");
 		tempCivicNumber = tempCivicNumber.replaceAll("\\.\\d*$", "");
-		address =tempCivicNumber + " "
-				+ houseRow.get("STREET_NAME");
+		civicNumber = Integer.parseInt(tempCivicNumber);
+		streetName = houseRow.get("STREET_NAME");
 		postalCode = houseRow.get("PROPERTY_POSTAL_CODE");
-		if (!houseRow.get("CURRENT_LAND_VALUE").isEmpty()) {
-			landValue = Double.parseDouble(houseRow.get("CURRENT_LAND_VALUE"));
-		} else {
-			landValue = 0;
-		}
+		currentLandValue = Integer.parseInt(houseRow.get("CURRENT_LAND_VALUE"));
+		currentImprovementValue = Integer.parseInt(houseRow
+				.get("CURRENT_IMPROVEMENT_VALUE"));
+		assessmentYear = Integer.parseInt(houseRow.get("ASSESSMENT_YEAR"));
+		previousLandValue = validateOptionalIntField(houseRow
+				.get("PREVIOUS_LAND_VALUE"));
+		previousImporvementValue = validateOptionalIntField(houseRow
+				.get("PREVIOUS_IMPROVEMENT_VALUE"));
+		yearBuilt = validateOptionalIntField(houseRow.get("YEAR_BUILT"));
+		bigImprovementYear = validateOptionalIntField(houseRow
+				.get("BIG_IMPROVEMENT_YEAR"));
+
+		houseID = civicNumber + " " + streetName;
 
 		// User specified data
 		owner = "";
 		isSelling = false;
 		price = 0;
+		latitude = -91;
+		longitude = -180;
 	}
 
 	// getters
-	public String getPID() {
-		return pid;
+	public String getHouseID() {
+		return houseID;
 	}
 
-	public String getAddress() {
-		return address;
+	public int getCivicNumber() {
+		return civicNumber;
+	}
+
+	public String streetName() {
+		return streetName;
 	}
 
 	public String getPostalCode() {
 		return postalCode;
 	}
 
-	public double getLandValue() {
-		return landValue;
+	public int getCurrentLandValue() {
+		return currentLandValue;
+	}
+
+	public int getCurrentImprovementValue() {
+		return currentImprovementValue;
+	}
+
+	public int getAssessmentYear() {
+		return assessmentYear;
+	}
+
+	public int getPreviousLandValue() {
+		return previousLandValue;
+	}
+
+	public int getPreviousImporvementValue() {
+		return previousImporvementValue;
+	}
+
+	public int getYearBuilt() {
+		return yearBuilt;
+	}
+
+	public int getBigImprovementYear() {
+		return bigImprovementYear;
 	}
 
 	public String getOwner() {
@@ -81,8 +137,16 @@ public class HouseDataPoint {
 		return isSelling;
 	}
 
-	public double getPrice() {
+	public int getPrice() {
 		return price;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
 	}
 
 	// setters
@@ -94,7 +158,27 @@ public class HouseDataPoint {
 		isSelling = sell;
 	}
 
-	public void setPrice(double salePrice) {
+	public void setPrice(int salePrice) {
 		price = salePrice;
+	}
+
+	public void setLatLng(double lat, double lng) {
+		latitude = lat;
+		longitude = lng;
+	}
+
+	/**
+	 * Helper method
+	 * 
+	 * @pre a string with only numeric values or null is passed
+	 * @post a integer is returned, -1 is return upon a null value
+	 * @param number
+	 *            - a string with only numeric characters
+	 */
+	private int validateOptionalIntField(String number) {
+		if (number != null) {
+			return Integer.parseInt(number);
+		}
+		return -1;
 	}
 }

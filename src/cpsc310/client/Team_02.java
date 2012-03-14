@@ -36,9 +36,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-
-
-
 /**
  * Main EntryPoint class. UI is built, client-side request is handled. 
  */
