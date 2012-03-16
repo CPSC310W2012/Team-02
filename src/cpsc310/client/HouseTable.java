@@ -14,6 +14,7 @@ import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
@@ -47,7 +48,12 @@ public class HouseTable {
 	private Column<HouseData, String> priceColumn;
 	private Column<HouseData, String> isSellingColumn;
 	private SelectionCell editSellingCell;
-	private List<String> category = new ArrayList<String>(2); 
+	private List<String> category = new ArrayList<String>(2);
+	private String[] searchCriteria = 
+		{"Address", "Postal Code", "Current Land Value",
+			"Current Improvement Value", "Assessment Year", "Previous Land Value", 
+			"Previous Improvement Value", "Year Built", "Big Improvement Year",
+			"Price", "Realtor", "For Sale"};
 
 	
 	/**
@@ -86,18 +92,9 @@ public class HouseTable {
 	/**
 	 * Helper to createCellTable(). Adds columns to the table.
 	 */
-	private void addColumns() {
+	private void addColumns() {	  	
+		NumberFormat yearFormat = NumberFormat.getFormat("0000");
 		
-		// PID column
-	  	TextColumn<HouseData> pidColumn = new TextColumn<HouseData>() {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return house.getPID();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(pidColumn, "PID");
-	  	pidColumn.setSortable(true);
-	  	
 	  	// Address column
 	  	TextColumn<HouseData> addrColumn = new TextColumn<HouseData>() {
 	  		@Override
@@ -118,16 +115,85 @@ public class HouseTable {
 		homesCellTable.addColumn(postalColumn, "Postal Code");		
 	  	postalColumn.setSortable(true);
 	  		  	
-	  	// Land Value column
-	  	Column<HouseData, Number> landValColumn = 
+	  	// Current Land Value column
+	  	Column<HouseData, Number> currlandValColumn = 
 	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
 	  		public Number getValue(HouseData house) {
-	  			return house.getLandValue();
+	  			return house.getCurrentLandValue();
 	  		}
 	  	};
-	  	homesCellTable.addColumn(landValColumn, "Current Value");				
-	  	landValColumn.setSortable(true);  	
+	  	homesCellTable.addColumn(currlandValColumn, "Current Land Value");				
+	  	currlandValColumn.setSortable(true);
+	  	
+	  	// Current Improvement Value column
+	  	Column<HouseData, Number> currImprovValColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getCurrentImprovementValue();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(currImprovValColumn, "Current Improvement Value");				
+	  	currImprovValColumn.setSortable(true);  	  	
+	  	
+	  	
+	  	// Assessment Year column
+	  	Column<HouseData, Number> assYearColumn = 
+	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getAssessmentYear();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(assYearColumn, "Assessment Year");				
+	  	assYearColumn.setSortable(true);
+	  	
+	  	
+	  	// Previous Land Value column
+	  	Column<HouseData, Number> prevlandValColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getPreviousLandValue();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(prevlandValColumn, "Previous Land Value");				
+	  	prevlandValColumn.setSortable(true);
+	  	
+	  	// Previous Improvement Value column
+	  	Column<HouseData, Number> prevImprovValColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getPreviousImprovementValue();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(prevImprovValColumn, "Previous Improvement Value");				
+	  	prevImprovValColumn.setSortable(true);  	  	
+	  	
+	  	
+	  	// Built Year column
+	  	Column<HouseData, Number> yrBuiltColumn = 
+	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getYearBuilt();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(yrBuiltColumn, "Year Built");				
+	  	yrBuiltColumn.setSortable(true);
+	  	
+	  	// Big Improvement Year column
+	  	Column<HouseData, Number> improvYearColumn = 
+	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
+	  		@Override
+	  		public Number getValue(HouseData house) {
+	  			return house.getBigImprovementYear();
+	  		}
+	  	};
+	  	homesCellTable.addColumn(improvYearColumn, "Big Improvement Year");				
+	  	improvYearColumn.setSortable(true);
 	  	
 	  	
 	  	/* User specified column begins.
@@ -235,29 +301,44 @@ public class HouseTable {
 				int sortedIndex = homesCellTable.getColumnIndex(sortedColumn);
 				List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
 				
-				Comparator<HouseData> c = HouseData.HousePidComparator;
+				Comparator<HouseData> c = HouseData.HouseAddrComparator;
 				switch(sortedIndex) {
 				case 0:
-					c = HouseData.HousePidComparator;
-					break;
-				case 1:
 					c = HouseData.HouseAddrComparator;
 					break;
-				case 2:
+				case 1:
 					c = HouseData.HousePostalCodeComparator;
 					break;
+				case 2:
+					c = HouseData.HouseCurrentLandValueComparator;
+					break;
 				case 3:
-					c = HouseData.HouseLandValueComparator;
+					c = HouseData.HouseCurrentImprovementValueComparator;
 					break;
 				case 4:
-					c = HouseData.HouseOwnerComparator;
+					c = HouseData.HouseAssYearComparator;
 					break;
 				case 5:
+					c = HouseData.HousePrevLandValueComparator;
+					break;				
+				case 6:
+					c = HouseData.HousePrevImprovementValueComparator;
+					break;
+				case 7:
+					c = HouseData.HouseYearBuiltComparator;
+					break;
+				case 8:
+					c = HouseData.HouseBigImprYearComparator;
+					break;
+				case 9:
+					c = HouseData.HouseOwnerComparator;
+					break;
+				case 10:
 					c = HouseData.HousePriceComparator;
 					break;
-				case 6:
+				case 11:
 					c = HouseData.HouseIsSellingComparator;
-					break;
+					break;					
 				default:
 					break;
 				}

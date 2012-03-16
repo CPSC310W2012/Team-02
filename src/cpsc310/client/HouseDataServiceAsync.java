@@ -13,8 +13,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface HouseDataServiceAsync {
 	public void getHouses(int start, int range, AsyncCallback<List<HouseData>> callback);
-	public void getSearchedHouses(int lowerCoord, int upperCoord, 
-			double lowerLandVal, double upperLandVal, String owner, AsyncCallback<List<HouseData>> callback);
+	public void getSearchedHouses(String[] userSearchInput, int isSelling, AsyncCallback<List<HouseData>> callback);
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 	public void sortHouses(AsyncCallback<Void> callback);
 	public void updateHouses(String Owner, double price, 

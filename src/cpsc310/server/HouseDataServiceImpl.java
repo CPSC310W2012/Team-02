@@ -91,26 +91,13 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * Get house data within specified criteria. If user did not specify
-	 * coordinate range or land value range, lowerCoord, upperCoord, lowerVal,
-	 * upperVal will be -1. In Sprint 2, this function will be modified to
-	 * include more criteria, and range cases.
-	 * 
-	 * @param lowerCoord
-	 *            - lower range for coordinate of house
-	 * @param upperCoord
-	 *            - upper range for coordinate of house
-	 * @param lowerVal
-	 *            - lower asking price of house
-	 * @param upperVal
-	 *            - upper asking price of house
-	 * @param owner
-	 *            - the realtor that is in charge of the house.
-	 * @return list of House data within specified coordinates
+	 * Get house data within specified search criteria.
+	 * @param userSearchInput - list of user's search input into search boxes
+	 * @param isSelling - boolean value of "for sale" criteria
+	 * @return list of House data within specified criteria
 	 */
 	@Override
-	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord,
-			double lowerLandVal, double upperLandVal, String owner) {
+	public List<HouseData> getSearchedHouses(String[] userSearchInput, int isSelling) {
 		// @TODO rework method to work with new houseDataPoints
 		// List<HouseData> result = new ArrayList <HouseData> (store.size());
 		// boolean searchCoord = false;
@@ -239,12 +226,17 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseData converted = new HouseData();
 
 		// @TODO fix to reflect new HouseDataPoints
-
-		converted.setPID("FILLER");
-		converted.setAddress("FILLER");
+		converted.setHouseID(house.getHouseID());
+		converted.setCivicNumber(house.getCivicNumber());
+		converted.setStreetName(house.getStreetName());
 		converted.setPostalCode(house.getPostalCode());
-		converted.setCoordinate(1234);
-		converted.setLandValue(house.getCurrentLandValue());
+		converted.setCurrentLandValue(house.getCurrentLandValue());
+		converted.setCurrentImprovementValue(house.getCurrentImprovementValue());
+		converted.setAssessmentYear(house.getAssessmentYear());		
+		converted.setPreviousLandValue(house.getPreviousLandValue());
+		converted.setPreviousImporvementValue(house.getPreviousImprovementValue());
+		converted.setYearBuilt(house.getYearBuilt());
+		converted.setBigImprovementYear(house.getBigImprovementYear());
 		converted.setOwner(house.getOwner());
 		converted.setIsSelling(house.getIsSelling());
 		converted.setPrice(house.getPrice());

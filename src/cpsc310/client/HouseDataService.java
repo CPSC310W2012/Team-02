@@ -23,16 +23,12 @@ public interface HouseDataService extends RemoteService {
 	public List<HouseData> getHouses(int start, int range);
 	
 	/**
-	 * Get house data within specified coordinate range.
-	 * @param lowerCoord - lower range for coordinate of house
-	 * @param upperCoord - upper range for coordinate of house
-	 * @param lowerVal - lower asking price of house
-	 * @param upperVal - upper asking price of house
-	 * @param owner - realtor of the house
-	 * @return list of House data within specified coordinates
+	 * Get house data within specified search criteria.
+	 * @param userSearchInput - list of user's search input into search boxes
+	 * @param isSelling - boolean value of "for sale" criteria
+	 * @return list of House data within specified criteria
 	 */
-	public List<HouseData> getSearchedHouses(int lowerCoord, int upperCoord, 
-			double lowerLandVal, double upperLandVal, String owner);
+	public List<HouseData> getSearchedHouses(String[] userSearchInput, int isSelling);
 		
 	/**
 	 * Helper to table drawing to figure out how many rows need to exist.

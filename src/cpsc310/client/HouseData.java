@@ -11,77 +11,110 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class HouseData implements Serializable{
 
-	// Class variables representing 
-	// may change depending on the server implementation of the database and
-	// HouseDataPoint.java
-	private String pid;
-	private int coordinate;
-	private String address;
+	// Class variables representing a house. 
+	// Client-side complement to server-side HouseDataPoint.java
+	private String houseID;
+	private int civicNumber;
+	private String streetName;
 	private String postalCode;
-	private double landValue;
+	private int currentLandValue;
+	private int currentImprovementValue;
+	private int assessmentYear;
+	private int previousLandValue;
+	private int previousImprovementValue;
+	private int yearBuilt;
+	private int bigImprovementYear;
+	
+	// User specified
 	private String owner;
+	private int price;
 	private boolean isSelling;
-	private double price;
-
+	
+	
 	/**
 	 * Constructor for enabling Serializable.
 	 */
 	public HouseData() {
 	}
 	
-	/**
-	 * Constructor of the class
-	 * @param pid - the PID of the house.
-	 * @param address - the address of the house.
-	 * @param postalCode - the postalCode of the house.
-	 * @param coordinate - the map coordinate of the house.
-	 * @param landValue - the value of the land the house resides on.
-	 * @param owner - the realtor that is in charge of the house.
-	 * @param isSelling - if true house is for sale; otherwise false
-	 * @param price - asking price of the house.
-	 */
-	public HouseData(String pid, String address, String postalCode, int coordinate, 
-			int landValue, String owner, boolean isSelling, double price) {
-		this.pid = pid;
-		this.coordinate = coordinate;
-		this.address = address;
+
+	public HouseData(String houseID, int civicNumber, String streetName, 
+			String postalCode,	int currentLandValue, int currentImprovementValue,
+			int previousLandValue, int previousImprovementValue, int yearBuilt,
+			int bigImprovementYear, String owner, int price, boolean isSelling) {
+		this.houseID = houseID;
+		this.civicNumber = civicNumber;
+		this.streetName = streetName;
 		this.postalCode = postalCode;
-		this.landValue = landValue;
+		this.currentLandValue = currentLandValue;
+		this.currentImprovementValue = currentImprovementValue;
+		this.previousLandValue = previousLandValue;
+		this.previousImprovementValue = previousImprovementValue;
+		this.yearBuilt = yearBuilt;
+		this.bigImprovementYear = bigImprovementYear;
 
 		this.owner = owner;
-		this.isSelling = isSelling;
 		this.price = price;
+		this.isSelling = isSelling;
 	}
 
 	
 	// Key provider for table and map selection
 	public static final ProvidesKey<HouseData> KEY_PROVIDER = new ProvidesKey<HouseData>() {
 		public Object getKey (HouseData house) {
-			return house == null ? null : house.getPID(); 
+			return house == null ? null : house.getHouseID(); 
 		}
 	};
 	
 	// Getters
-	public String getPID() {
-		return pid;
+	public String getHouseID() {
+		return houseID;
 	}
 
-	public int getCoordinate() {
-		return coordinate;
+	public int getCivicNumber() {
+		return civicNumber;
 	}
 
+	public String getStreetName() {
+		return streetName;
+	}
+	
 	public String getAddress() {
-		return address;
+		return civicNumber + " " + streetName;
 	}
 
 	public String getPostalCode() {
 		return postalCode;
 	}
 
-	public double getLandValue() {
-		return landValue;
+	public int getCurrentLandValue() {
+		return currentLandValue;
 	}
-	
+
+	public int getCurrentImprovementValue() {
+		return currentImprovementValue;
+	}
+
+	public int getAssessmentYear() {
+		return assessmentYear;
+	}
+
+	public int getPreviousLandValue() {
+		return previousLandValue;
+	}
+
+	public int getPreviousImprovementValue() {
+		return previousImprovementValue;
+	}
+
+	public int getYearBuilt() {
+		return yearBuilt;
+	}
+
+	public int getBigImprovementYear() {
+		return bigImprovementYear;
+	}
+
 	public String getOwner() {
 		return owner;
 	}
@@ -90,29 +123,53 @@ public class HouseData implements Serializable{
 		return isSelling;
 	}
 
-	public double getPrice() {
+	public int getPrice() {
 		return price;
 	}
-	
-	// Setters
-	public void setPID(String PID) {
-		this.pid = PID;
+
+	// setters
+	public void setHouseID(String id) {
+		houseID = id;
 	}
-	
-	public void setCoordinate(int coordinate) {
-		this.coordinate = coordinate;
+
+	public void setCivicNumber(int number) {
+		civicNumber = number;
 	}
-	
-	public void setAddress(String address) {
-		this.address = address;
+
+	public void setStreetName(String name) {
+		streetName = name;
 	}
-	
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
+
+	public void setPostalCode(String pc) {
+		postalCode = pc;
 	}
-	
-	public void setLandValue(double landValue) {
-		this.landValue = landValue;
+
+	public void setCurrentLandValue(int value) {
+		currentLandValue = value;
+	}
+
+	public void setCurrentImprovementValue(int value) {
+		currentImprovementValue = value;
+	}
+
+	public void setAssessmentYear(int year) {
+		assessmentYear = year;
+	}
+
+	public void setPreviousLandValue(int value) {
+		previousLandValue = value;
+	}
+
+	public void setPreviousImporvementValue(int year) {
+		previousImprovementValue = year;
+	}
+
+	public void setYearBuilt(int year) {
+		yearBuilt = year;
+	}
+
+	public void setBigImprovementYear(int year) {
+		bigImprovementYear = year;
 	}
 	
 	public void setOwner(String newOwner) {
@@ -123,19 +180,19 @@ public class HouseData implements Serializable{
 		isSelling = sell;
 	}
 
-	public void setPrice(double salePrice) {
+	public void setPrice(int salePrice) {
 		price = salePrice;
-	}	
+	}
 	
 	/**
 	 * Comparators for table sorting.
 	 */
 	
 	//Comparator for PIDs
-	public final static Comparator<HouseData> HousePidComparator =
+	public final static Comparator<HouseData> HouseIDComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
-			return house1.getPID().compareTo(house2.getPID());
+			return house1.getHouseID().compareTo(house2.getHouseID());
 		}
 	};
 	
@@ -143,17 +200,20 @@ public class HouseData implements Serializable{
 	public final static Comparator<HouseData> HouseAddrComparator =
 			new Comparator<HouseData>() {
 		public int compare (HouseData house1, HouseData house2) {
-			String[] addr1 = house1.getAddress().split("[ ]");
-			String[] addr2 = house2.getAddress().split("[ ]");
+			String[] addr1 = house1.getStreetName().split("[ ]");
+			String[] addr2 = house2.getStreetName().split("[ ]");
+			int streetNum1 = house1.getCivicNumber();
+			int streetNum2 = house2.getCivicNumber();
 			
 			// Compare Street Name
-			if (addr1[1].compareTo(addr2[1]) == 0) {
-				if (addr1[2].compareTo(addr2[2]) == 0){
-					return addr1[0].compareTo(addr2[0]);
+			if (addr1[0].compareTo(addr2[0]) == 0) {
+				if (addr1[1].compareTo(addr2[1]) == 0){
+					return streetNum1 > streetNum2 ? 1 :
+						streetNum1 == streetNum2 ? 0 : -1;
 				}
-				return addr1[2].compareTo(addr2[2]);
+				return addr1[1].compareTo(addr2[1]);
 			}
-			return addr1[1].compareTo(addr2[1]);
+			return addr1[0].compareTo(addr2[0]);
 		}
 	};
 	
@@ -164,24 +224,70 @@ public class HouseData implements Serializable{
 			return house1.getPostalCode().compareTo(house2.getPostalCode());
 		}
 	};
-	
-	//Comparator for house coordinates
-	public final static Comparator<HouseData> HouseCoordinateComparator =
-			new Comparator<HouseData> () {
-		public int compare (HouseData house1, HouseData house2) {
-			return house1.getCoordinate() > house2.getCoordinate() ? 1 : 
-				house1.getCoordinate() == house2.getCoordinate() ? 0 : -1;
-		}
-	};
-	
+		
 	//Comparator for the value of the land the house resides on
-	public final static Comparator<HouseData> HouseLandValueComparator = 
+	public final static Comparator<HouseData> HouseCurrentLandValueComparator = 
 			new Comparator<HouseData> () {
 		public int compare (HouseData house1, HouseData house2) {
-			return house1.getLandValue() > house2.getLandValue() ? 1 : 
-				house1.getLandValue() == house2.getLandValue() ? 0 : -1;
+			return house1.getCurrentLandValue() > house2.getCurrentLandValue() ? 1 : 
+				house1.getCurrentLandValue() == house2.getCurrentLandValue() ? 0 : -1;
 		}
 	};
+	
+	//Comparator for current improvement value
+	public final static Comparator<HouseData> HouseCurrentImprovementValueComparator =
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getCurrentImprovementValue() > house2.getCurrentImprovementValue() ? 1 : 
+				house1.getCurrentImprovementValue() == house2.getCurrentImprovementValue() ? 0 : -1;
+		}
+	};
+	
+	//Comparator for assessment year
+	public final static Comparator<HouseData> HouseAssYearComparator = 
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getAssessmentYear() > house2.getAssessmentYear() ? 1 : 
+				house1.getAssessmentYear() == house2.getAssessmentYear() ? 0 : -1;
+		}
+	};	
+	
+	//Comparator for the previous value of the land the house resides on
+	public final static Comparator<HouseData> HousePrevLandValueComparator = 
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getPreviousLandValue() > house2.getPreviousLandValue() ? 1 : 
+				house1.getPreviousLandValue() == house2.getPreviousLandValue() ? 0 : -1;
+		}
+	};
+	
+	//Comparator for previous improvement value
+	public final static Comparator<HouseData> HousePrevImprovementValueComparator =
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getPreviousImprovementValue() > house2.getPreviousImprovementValue() ? 1 : 
+				house1.getPreviousImprovementValue() == house2.getPreviousImprovementValue() ? 0 : -1;
+		}
+	};
+	
+	//Comparator for built year
+	public final static Comparator<HouseData> HouseYearBuiltComparator = 
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getYearBuilt() > house2.getYearBuilt() ? 1 : 
+				house1.getYearBuilt() == house2.getYearBuilt() ? 0 : -1;
+		}
+	};		
+	
+	//Comparator for built year
+	public final static Comparator<HouseData> HouseBigImprYearComparator = 
+			new Comparator<HouseData> () {
+		public int compare (HouseData house1, HouseData house2) {
+			return house1.getBigImprovementYear() > house2.getBigImprovementYear()  ? 1 : 
+				house1.getBigImprovementYear()  == house2.getBigImprovementYear()  ? 0 : -1;
+		}
+	};		
+		
 	
 	//Comparator for the realtor of the house
 	public final static Comparator<HouseData> HouseOwnerComparator =

@@ -39,7 +39,7 @@ public class HouseDataPoint {
 	// PREVIOUS_LAND_VALUE: Optional
 	private int previousLandValue;
 	// PREVIOUS_IMPROVEMENT_VALUE: Optional
-	private int previousImporvementValue;
+	private int previousImprovementValue;
 	// YEAR_BUILT: Optional
 	private int yearBuilt;
 	// BIG_IMPROVEMENT_YEAR: Optional
@@ -66,7 +66,7 @@ public class HouseDataPoint {
 		assessmentYear = convertNumberToInt(houseRow.get("ASSESSMENT_YEAR"));
 		previousLandValue = convertNumberToInt(houseRow
 				.get("PREVIOUS_LAND_VALUE"));
-		previousImporvementValue = convertNumberToInt(houseRow
+		previousImprovementValue = convertNumberToInt(houseRow
 				.get("PREVIOUS_IMPROVEMENT_VALUE"));
 		yearBuilt = convertNumberToInt(houseRow.get("YEAR_BUILT"));
 		bigImprovementYear = convertNumberToInt(houseRow
@@ -91,7 +91,7 @@ public class HouseDataPoint {
 		return civicNumber;
 	}
 
-	public String streetName() {
+	public String getStreetName() {
 		return streetName;
 	}
 
@@ -115,8 +115,8 @@ public class HouseDataPoint {
 		return previousLandValue;
 	}
 
-	public int getPreviousImporvementValue() {
-		return previousImporvementValue;
+	public int getPreviousImprovementValue() {
+		return previousImprovementValue;
 	}
 
 	public int getYearBuilt() {
