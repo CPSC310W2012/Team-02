@@ -88,6 +88,7 @@ public class PropertyMap {
 				// add the location onto the map
 				addMarker(point, location);
 				refreshStreetView(point);
+				//isPointInPolygon(point); //for testing
 			}
 		};
 		Geocoder geocoder = new Geocoder();
@@ -210,15 +211,47 @@ public class PropertyMap {
 	
 	/**
 	 * 
-	 * TODO: algorithm that calculates whether or not the point is in the polygon
+	 * Algorithm that calculates whether or not the point is in the polygon
 	 * 
 	 * @param point  the point to check if it is in the polygon
 	 * 
 	 */
-	public boolean pointInPolygon(LatLng point) {
-		if(lastPolygon == null)
-			return false;
-		return false;
+	boolean isPointInPolygon(LatLng point) {
+
+	if(lastPolygon == null)
+	{
+	 Window.alert("No region specified");
+	 return false;
 	}
 
+	int j = 0;
+	boolean oddNodes = false;
+	double y = point.getLatitude();
+	double x = point.getLongitude();
+	int numVertexes = lastPolygon.getVertexCount();
+
+	for(int i = 0; i < numVertexes; i++)
+	{
+		j++; 
+	    if (j == numVertexes) {
+			j = 0;
+		}
+	    if (((lastPolygon.getVertex(i).getLatitude() < y) && (lastPolygon.getVertex(j).getLatitude() >= y)) 
+	      || ((lastPolygon.getVertex(j).getLatitude() < y) && (lastPolygon.getVertex(i).getLatitude() >= y))) 
+		{ 
+	        if ( lastPolygon.getVertex(i).getLongitude() + (y - lastPolygon.getVertex(i).getLatitude()) 
+	        /  (lastPolygon.getVertex(j).getLatitude()-lastPolygon.getVertex(i).getLatitude()) 
+	        *  (lastPolygon.getVertex(j).getLongitude() - lastPolygon.getVertex(i).getLongitude())<x ) { 
+	          oddNodes = !oddNodes; 
+	        } 
+	    } 
+	} 
+	
+	if(oddNodes)
+		Window.alert("point is in the polygon");
+	else 
+		Window.alert("point is not in the polygon");
+	    return oddNodes; 
+	}
+	
 }
