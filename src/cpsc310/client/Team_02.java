@@ -83,6 +83,11 @@ public class Team_02 implements EntryPoint {
 	private int pageLength = 0;	
 	private Set<HouseData> selectedHouses = null;	
 	private List<HouseData> currentHouseList = null;
+	// polygon editing buttons
+    final Button specifyRegionBtn = new Button();
+    final Button clearPolygonBtn = new Button();
+    final Button editPolygonBtn = new Button();
+
 	
 	/**
 	 * Entry point method. Initializes login service.
@@ -261,6 +266,12 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void addSearchPanel() {
 		
+		//polygon settings
+	    specifyRegionBtn.setText("Specify region on map");
+	    clearPolygonBtn.setText("Clear specified region");
+	    editPolygonBtn.setText("Edit specified region");
+	    clearPolygonBtn.setEnabled(false);
+	    editPolygonBtn.setEnabled(false);
 		
 		searchPanel.setStyleName("searchPanel");
 	  	searchSettingPanel.setStyleName("searchSettingPanel");
@@ -297,6 +308,11 @@ public class Team_02 implements EntryPoint {
 	  	searchSettingPanel.add(unknownSellingRdBtn);
 	  	unknownSellingRdBtn.setValue(true);
 	  	
+	  	searchSettingPanel.add(specifyRegionBtn);
+	  	searchSettingPanel.add(clearPolygonBtn);
+	  	searchSettingPanel.add(editPolygonBtn);
+	  	
+	  	
 	  	searchPanel.add(searchSettingPanel);
 	  	searchPanel.add(new HTML("<br />"));
 	  	searchPanel.add(searchBtn);
@@ -308,6 +324,33 @@ public class Team_02 implements EntryPoint {
 				searchHouse();
 			}
 		});
+		
+		// Listen for mouse events on specify region Button
+		specifyRegionBtn.addClickHandler(new ClickHandler() {
+		      public void onClick(ClickEvent event) {
+		        theMap.createPolygon();
+		        clearPolygonBtn.setEnabled(true);
+		        specifyRegionBtn.setEnabled(false);
+		        editPolygonBtn.setEnabled(true);
+		      }
+		    });
+		
+		// Listen for mouse events on clear polygon Button
+		clearPolygonBtn.addClickHandler(new ClickHandler() {
+		      public void onClick(ClickEvent event) {
+		        theMap.clearMap();
+		        specifyRegionBtn.setEnabled(true);
+		        clearPolygonBtn.setEnabled(false);
+		        editPolygonBtn.setEnabled(false);
+		      }
+		    });
+		
+		// Listen for mouse events on editPolygon Button
+		editPolygonBtn.addClickHandler(new ClickHandler(){
+		      public void onClick(ClickEvent event) {
+		    	  	theMap.editPolygon();
+			      }
+			    });
 	}
 	
 	
