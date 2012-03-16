@@ -65,10 +65,6 @@ public class Team_02 implements EntryPoint {
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
 			"Price", "Realtor", "For Sale"};
 	private List<HouseData> currentHouseList = null;
-	// polygon editing buttons
-    final Button specifyRegionBtn = new Button();
-    final Button clearPolygonBtn = new Button();
-    final Button editPolygonBtn = new Button();
 
 	
 	/**
@@ -419,8 +415,17 @@ public class Team_02 implements EntryPoint {
 		});
 	}
 	
+	/**
+	 * Helper to buildSearchPanel().
+	 * Adds polygon selection tools.
+	 * @param searchSettingPanel - panel to hold selection tool
+	 */
 	private void buildPolygonSelection(FlowPanel searchSettingPanel) {
-		//polygon settings
+	    final Button specifyRegionBtn = new Button();
+	    final Button clearPolygonBtn = new Button();
+	    final Button editPolygonBtn = new Button();	
+	    
+		//Polygon settings
 	    specifyRegionBtn.setText("Specify region on map");
 	    clearPolygonBtn.setText("Clear specified region");
 	    editPolygonBtn.setText("Edit specified region");
