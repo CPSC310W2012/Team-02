@@ -454,7 +454,6 @@ public class Team_02 implements EntryPoint {
  		clearPolygonBtn.addClickHandler(new ClickHandler() {
  		      public void onClick(ClickEvent event) {
  		        theMap.clearMap();
- 		        theMap.setSpecifyingRegion(false);
  		        specifyRegionBtn.setEnabled(true);
  		        clearPolygonBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(false);

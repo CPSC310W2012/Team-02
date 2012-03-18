@@ -5,13 +5,6 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
-import com.google.gwt.maps.client.event.PolygonCancelLineHandler;
-import com.google.gwt.maps.client.event.PolygonEndLineHandler;
-import com.google.gwt.maps.client.event.PolygonLineUpdatedHandler;
-import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
-import com.google.gwt.maps.client.event.PolylineEndLineHandler;
-import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
-import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -56,6 +49,8 @@ public class PropertyMap {
 				if(specifyingRegion)
 				{
 					drawSquare(point);
+					//allow only one square to be drawn at a time
+					setSpecifyingRegion(false);
 				}
 		      }
 		    });
