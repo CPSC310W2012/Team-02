@@ -35,6 +35,8 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.reveregroup.gwt.facebook4gwt.Facebook;
+import com.reveregroup.gwt.facebook4gwt.LoginButton;
 
 /**
  * Main EntryPoint class. UI is built, client-side request is handled. 
@@ -129,7 +131,11 @@ public class Team_02 implements EntryPoint {
 	  	// Associate Main panel with the HTML host page		
 	 	RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 	 	rootLayoutPanel.add(mainPanel);
-		
+
+	 	//Richard Added
+	 	Facebook.init("257432264338889");
+	 	LoginButton faceBookBtn = new LoginButton(true);
+	 	mainPanel.add(faceBookBtn);
 	}
 	
 	/**
