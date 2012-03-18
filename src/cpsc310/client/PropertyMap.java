@@ -3,7 +3,15 @@ package cpsc310.client;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
+import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
+import com.google.gwt.maps.client.event.PolygonCancelLineHandler;
+import com.google.gwt.maps.client.event.PolygonEndLineHandler;
+import com.google.gwt.maps.client.event.PolygonLineUpdatedHandler;
+import com.google.gwt.maps.client.event.PolylineCancelLineHandler;
+import com.google.gwt.maps.client.event.PolylineEndLineHandler;
+import com.google.gwt.maps.client.event.PolylineLineUpdatedHandler;
+import com.google.gwt.maps.client.event.MapClickHandler.MapClickEvent;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -28,6 +36,7 @@ public class PropertyMap {
 	private int weight = 1;
 	private boolean fillFlag = true;
 	private Polygon lastPolygon = null;
+	private boolean specifyingRegion = false;
 
 	/**
 	 * Constructor Instantiates two instances of a map - standard and streetview
@@ -40,6 +49,17 @@ public class PropertyMap {
 	public PropertyMap(LatLng location) {
 		buildStreetViewMap(location);
 		buildStandardMap(location);
+		
+		map.addMapClickHandler(new MapClickHandler() {
+			public void onClick(MapClickEvent e) {
+		        LatLng point = e.getLatLng();
+				if(specifyingRegion)
+				{
+					drawSquare(point);
+				}
+		      }
+		    });
+		
 	}
 
 	/**
@@ -252,6 +272,63 @@ public class PropertyMap {
 	else 
 		Window.alert("point is not in the polygon");
 	    return oddNodes; 
+	}
+	
+	
+	/**
+	 * 
+	 * Draws a rectangle on the map given a corner point
+	 * 
+	 * @param point  location of the corner of the rectangle
+	 * 
+	 */
+	public void drawSquare(LatLng point)
+	{
+		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
+				opacity);
+		//the other four points of the triangle
+		LatLng point1 = LatLng.newInstance(point.getLatitude(), point.getLongitude()+0.1);
+		LatLng point2 = LatLng.newInstance(point.getLatitude()-0.02, point.getLongitude()+0.1);
+		LatLng point3 = LatLng.newInstance(point.getLatitude()-0.02, point.getLongitude());
+		
+		LatLng[] polygonPoints = new LatLng[5];
+		polygonPoints[0] = point;
+		polygonPoints[1] = point1;
+		polygonPoints[2] = point2;
+		polygonPoints[3] = point3;
+		polygonPoints[4] = point;
+		
+		
+		final Polygon poly = new Polygon(polygonPoints, color, weight, opacity,
+				color, fillFlag ? .7 : 0.0);
+		lastPolygon = poly;
+		map.addOverlay(poly);
+		poly.setStrokeStyle(style);
+		lastPolygon.setEditingEnabled(PolyEditingOptions.newInstance(5));
+	
+	}
+	
+	/**
+	 * 
+	 * setter method for map click handler when drawing rectangle
+	 * 
+	 * @param specifyingRegion  if the user is specifying a region, it's true
+	 * 
+	 */
+	public void setSpecifyingRegion(boolean specifyingRegion) {
+		this.specifyingRegion = specifyingRegion;
+	}
+
+	
+	/**
+	 * 
+	 * access to the private boolean value specifyingRegion
+	 * 
+	 * @param specifyingRegion  if the user is specifying a region, it's true
+	 * 
+	 */
+	public boolean isSpecifyingRegion() {
+		return specifyingRegion;
 	}
 	
 }

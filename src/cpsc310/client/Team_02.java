@@ -7,24 +7,16 @@ import java.util.Set;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.maps.client.InfoWindowContent;
-import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.Maps;
-import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -437,7 +429,7 @@ public class Team_02 implements EntryPoint {
 	 * @param searchSettingPanel - panel to hold selection tool
 	 */
 	private void buildPolygonSelection(FlowPanel searchSettingPanel) {
-	    final Button specifyRegionBtn = new Button();
+		final Button specifyRegionBtn = new Button();
 	    final Button clearPolygonBtn = new Button();
 	    final Button editPolygonBtn = new Button();	
 	    
@@ -447,11 +439,11 @@ public class Team_02 implements EntryPoint {
 	    editPolygonBtn.setText("Edit specified region");
 	    clearPolygonBtn.setEnabled(false);
 	    editPolygonBtn.setEnabled(false);
-	    
+ 		
 	    // Listen for mouse events on specify region Button
  		specifyRegionBtn.addClickHandler(new ClickHandler() {
- 		      public void onClick(ClickEvent event) {
- 		        theMap.createPolygon();
+			public void onClick(ClickEvent event) {
+ 		    	  theMap.setSpecifyingRegion(true);  	  
  		        clearPolygonBtn.setEnabled(true);
  		        specifyRegionBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(true);
@@ -462,6 +454,7 @@ public class Team_02 implements EntryPoint {
  		clearPolygonBtn.addClickHandler(new ClickHandler() {
  		      public void onClick(ClickEvent event) {
  		        theMap.clearMap();
+ 		        theMap.setSpecifyingRegion(false);
  		        specifyRegionBtn.setEnabled(true);
  		        clearPolygonBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(false);
@@ -474,12 +467,14 @@ public class Team_02 implements EntryPoint {
  		    	  	theMap.editPolygon();
  			      }
  			    });
-	 		
+ 		
 	 	// Add to setting panel
  		searchSettingPanel.add(specifyRegionBtn);
 	  	searchSettingPanel.add(clearPolygonBtn);
 	  	searchSettingPanel.add(editPolygonBtn);
 	}
+	
+
 	
 	/**
 	 * Helper to buildSearchPanel().
@@ -690,4 +685,6 @@ public class Team_02 implements EntryPoint {
 		
 		return isSelling;
 	}
+
+
 }
