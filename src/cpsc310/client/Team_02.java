@@ -299,6 +299,13 @@ public class Team_02 implements EntryPoint {
 		Button uploadBtn = new Button("Upload");
 		TextBox uploadFileTextBox = new TextBox();		
 		
+		//Richard Added
+		HorizontalPanel docPanel = new HorizontalPanel();
+		Button helpBtn = new Button("Help");
+		Button termsBtn = new Button("Terms of Use");
+		docPanel.add(helpBtn);
+		docPanel.add(termsBtn);
+		
 		// Assemble login panel
 	  	buildLoginPanel(loginPanel);
 	  	
@@ -315,6 +322,9 @@ public class Team_02 implements EntryPoint {
 	  	sidePanelContentWrap.add(searchPanel);
 	 	sidePanelContentWrap.add(new HTML("<br />"));
 	  	sidePanelContentWrap.add(uploadPanel);
+	  	sidePanelContentWrap.add(new HTML("<br />"));
+	  	//Richard Added
+	  	sidePanelContentWrap.add(docPanel);
 	  	sidePanelContentWrap.add(new HTML("<br />"));
 	  	
 	  	// Set style
