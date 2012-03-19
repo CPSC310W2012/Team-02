@@ -606,6 +606,8 @@ public class HouseTable {
 		};
 				
 		// make the call to the house data service
-		houseDataSvc.updateHouses(owner, price, isSelling, houses, switchValue, callback);
+		// TODO need to update to changing only one house using method
+		//updateHouse(String Owner, int price, boolean isSelling, HouseData house, double longitude, double latitude)
+//		houseDataSvc.updateHouses(owner, price, isSelling, houses, switchValue, callback);
 	}
 }

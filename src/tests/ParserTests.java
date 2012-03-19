@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,7 +23,7 @@ public class ParserTests {
 	// tests to ensure that the file parser works correctly
 
 	private FileParser fileParser;
-	private ArrayList<HouseDataPoint> houses;
+	private HashMap<String, HouseDataPoint> houses;
 	private List<String> testList;
 	private HouseDataPoint house;
 
@@ -77,7 +78,7 @@ public class ParserTests {
 		testList.add("028-687-761,STRATA,1.48603E+11,14860284,3,,BCS4249,541,503,888,,HOMER ST,,,LOT 3  PLAN BCS4249  DISTRICT LOT 5,\"41  NWD GROUP 1, TOGETHER WITH AN I\",NTEREST IN THE COMMON PROPERTY IN P,ROPORTION TO THE UNIT ENTITLEMENT O,F THE STRATA LOT AS SHOWN ON FORM 1,223000,225000,2012,,,,");
 		testList.add("028-687-761,STRATA,1.48603E+11,14860284,3,,BCS4249,541,503,888,,HOMER ST,,,LOT 3  PLAN BCS4249  DISTRICT LOT 5,\"41  NWD GROUP 1, TOGETHER WITH AN I\",NTEREST IN THE COMMON PROPERTY IN P,ROPORTION TO THE UNIT ENTITLEMENT O,F THE STRATA LOT AS SHOWN ON FORM 1,999999,225000,2012,,,,");
 		houses = fileParser.parseData(testList);
-		assertEquals(999999, houses.get(0).getCurrentLandValue());
+		assertEquals(999999, houses.get("888 HOMER ST").getCurrentLandValue());
 	}
 
 	@Test

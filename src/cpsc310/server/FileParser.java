@@ -13,6 +13,9 @@ import java.util.regex.*;
 
 public class FileParser {
 
+	/**
+	 * constructor
+	 */
 	public FileParser() {
 	}
 
@@ -24,13 +27,13 @@ public class FileParser {
 	 * @post true;
 	 * @param rawFile
 	 *            - a List<String> containing the lines of the .csv file.
-	 * @return an ArrayList<HouseDataPoint> containing the information parsed
+	 * @return an HashMap<String, HouseDataPoint> containing the information parsed
 	 *         from the .csv file.
 	 */
-	public ArrayList<HouseDataPoint> parseData(List<String> rawFile) {
+	public HashMap<String, HouseDataPoint> parseData(List<String> rawFile) {
 
-		ArrayList<HouseDataPoint> houseOutput = null;
 		CSVParser parser = new CSVParser();
+		HashMap<String, HouseDataPoint> houseIDs = new HashMap<String, HouseDataPoint>();
 
 		// create iterator to iterate through all lines contained in the .csv
 		// file
@@ -41,7 +44,6 @@ public class FileParser {
 			// grab the values of the title for each column
 			header = parser.parseLine(currentLine);
 			// stores PIDs to check for duplicates
-			HashMap<String, HouseDataPoint> houseIDs = new HashMap<String, HouseDataPoint>();
 			while (itr.hasNext()) {
 				// store the values of each house into a HashMap to create
 				// HouseDataPoint objects
@@ -69,12 +71,11 @@ public class FileParser {
 					}
 				}
 			}
-			houseOutput = convertToArrayList(houseIDs);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return houseOutput;
+		return houseIDs;
 	}
 
 	/**
@@ -90,20 +91,5 @@ public class FileParser {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * helper  method
-	 * converts generic list object to arraylist
-	 * @TODO replace/remove? should have function parseData return HashMap?
-	 */
-	private ArrayList<HouseDataPoint> convertToArrayList(HashMap<String, HouseDataPoint> currentHouses) {
-		Iterator<HouseDataPoint> itr = currentHouses.values().iterator();
-		ArrayList<HouseDataPoint> houseList = new ArrayList<HouseDataPoint>();
-		while(itr.hasNext())
-		{
-			houseList.add(itr.next());
-		}
-		return houseList;
 	}
 }
