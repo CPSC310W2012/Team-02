@@ -74,11 +74,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		grab = new ArrayList<HouseData>(newRange);
 
 		// Get homes in a generic non-repeated fashion
-		Iterator<HouseDataPoint> houserItr = store.values().iterator();
+		Iterator<String> houserItr = store.keySet().iterator();
 
 		// Convert HouseDataPoint into HouseData
 		for (int i = start; (i < end) && (houserItr.hasNext()); i++) {
-			grab.add(convertToHouseData(houserItr.next()));
+			grab.add(convertToHouseData(store.get(houserItr.next())));
 		}
 
 		// Change below to return grab

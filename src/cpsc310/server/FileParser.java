@@ -53,7 +53,7 @@ public class FileParser {
 					currentHouse.put(header[j], currentParsedLine[j]);
 				}
 				// check for duplicates
-				String currentHouseID = currentHouse.get("TO_CIVIC_NUMBER")
+				String currentHouseID = currentHouse.get("TO_CIVIC_NUMBER").replaceAll("\\..+$", "")
 						+ " " + currentHouse.get("STREET_NAME");
 				if (validateLine(currentHouse)) {
 					int currentLandValue = Integer.parseInt(currentHouse
