@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.reveregroup.gwt.facebook4gwt.Facebook;
 import com.reveregroup.gwt.facebook4gwt.LoginButton;
+import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 /**
  * Main EntryPoint class. UI is built, client-side request is handled. 
@@ -125,9 +126,13 @@ public class Team_02 implements EntryPoint {
 	 	rootLayoutPanel.add(mainPanel);
 
 	 	//Richard Added
+	 	FlowPanel faceBookTemp = new FlowPanel();
 	 	Facebook.init("257432264338889");
 	 	LoginButton faceBookBtn = new LoginButton(true);
-	 	mainPanel.add(faceBookBtn);
+	 	ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "Check out this house!!!");
+	 	faceBookTemp.add(faceBookBtn);
+	 	faceBookTemp.add(shareBtn);
+	 	mainPanel.add(faceBookTemp);
 	}
 	
 	/**
