@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.appengine.api.datastore.QueryResultIterable;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import cpsc310.client.HouseDataService;
@@ -20,16 +23,31 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	private HashMap<String, HouseDataPoint> store = populateMemoryStore();
 
 	/**
-	 * @TODO:javaDoc
+	 * Retrives data from data store and datasources parsing into a hashmap of houseDataPoints
+	 * returns HashMap of houseDataPoints
 	 */
 	private HashMap<String, HouseDataPoint> populateMemoryStore() {
+		// register objectify objects if not already registered
+		initilizeDataStorage();
+		
 		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
 		List<String> rawData = observerService
 				.downloadFile("http://www.ugrad.cs.ubc.ca/~d2t6/property_tax_report_csv.zip");
-
 		// Parse raw data
 		FileParser parser = new FileParser();
-		return parser.parseData(rawData);
+		HashMap<String, HouseDataPoint> tempStore = parser.parseData(rawData);
+		
+		//Populate memory store with changed entries
+		Objectify ofy = ObjectifyService.begin();
+		Iterable<Key<HouseDataPoint>> allKeys = ofy.query(HouseDataPoint.class).fetchKeys();
+		Iterator<Key<HouseDataPoint>> houseIDs = allKeys.iterator();
+		while(houseIDs.hasNext())
+		{
+			HouseDataPoint tempHouse = ofy.get(houseIDs.next());
+			tempStore.put(tempHouse.getHouseID(), tempHouse);
+		}
+		
+		return tempStore;
 	}
 
 	/**
@@ -176,8 +194,6 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			HouseData house, double longitude, double latitude) {
-		// register objectify objects if not already registered
-		initilizeDataStorage();
 		// create and set object variables
 		HouseDataPoint currentHouse = store.get(house.getHouseID());
 		currentHouse.setOwner(Owner);
