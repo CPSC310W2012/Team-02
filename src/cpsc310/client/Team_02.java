@@ -125,9 +125,9 @@ public class Team_02 implements EntryPoint {
 	 	rootLayoutPanel.add(mainPanel);
 
 	 	//Richard Added
-//	 	Facebook.init("257432264338889");
-//	 	LoginButton faceBookBtn = new LoginButton(true);
-//	 	mainPanel.add(faceBookBtn);
+	 	Facebook.init("257432264338889");
+	 	LoginButton faceBookBtn = new LoginButton(true);
+	 	mainPanel.add(faceBookBtn);
 	}
 	
 	/**
