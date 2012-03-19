@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -17,7 +18,7 @@ public class IntegrationTests {
 	//tests to ensure that different classes work correctly upon integration
 	
 	private FileParser fileParser;
-	private ArrayList<HouseDataPoint> houses;
+	private HashMap<String, HouseDataPoint> houses;
 	private HouseDataPoint house;
 	private List<String> csvFile;
 	private DataCatalogueObserverImpl observerService;
