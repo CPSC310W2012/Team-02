@@ -1,5 +1,7 @@
 package cpsc310.client;
 
+import java.util.Stack;
+
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
@@ -23,6 +25,9 @@ public class PropertyMap {
 	private MapWidget map;
 	private StreetviewPanoramaWidget panorama;
 	private StreetviewClient svClient;
+	// keep a stack of all the markers
+	private Stack<Marker> markers = new Stack();
+	
 	// polygon settings
 	private String color = "#FF0000";
 	private double opacity = 0.1;
@@ -139,6 +144,8 @@ public class PropertyMap {
 
 			}
 		});
+		
+		markers.push(marker);
 	}
 
 	/**
@@ -164,12 +171,35 @@ public class PropertyMap {
 	}
 
 	/**
-	 * Clears all of the markers from the map
+	 * Clears all overlays from the map
 	 */
 	public void clearMap() {
 		map.clearOverlays();
 		if(lastPolygon != null)
 			lastPolygon = null;
+	}
+	
+	/**
+	 * Clears all of the markers from the map
+	 */
+	public void clearMarkers() {
+
+		while(!markers.empty())
+		{
+			map.removeOverlay(markers.pop());
+		}
+	}
+	
+	
+	/**
+	 * deletes the specified region on the map
+	 */
+	public void clearSpecifiedRegion() {
+		if(lastPolygon != null)
+		{
+			map.removeOverlay(lastPolygon);
+			lastPolygon = null;
+		}
 	}
 
 	/**
@@ -184,16 +214,6 @@ public class PropertyMap {
 	 */
 	public StreetviewPanoramaWidget getStreetViewMap() {
 		return this.panorama;
-	}
-
-	/**
-	 * TODO: Method that removes one marker given the string location
-	 * 
-	 * @param location
-	 *            - string representation of the address
-	 */
-	public void removeMarker(final String location) {
-
 	}
 
 	/**

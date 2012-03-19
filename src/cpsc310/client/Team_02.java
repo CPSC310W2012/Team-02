@@ -125,9 +125,9 @@ public class Team_02 implements EntryPoint {
 	 	rootLayoutPanel.add(mainPanel);
 
 	 	//Richard Added
-	 	Facebook.init("257432264338889");
-	 	LoginButton faceBookBtn = new LoginButton(true);
-	 	mainPanel.add(faceBookBtn);
+//	 	Facebook.init("257432264338889");
+//	 	LoginButton faceBookBtn = new LoginButton(true);
+//	 	mainPanel.add(faceBookBtn);
 	}
 	
 	/**
@@ -150,14 +150,14 @@ public class Team_02 implements EntryPoint {
 					if (isEditable == true) {
 						
 					}
-					theMap.clearMap();	
+					theMap.clearMarkers();	
 					return;
 				}
 				if (isEditable == true) {
 					
 				}
-				// clear map before proceeding to add new point
-				theMap.clearMap();
+				// clear map markers before proceeding to add new point
+				theMap.clearMarkers();
 				// add marker onto map
 				for (HouseData house : selectedHouses)
 					theMap.findLocation(house.getAddress() + " VANCOUVER");
@@ -453,7 +453,8 @@ public class Team_02 implements EntryPoint {
  		// Listen for mouse events on clear polygon Button
  		clearPolygonBtn.addClickHandler(new ClickHandler() {
  		      public void onClick(ClickEvent event) {
- 		        theMap.clearMap();
+ 		        //theMap.clearMap();
+ 		    	 theMap.clearSpecifiedRegion();
  		        specifyRegionBtn.setEnabled(true);
  		        clearPolygonBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(false);
