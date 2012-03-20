@@ -25,6 +25,7 @@ import com.google.gwt.maps.client.streetview.StreetviewClient;
 import com.google.gwt.maps.client.streetview.StreetviewPanoramaOptions;
 import com.google.gwt.maps.client.streetview.StreetviewPanoramaWidget;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 
 public class PropertyMap {
 	private MapWidget map;
@@ -104,7 +105,7 @@ public class PropertyMap {
 	 * @param location
 	 *            - string representation of the address
 	 */
-	public void findLocation(final String location) {
+	public void findLocation(final HouseData house) {
 		LatLngCallback callback = new LatLngCallback() {
 
 			public void onFailure() {
@@ -114,13 +115,13 @@ public class PropertyMap {
 			public void onSuccess(LatLng point) {
 				// add the location onto the map
 				// check if it's on sale, true for third param if so.
-				addSpecialMarker(point, location, true);
+				addSpecialMarker(point, house, true);
 				refreshStreetView(point);
 				//isPointInPolygon(point); //for testing
 			}
 		};
 		Geocoder geocoder = new Geocoder();
-		geocoder.getLatLng(location, callback);
+		geocoder.getLatLng(house.getAddress() + " VANCOUVER, BC", callback);
 	}
 
 	/**
@@ -168,14 +169,12 @@ public class PropertyMap {
 	 * @param onSale true if the property is on sale
 	 *
 	 */
-	private void addSpecialMarker(final LatLng point, final String location, boolean onSale) {
+	private void addSpecialMarker(final LatLng point, final HouseData house, boolean onSale) {
 		Icon icon;
 		// icon is green if it's on sale, red otherwise
 		if(onSale)
-			icon = Icon.newInstance(
-	        "http://maps.google.com/mapfiles/ms/micons/green-dot.png");
-		else
-			icon = Icon.newInstance();
+			 icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/green-dot.png");
+		else icon = Icon.newInstance();
 		
 		icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
 	    icon.setIconAnchor(Point.newInstance(6, 20));
@@ -187,15 +186,23 @@ public class PropertyMap {
 		final Marker marker = new Marker(point, options);
 		map.addOverlay(marker);
 		map.setCenter(point);
-		map.getInfoWindow().open(marker,
-				new InfoWindowContent(location.toLowerCase()));
+		
+		// Info window containing house data information
+		
+		final InfoWindowContent content;
+	    HTML htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
+	    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
+	    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
+	    		"<b>Year built: </b>" + house.getYearBuilt() + "</p>");
+	    content = new InfoWindowContent(htmlWidget);
+	    map.getInfoWindow().open(marker, content);
+
 		refreshStreetView(point);
 
 		marker.addMarkerClickHandler(new MarkerClickHandler() {
 			public void onClick(MarkerClickEvent event) {
 				try {
-					map.getInfoWindow().open(marker,
-							new InfoWindowContent(location.toLowerCase()));
+					map.getInfoWindow().open(marker,content);
 					refreshStreetView(point);
 				} catch (Exception e) {
 					Window.alert(e.getMessage());

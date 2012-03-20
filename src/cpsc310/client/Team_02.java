@@ -158,7 +158,7 @@ public class Team_02 implements EntryPoint {
 				theMap.clearMarkers();
 				// add marker onto map
 				for (HouseData house : selectedHouses)
-					theMap.findLocation(house.getAddress() + " VANCOUVER, BC");
+					theMap.findLocation(house);
 			}
 		});
 		
@@ -456,7 +456,7 @@ public class Team_02 implements EntryPoint {
  		        specifyRegionBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(true);
  		        // prompt user to click on a region on the map
- 		      InfoWindowContent content;
+ 		       InfoWindowContent content;
  		      HTML htmlWidget = new HTML("<p> Click on the map to specify region.</br> Drag corners to edit</p>");
  		      content = new InfoWindowContent(htmlWidget);
  		     theMap.getMap().getInfoWindow().open(vancouver, content);
