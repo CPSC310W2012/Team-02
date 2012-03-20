@@ -2,6 +2,7 @@ package cpsc310.client;
 
 import java.util.Stack;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapWidget;
@@ -26,6 +27,9 @@ import com.google.gwt.maps.client.streetview.StreetviewPanoramaOptions;
 import com.google.gwt.maps.client.streetview.StreetviewPanoramaWidget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.reveregroup.gwt.facebook4gwt.Facebook;
+import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 public class PropertyMap {
 	private MapWidget map;
@@ -189,12 +193,8 @@ public class PropertyMap {
 		
 		// Info window containing house data information
 		
-		final InfoWindowContent content;
-	    HTML htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
-	    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
-	    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
-	    		"<b>Year built: </b>" + house.getYearBuilt() + "</p>");
-	    content = new InfoWindowContent(htmlWidget);
+		final InfoWindowContent content = new InfoWindowContent(getMarkerPanel(house));
+	    
 	    map.getInfoWindow().open(marker, content);
 
 		refreshStreetView(point);
@@ -213,6 +213,40 @@ public class PropertyMap {
 		
 		markers.push(marker);
 	}
+	
+	private VerticalPanel getMarkerPanel(HouseData house)
+	{
+		VerticalPanel markerInfoWindow = new VerticalPanel();
+		HTML htmlWidget;
+		// If the house is on sale, provide extra field for sale price and realtor information
+		if(house.getIsSelling()){
+			//TODO: isSelling field for a house is not set when realtor edits on table
+			// need to add event handler and modify houseData point
+			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
+	    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
+	    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
+	    		"<b>Year built: </b>" + house.getYearBuilt() + "</br>" +
+	    		"<b>Selling Price: </b>" +house.getPrice()+"</br>" +
+	    		"<b>Owner: </b>" +house.getOwner()+ "</p>");
+		}
+		else
+		{
+			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
+		    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
+		    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
+		    		"<b>Year built: </b>" + house.getYearBuilt() + "</p>");
+		}
+		
+		markerInfoWindow.add(htmlWidget);
+		// TODO: Add Facebook share buttoN
+//		Facebook.init("257432264338889");
+		String shareText = "hello\nhello\n";
+		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), shareText);
+		markerInfoWindow.add(shareBtn);
+		
+		return markerInfoWindow;
+	}
+	
 
 	
 	
