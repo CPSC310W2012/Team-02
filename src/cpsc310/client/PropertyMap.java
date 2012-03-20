@@ -10,7 +10,11 @@ import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
 import com.google.gwt.maps.client.overlay.Polygon;
@@ -106,7 +110,8 @@ public class PropertyMap {
 
 			public void onSuccess(LatLng point) {
 				// add the location onto the map
-				addMarker(point, location);
+				// check if it's on sale, true for third param if so.
+				addSpecialMarker(point, location, true);
 				refreshStreetView(point);
 				//isPointInPolygon(point); //for testing
 			}
@@ -148,6 +153,59 @@ public class PropertyMap {
 		markers.push(marker);
 	}
 
+	
+	/**
+	 * Adds a marker to the map, if the property is on sale, it will be a green marker
+	 * 
+	 * @param point
+	 *            latitude and longitude
+	 * @param location
+	 *            string representation of the location to be displayed in
+	 *            overlay
+	 * @param onSale true if the property is on sale
+	 *
+	 */
+	private void addSpecialMarker(final LatLng point, final String location, boolean onSale) {
+		Icon icon;
+		// icon is green if it's on sale, red otherwise
+		if(onSale)
+			icon = Icon.newInstance(
+	        "http://maps.google.com/mapfiles/ms/micons/green-dot.png");
+		else
+			icon = Icon.newInstance();
+		
+		icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+	    icon.setIconAnchor(Point.newInstance(6, 20));
+	    icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+
+	    MarkerOptions options = MarkerOptions.newInstance();
+	    options.setIcon(icon);
+	    
+		final Marker marker = new Marker(point, options);
+		map.addOverlay(marker);
+		map.setCenter(point);
+		map.getInfoWindow().open(marker,
+				new InfoWindowContent(location.toLowerCase()));
+		refreshStreetView(point);
+
+		marker.addMarkerClickHandler(new MarkerClickHandler() {
+			public void onClick(MarkerClickEvent event) {
+				try {
+					map.getInfoWindow().open(marker,
+							new InfoWindowContent(location.toLowerCase()));
+					refreshStreetView(point);
+				} catch (Exception e) {
+					Window.alert(e.getMessage());
+				}
+
+			}
+		});
+		
+		markers.push(marker);
+	}
+
+	
+	
 	/**
 	 * Changes streetview location given location coordinates
 	 * 
