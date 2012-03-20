@@ -7,6 +7,7 @@ import java.util.Set;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,6 +61,7 @@ public class Team_02 implements EntryPoint {
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
 			"Price", "Realtor", "For Sale"};
 	private List<HouseData> currentHouseList = null;
+	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 
 	
 	/**
@@ -171,7 +173,6 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildMapPanel(SplitLayoutPanel mapContainerPanel) {
 	  	// Open a map centered on Vancouver
-		LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	 	theMap = new PropertyMap(vancouver);
 	 		
 		// Assemble map panel
@@ -454,6 +455,12 @@ public class Team_02 implements EntryPoint {
  		        clearPolygonBtn.setEnabled(true);
  		        specifyRegionBtn.setEnabled(false);
  		        editPolygonBtn.setEnabled(true);
+ 		        // prompt user to click on a region on the map
+ 		      InfoWindowContent content;
+ 		      HTML htmlWidget = new HTML("<p> Click on the map to specify region.</br> Drag corners to edit</p>");
+ 		      content = new InfoWindowContent(htmlWidget);
+ 		     theMap.getMap().getInfoWindow().open(vancouver, content);
+
  		      }
  		    });
  		

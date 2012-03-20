@@ -3,6 +3,7 @@ package cpsc310.client;
 import java.util.Stack;
 
 import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.event.MapClickHandler;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.Window;
 
 public class PropertyMap {
 	private MapWidget map;
+	private MapOptions mOptions;
 	private StreetviewPanoramaWidget panorama;
 	private StreetviewClient svClient;
 	// keep a stack of all the markers
@@ -88,6 +90,7 @@ public class PropertyMap {
 	 *            - the location to center the map on
 	 */
 	public void buildStandardMap(LatLng location) {
+		mOptions = MapOptions.newInstance();
 		map = new MapWidget();
 		map.setCenter(location, 10);
 		map.setSize("100%", "100%");
@@ -378,6 +381,8 @@ public class PropertyMap {
 		map.addOverlay(poly);
 		poly.setStrokeStyle(style);
 		lastPolygon.setEditingEnabled(PolyEditingOptions.newInstance(5));
+		
+		
 	
 	}
 	
