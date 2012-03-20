@@ -124,15 +124,6 @@ public class Team_02 implements EntryPoint {
 	  	// Associate Main panel with the HTML host page		
 	 	RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 	 	rootLayoutPanel.add(mainPanel);
-
-	 	//Richard Added
-	 	FlowPanel faceBookTemp = new FlowPanel();
-	 	Facebook.init("257432264338889");
-	 	LoginButton faceBookBtn = new LoginButton(true);
-	 	ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "Check out this house!!!");
-	 	faceBookTemp.add(faceBookBtn);
-	 	faceBookTemp.add(shareBtn);
-	 	mainPanel.add(faceBookTemp);
 	}
 	
 	/**
@@ -308,6 +299,16 @@ public class Team_02 implements EntryPoint {
 		Button termsBtn = new Button("Terms of Use");
 		docPanel.add(helpBtn);
 		docPanel.add(termsBtn);
+		
+	 	//Richard Added
+	 	FlowPanel faceBookTemp = new FlowPanel();
+	 	Facebook.init("257432264338889");
+	 	LoginButton faceBookBtn = new LoginButton(true);
+	 	ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "Check out this house!!!");
+	 	faceBookTemp.add(faceBookBtn);
+	 	faceBookTemp.add(shareBtn);
+	 	docPanel.add(faceBookTemp);
+		
 		
 		// Assemble login panel
 	  	buildLoginPanel(loginPanel);
