@@ -307,6 +307,7 @@ public class Team_02 implements EntryPoint {
 	 	ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "Check out this house!!!");
 	 	faceBookTemp.add(faceBookBtn);
 	 	faceBookTemp.add(shareBtn);
+	 	faceBookTemp.add(new HTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>"));
 	 	docPanel.add(faceBookTemp);
 		
 		
