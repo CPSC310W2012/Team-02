@@ -1,8 +1,9 @@
 package cpsc310.client;
 
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CustomButton;
+import com.google.gwt.user.client.ui.Image;
 
-public class DrawToolButton extends Button {
+public class DrawToolButton extends CustomButton {
 		
 	private BtnType buttonType;
 	private Boolean isDrawing;
@@ -51,5 +52,20 @@ public class DrawToolButton extends Button {
 	public boolean drawEnabled() {
 		return isDrawing;
 	}
-
+	
+	/**
+	 * Method to set the button as a draw button.
+	 */
+	public void setDrawImage() {
+		this.getUpFace().setImage(new Image("https://fbcdn-photos-a.akamaihd.net/photos-ak-snc1/v85006/101/257432264338889/app_1_257432264338889_9807.gif"));
+		this.getDownFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Water_lilies.jpg"));
+	}
+	
+	/**
+	 * Method to set the button as an erase button.
+	 */
+	public void setEraseImage() {
+		//this.getUpFace().setImage(image);
+	}
+	
 }
