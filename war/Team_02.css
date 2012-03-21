@@ -253,3 +253,13 @@ a {
 	background-color:#FCFCFC;
 }
 
+.advancedSettingPanel {
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	left: 400px;
+}
+
+.submainPanel {
+	overflow:visible;
+}
