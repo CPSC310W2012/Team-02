@@ -304,8 +304,12 @@ public class Team_02 implements EntryPoint {
 		HorizontalPanel docPanel = new HorizontalPanel();
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
+		DrawToolButton drawBtn = new DrawToolButton();
+		drawBtn.setDrawImage();
+		drawBtn.setVisible(true);
 		docPanel.add(helpBtn);
 		docPanel.add(termsBtn);
+		docPanel.add(drawBtn);
 
 		// Richard Added
 		FlowPanel faceBookTemp = new FlowPanel();
