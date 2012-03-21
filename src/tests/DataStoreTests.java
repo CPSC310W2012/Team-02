@@ -71,6 +71,14 @@ public class DataStoreTests {
 	// test for assessmentYears retrieval
 	@Test
 	public void testSearchByAssessmentYearGeneric() {
+		ArrayList<String> tempArray = datastore.searchByAssessmentYear(2011,
+				2012);
+		assertTrue(tempArray.size() > 1);
+	}
+	
+	// test for assessmentYears retrieval for inclusive cases
+	@Test
+	public void testSearchByAssessmentYearInclusive() {
 		ArrayList<String> tempArray = datastore.searchByAssessmentYear(2012,
 				2012);
 		assertTrue(tempArray.size() > 1);
@@ -106,4 +114,7 @@ public class DataStoreTests {
 				1980, 1990);
 		assertTrue(tempArray.size() > 1);
 	}
+	
+	//TODO more test cases for the search functions other than generic cases
+	//TODO updating houses test function
 }

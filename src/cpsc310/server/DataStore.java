@@ -462,7 +462,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByCurrentLandValue(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = currentLandValues
-				.subMap(min, max);
+				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -478,7 +478,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByImprovementValue(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = improvementValues
-				.subMap(min, max);
+				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -510,7 +510,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByPreviousLandValue(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = previousLandValues
-				.subMap(min, max);
+				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -526,7 +526,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByPreviousImprovementValue(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = previousImprovementValues
-				.subMap(min, max);
+				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -558,7 +558,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByBigImprovementYear(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = bigImprovementYears
-				.subMap(min, max);
+				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -573,7 +573,8 @@ public class DataStore {
 	 * @return houseFound
 	 */
 	public ArrayList<String> searchByPrice(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = price.subMap(min, max);
+		SortedMap<Integer, ArrayList<String>> tempMap = price.subMap(min, true,
+				max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
