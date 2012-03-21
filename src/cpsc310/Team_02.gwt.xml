@@ -13,6 +13,7 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='com.google.gwt.maps.GoogleMaps' />
+  <inherits name='com.google.gwt.visualization.Visualization'/>
   <inherits name="com.reveregroup.gwt.facebook4gwt.Facebook4gwt"></inherits>
   
   <!-- load map script v2 - key is for deployment, not req for dev mode -->

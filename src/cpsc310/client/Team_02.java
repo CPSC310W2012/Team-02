@@ -847,7 +847,7 @@ public class Team_02 implements EntryPoint {
 				editDialog.hide();
 			}
 		});
-		
+		editDialog.setText("Edit a house");
 		editDialog.setGlassEnabled(true);
 		editDialog.setAnimationEnabled(true);		
 		editDialog.setWidget(editPanel);
