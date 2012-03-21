@@ -3,6 +3,10 @@ package cpsc310.client;
 import java.util.Stack;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.MetaElement;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapWidget;
@@ -239,7 +243,22 @@ public class PropertyMap {
 		
 		markerInfoWindow.add(htmlWidget);
 		// TODO: Add Facebook share buttoN
-//		Facebook.init("257432264338889");
+		
+		//Richard Added
+		/* Other idea that I didn't try
+		MetaElement houseMeta = Document.get().createMetaElement();
+		houseMeta.setAttribute("og:description", "This house");
+		*/
+		NodeList<Element> metaTags = Document.get().getElementsByTagName("meta");
+		for(int i = 0; i < metaTags.getLength(); i++)
+		{
+			MetaElement tagRetrieved = (MetaElement) metaTags.getItem(i);
+			if(tagRetrieved.getAttribute("property").equals("og:description"))
+			{
+				tagRetrieved.setContent("This house");
+			}
+		}
+		
 		String shareText = "hello\nhello\n";
 		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), shareText);
 		markerInfoWindow.add(shareBtn);
