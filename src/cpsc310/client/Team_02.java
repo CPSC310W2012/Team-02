@@ -52,11 +52,12 @@ public class Team_02 implements EntryPoint {
 	private boolean isLoginServiceAvailable = false;
 	private boolean isEditable = false;
 	private boolean isSearching = false;
+	private boolean isAdvSearchPanelHidden = true;
 	private int databaseLength = 0;
 	private int pageLength = 0;
 	private Set<HouseData> selectedHouses = null;
 	private List<HouseData> searchHouseList = null;
-	private String[] searchCriteria = { "Address", "Postal Code",
+	final private String[] searchCriteria = { "Address", "Postal Code",
 			"Current Land Value", "Current Improvement Value",
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
@@ -396,21 +397,69 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSearchPanel(FlowPanel searchPanel) {
 		FlowPanel searchSettingPanel = new FlowPanel();
+		final FlowPanel advancedSettingPanel = new FlowPanel();
 		Button searchBtn = new Button("Search");
+		Button advancedSearchBtn = new Button ("Advanced Search"); 
 		final List<TextBox> searchValues = new ArrayList<TextBox>(
 				searchCriteria.length * 2);
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
-
+		final String[] basicSearchCriteria = { "Address", "Current Land Value",
+				"Price", "Realtor", "For Sale"};
+		final String[] advancedSearchCriteria = {"Postal Code", "Current Improvement Value",
+				"Assessment Year", "Previous Land Value",
+				"Previous Improvement Value", "Year Built", "Big Improvement Year"};		
+		
 		// Append style
 		searchPanel.setStyleName("searchPanel");
 		searchSettingPanel.setStyleName("searchSettingPanel");
+		advancedSettingPanel.setStyleName("advancedSettingPanel");
+		advancedSettingPanel.setVisible(false);
 
 		// Build searchSettingPanel
 		searchSettingPanel.add(new HTML("<div class='border'></div>"));
+		buildSearchFields(searchSettingPanel, basicSearchCriteria, searchValues, forSale);
+		buildSearchFields(advancedSettingPanel, advancedSearchCriteria, 
+				searchValues, forSale);
 
 		// Add polygon selection
 		buildPolygonSelection(searchSettingPanel);
 
+		// Add searchSettingPanel and searchBtn to the searchPanel
+		searchPanel.add(searchSettingPanel);
+		searchPanel.add(advancedSettingPanel);
+		searchPanel.add(advancedSearchBtn);
+		searchPanel.add(new HTML("<br />"));
+		searchPanel.add(searchBtn);
+
+		// Listen for mouse events on Search Button
+		searchBtn.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				searchHouse(searchValues, forSale);
+			}
+		});
+		
+		//Listen for mouse events on Advanced Search Button
+		advancedSearchBtn.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (isAdvSearchPanelHidden == true)
+					advancedSettingPanel.setVisible(true);
+				else
+					advancedSettingPanel.setVisible(false);
+			}
+		});
+	}
+
+	/**
+	 * Helper to buildSearchPanel().
+	 * Adds search fields to given search setting panels.
+	 * @param searchSettingPanel - panel to add in fields
+	 * @param searchCriteria - search criteria to add
+	 * @param searchValues - list of search field text box
+	 * @param forSale - list of 'for sale' radio buttons
+	 */
+	private void buildSearchFields(FlowPanel searchSettingPanel,
+			String[] searchCriteria, List<TextBox> searchValues, List<RadioButton> forSale) {
+		
 		for (String criterion : searchCriteria) {
 			searchSettingPanel.add(new Label(criterion));
 
@@ -424,18 +473,6 @@ public class Team_02 implements EntryPoint {
 				buildRegularBoxes(searchValues, searchSettingPanel);
 			}
 		}
-
-		// Add searchSettingPanel and searchBtn to the searchPanel
-		searchPanel.add(searchSettingPanel);
-		searchPanel.add(new HTML("<br />"));
-		searchPanel.add(searchBtn);
-
-		// Listen for mouse events on Search Button
-		searchBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				searchHouse(searchValues, forSale);
-			}
-		});
 	}
 
 	/**
