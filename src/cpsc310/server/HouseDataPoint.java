@@ -79,7 +79,7 @@ public class HouseDataPoint {
 		isSelling = false;
 		price = 0;
 		latitude = -91;
-		longitude = -180;
+		longitude = -181;
 	}
 
 	// getters
@@ -164,11 +164,15 @@ public class HouseDataPoint {
 		latitude = lat;
 		longitude = lng;
 	}
+	
+	public void setPostalCode(String pCode) {
+		postalCode = pCode;
+	}
 
 	/**
 	 * Helper method
 	 * 
-	 * @pre a string with only numeric values or null is passed
+	 * @precondition a string with only numeric values or null is passed
 	 * @post a integer is returned, -1 is return upon a null value
 	 * @param number
 	 *            - a string that represents a number

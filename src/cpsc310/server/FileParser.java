@@ -63,8 +63,6 @@ public class FileParser {
 							houseIDs.put(currentHouseID, new HouseDataPoint(
 									currentHouse));
 						}
-						houseIDs.put(currentHouseID, new HouseDataPoint(
-								currentHouse));
 					} else {
 						houseIDs.put(currentHouseID, new HouseDataPoint(
 								currentHouse));
