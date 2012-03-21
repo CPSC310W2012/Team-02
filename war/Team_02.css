@@ -5,7 +5,6 @@
 * {
 	margin: 0;
 	padding: 0;
-	position: relative;
 }
 
 body {
@@ -87,7 +86,7 @@ a {
 
 .gwt-Label {
 	font-size:11px !important;
-	color: #000;
+	color: #515151;
 }
 
 .gwt-RadioButton {
@@ -253,13 +252,31 @@ a {
 	background-color:#FCFCFC;
 }
 
-.advancedSettingPanel {
-	position: absolute;
-	z-index: 100;
-	top: 0;
-	left: 400px;
+.advancedSettingPopup {
+	background-color: #FCFCFC;
 }
 
-.submainPanel {
-	overflow:visible;
+.editDialog {
+	background-color: #FCFCFC;
+	padding: 20px;
+	border: 3px solid #A8A8A8;
+}
+
+.editPanel {
+	width: 250px;
+	font-size: 12px;
+}
+
+.editPanel .gwt-Button {
+	float: right;
+}
+
+.editPanel .gwt-Label {
+	font-size: 12px !important;
+}
+
+.gwt-PopupPanelGlass {
+  background-color: #000;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
 }

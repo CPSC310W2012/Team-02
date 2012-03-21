@@ -21,6 +21,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
@@ -394,83 +395,7 @@ public class HouseTable {
 	}
 	
 	/**
-	 * Enable edit by replacing current User Specified columns
-	 * with editable cells and category cells.
-	 */
-	public void enableEdit() {
-		selectionModel.getSelectedSet();
-		
-		this.homesCellTable.removeColumn(ownerColumn);
-		final EditTextCell editOwnerCell = new EditTextCell();
-		ownerColumn = 
-	  			new Column<HouseData, String>(editOwnerCell) {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return house.getOwner();
-	  		}
-	  	};
-	  	ownerColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
-	  		 public void update(int index, HouseData house, String owner) {
-	  			 int switchValue = 0;
-	  			 if (validateInput(owner, switchValue) == 0) {
-	  				editOwnerCell.clearViewData(HouseData.KEY_PROVIDER.getKey(house));
-	  				homesCellTable.redraw();
-	  				Window.alert("Only alphabet characters are allowed for realtor name");
-	  				return;
-	  			 }
-	  			 editHouse(owner, "", "", helpMultiEdit(house), switchValue);
-	  		 }
-	  	});
-	  	this.homesCellTable.addColumn(ownerColumn, "Realtor");
-	  	ownerColumn.setSortable(true);
-	  	
-	  	this.homesCellTable.removeColumn(priceColumn);
-	  	final EditTextCell editPriceCell = new EditTextCell();
-	  	priceColumn = 
-	  			new Column<HouseData, String>(editPriceCell) {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return Double.toString(house.getPrice());
-	  		}
-	  	};
-	  	priceColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
-	  		 public void update(int index, HouseData house, String price) {
-	  			 int switchValue = 1;
-	  			 if (validateInput(price, switchValue) == 0) {
-	  				editPriceCell.clearViewData(HouseData.KEY_PROVIDER.getKey(house));
-	  				homesCellTable.redraw();
-	  				Window.alert("Only non-decimal numeric value is allowed for price.");
-	  				return;
-	  			 }
-	  			 editHouse("", price, "", helpMultiEdit(house), switchValue);
-	  		 }
-	  	});
-	  	this.homesCellTable.addColumn(priceColumn, "Price");
-	  	priceColumn.setSortable(true);	  		  
-	  	
-	  	this.homesCellTable.removeColumn(isSellingColumn);
-	  	category.add("Yes");
-	  	category.add("No");
-	  	editSellingCell = new SelectionCell(category);
-	  	isSellingColumn = new Column<HouseData, String> (editSellingCell) {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			if (house.getIsSelling())
-	  				return category.get(0);
-	  			return category.get(1);
-	  		}
-	  	};
-	  	isSellingColumn.setFieldUpdater(new FieldUpdater<HouseData, String> () {
-	  		 public void update(int index, HouseData house, String isSelling) {
-	  			 int switchValue = 2;
-	  			 editHouse("", "", isSelling, helpMultiEdit(house), switchValue);
-	  		 }
-	  	});
-	  	this.homesCellTable.addColumn(isSellingColumn, "For Sale");
-	}
-	
-	/**
-	 * Update table. If updateWhole is true, just repopulate the table with the initial data
+	 * Update table with given list of houses.
 	 * @param houses - list of houses to populate the table
 	 * @param size - number of houses in the list
 	 * @param start - index of the start item in the table
@@ -484,6 +409,24 @@ public class HouseTable {
 			dataProvider.updateRowCount(size, true);
 		}
 		dataProvider.updateRowData(start, houses);
+	}
+	
+	/**
+	 * Refresh current view of table
+	 */
+	public void refreshTable() {
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+			@Override
+			public void onFailure (Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			@Override
+			public void onSuccess (List<HouseData> result) {
+				dataProvider.updateRowData(currentStartItem, result);
+
+			}
+		};
+		houseDataSvc.getHouses(currentStartItem, pageLength, callback);
 	}
 	
 	/**
@@ -504,110 +447,6 @@ public class HouseTable {
 	 */
 	public void expandElement(int pageSize) {
 		this.homesCellTable.setPageSize(pageSize);
-	}
+	}	
 	
-	/**
-	 * Helper to Edit function to enable multiedit.
-	 * @param house - house object in which the edit is currently invoked 
-	 * @return set of house data specified by selection to edit 
-	 */
-	private Set<HouseData> helpMultiEdit(HouseData house) {
-		Set<HouseData> set;
-		if (selectionModel.getSelectedSet().size() > 1) {
-			set = selectionModel.getSelectedSet();
-		}
-		else {
-			set = new HashSet<HouseData>(1);
-			set.add(house);
-		}
-		return set;
-	}
-	
-	/**
-	 * Validate edit input
-	 * @param input - user input into edit cell
-	 * @param switchValue - 0 for ownerInput, 1 for priceInput
-	 * @return int value 1 if input is valid; 0 if input is invalid; 
-	 * -1 if input does not fall into neither cases.
-	 */
-	private int validateInput (String input, int switchValue) {
-		int check = -1;
-		switch (switchValue) {
-		case 0:
-			if (!input.matches("[A-Za-z\\s]*")) {
-				check = 0;
-			}
-			else {
-				check = 1;
-			}
-			return check;
-		case 1:
-			// Price input must be numerical
-			if (!input.matches("\\d*")) {
-				check = 0;
-			}
-			else {
-				check = 1;
-			}
-			return check;
-		default:
-			return check;
-		}
-	}
-	
-	/**
-	 * Asynchronous call to update HouseDataPoint in the server database.
-	 * @param owner - name of the realtor
-	 * @param priceInput - price of the house
-	 * @param isSellingInput - for-sale indicator
-	 * @param houses - set of houses to update
-	 * @param switchValue - 0 for updating owner; 1 for updating price; 2 for updating isSelling
-	 */
-	private void editHouse(String owner, String priceInput, String isSellingInput, 
-			Set<HouseData> houses, int switchValue) {
-		
-		// Assemble edit request
-		double price;
-		if (priceInput.isEmpty())	
-			price = 0;
-		else	
-			price = Double.parseDouble(priceInput);
-		
-		boolean isSelling;
-		if (isSellingInput.equals("Yes")) 
-			isSelling = true;
-		else
-			isSelling = false;		
-		
-		// Initialize the service proxy
-		if (houseDataSvc == null) {
-			houseDataSvc = GWT.create(HouseDataService.class);
-		}
-		
-		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-			public void onSuccess(Void result) {
-				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
-					@Override
-					public void onFailure (Throwable caught) {
-						Window.alert(caught.getMessage());
-					}
-					@Override
-					public void onSuccess (List<HouseData> result) {
-						dataProvider.updateRowData(currentStartItem, result);
-						
-					}
-				};
-				houseDataSvc.getHouses(0, pageLength, callback);
-			}
-		};
-				
-		// make the call to the house data service
-		// TODO need to update to changing only one house using method
-		//updateHouse(String Owner, int price, boolean isSelling, HouseData house, double longitude, double latitude)
-//		houseDataSvc.updateHouses(owner, price, isSelling, houses, switchValue, callback);
-	}
 }

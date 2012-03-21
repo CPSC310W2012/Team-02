@@ -11,11 +11,13 @@ import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Button;
@@ -103,7 +105,7 @@ public class Team_02 implements EntryPoint {
 		// Enable edit function only if login service is available AND
 		// the user is logged in.
 		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
-			houseTable.enableEdit();
+			enableEdit();
 		}
 
 		// Make main panel fill the browser
@@ -141,7 +143,7 @@ public class Team_02 implements EntryPoint {
 		// Create selection model
 		final MultiSelectionModel<HouseData> selectionModel = new MultiSelectionModel<HouseData>(
 				HouseData.KEY_PROVIDER);
-
+		
 		// Handle selection event. Upon selection selected houses get displayed
 		// on map.
 		selectionModel
@@ -150,14 +152,8 @@ public class Team_02 implements EntryPoint {
 					public void onSelectionChange(SelectionChangeEvent event) {
 						selectedHouses = selectionModel.getSelectedSet();
 						if (selectedHouses.isEmpty()) {
-							if (isEditable == true) {
-
-							}
 							theMap.clearMarkers();
 							return;
-						}
-						if (isEditable == true) {
-
 						}
 						// clear map markers before proceeding to add new point
 						theMap.clearMarkers();
@@ -392,10 +388,11 @@ public class Team_02 implements EntryPoint {
 	 * search field. searchPanel wraps the searchSettingsPanel and searchBtn.
 	 */
 	private void buildSearchPanel(FlowPanel searchPanel) {
-		FlowPanel searchSettingPanel = new FlowPanel();
-		final FlowPanel advancedSettingPanel = new FlowPanel();
+		final FlowPanel searchSettingPanel = new FlowPanel();
+		FlowPanel advancedSettingPanel = new FlowPanel();
+		final PopupPanel advancedSettingPopup = new PopupPanel(false);
 		Button searchBtn = new Button("Search");
-		Button advancedSearchBtn = new Button ("Advanced Search"); 
+		final Button advancedSearchBtn = new Button ("Advanced Search"); 
 		final List<TextBox> searchValues = new ArrayList<TextBox>(
 				searchCriteria.length * 2);
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
@@ -408,21 +405,21 @@ public class Team_02 implements EntryPoint {
 		// Append style
 		searchPanel.setStyleName("searchPanel");
 		searchSettingPanel.setStyleName("searchSettingPanel");
-		advancedSettingPanel.setStyleName("advancedSettingPanel");
-		advancedSettingPanel.setVisible(false);
+		advancedSettingPopup.setStyleName("advancedSettingPopup");
 
 		// Build searchSettingPanel
 		searchSettingPanel.add(new HTML("<div class='border'></div>"));
 		buildSearchFields(searchSettingPanel, basicSearchCriteria, searchValues, forSale);
 		buildSearchFields(advancedSettingPanel, advancedSearchCriteria, 
 				searchValues, forSale);
-
+		advancedSettingPopup.setAnimationEnabled(true);
+		advancedSettingPopup.setWidget(advancedSettingPanel);	
+		
 		// Add polygon selection
 		buildPolygonSelection(searchSettingPanel);
 
 		// Add searchSettingPanel and searchBtn to the searchPanel
 		searchPanel.add(searchSettingPanel);
-		searchPanel.add(advancedSettingPanel);
 		searchPanel.add(advancedSearchBtn);
 		searchPanel.add(new HTML("<br />"));
 		searchPanel.add(searchBtn);
@@ -437,10 +434,23 @@ public class Team_02 implements EntryPoint {
 		//Listen for mouse events on Advanced Search Button
 		advancedSearchBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (isAdvSearchPanelHidden == true)
-					advancedSettingPanel.setVisible(true);
-				else
-					advancedSettingPanel.setVisible(false);
+				if (isAdvSearchPanelHidden == true) {
+					advancedSettingPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+						
+						@Override
+						public void setPosition(int offsetWidth, int offsetHeight) {
+							int left = searchSettingPanel.getAbsoluteLeft()
+									+ searchSettingPanel.getOffsetWidth();
+							int top = searchSettingPanel.getAbsoluteTop();
+							advancedSettingPopup.setPopupPosition(left, top);
+						}
+					});
+					isAdvSearchPanelHidden = false;
+				}
+				else {
+					advancedSettingPopup.hide();
+					isAdvSearchPanelHidden = true;
+				}
 			}
 		});
 	}
@@ -753,6 +763,135 @@ public class Team_02 implements EntryPoint {
 			isSelling = -1;
 
 		return isSelling;
+	}
+	
+	
+	/**
+	 * Enables editing of a house data.
+	 * Adds edit button to the table panel,
+	 * builds dialog box where user can specify price and for-sale indicator.
+	 */
+	private void enableEdit() {
+		final DialogBox editDialog = new DialogBox();
+		Button editBtn = new Button("Edit");
+		editDialog.setStyleName("editDialog");
+		
+		editBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (checkOnlyOneSelected()) {
+					buildEditPanel(editDialog);
+					editDialog.center();
+					editDialog.show();
+				}
+				else
+					Window.alert("Please select one house");
+			}
+		});
+		tableWrapPanel.add(editBtn);
+	}
+	
+	private boolean checkOnlyOneSelected() {
+		return (selectedHouses != null && selectedHouses.size() == 1);
+	}
+
+	/**
+	 * Helper to enableEdit().
+	 * Builds contents of edit dialog.
+	 * @param editDialog - dialog to add the contents in
+	 */
+	private void buildEditPanel(final DialogBox editDialog) {	
+		FlowPanel editPanel = new FlowPanel();			
+		Button okBtn = new Button("OK");
+		Button cancelBtn = new Button("Cancel");
+		final TextBox priceBox = new TextBox();
+		final RadioButton yesSell = new RadioButton("editSell", "Yes");
+		RadioButton noSell = new RadioButton("editSell", "No");
+		noSell.setValue(true);
+		
+		editPanel.setStyleName("editPanel");
+		priceBox.addStyleDependentName("shorter");
+		
+		for (HouseData house : selectedHouses) {
+			editPanel.add(new Label("House to edit: " + house.getAddress()));
+		}
+		
+		editPanel.add(new InlineHTML("<br /> Price: "));
+		editPanel.add(priceBox);
+		editPanel.add(new InlineHTML("<br /><br /> For Sale: "));
+		editPanel.add(yesSell);
+		editPanel.add(new InlineHTML("&nbsp;&nbsp;"));
+		editPanel.add(noSell);
+		editPanel.add(new HTML("<br /><br /><br />"));
+		editPanel.add(cancelBtn);
+		editPanel.add(new InlineHTML("&nbsp;&nbsp;"));
+		editPanel.add(okBtn);
+		
+		okBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				editHouse(priceBox.getValue(), yesSell.getValue());
+				editDialog.clear();
+				editDialog.hide();
+			}
+		});
+		
+		cancelBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				editDialog.clear();
+				editDialog.hide();
+			}
+		});
+		
+		editDialog.setGlassEnabled(true);
+		editDialog.setAnimationEnabled(true);		
+		editDialog.setWidget(editPanel);
+	}
+
+	/**
+	 * Actual editing function.
+	 * Sends editing data to the server by an asynchronous call.
+	 * After edit was successful, refreshes table.
+	 * @param price - price of house that user specified.
+	 * @param yesSelling - for-sale indicator that user specified.
+	 */
+	private void editHouse(String price, Boolean yesSelling) {
+		if (selectedHouses.size() == 1) {
+			HouseData house;
+			String owner = loginInfo.getEmailAddress();
+			int housePrice;
+			
+			for (HouseData h : selectedHouses) {
+				house = h;
+			}	
+			
+			if (price.isEmpty())
+				 housePrice = 0;
+			else 
+				housePrice = Integer.parseInt(price);
+				
+			
+			// Initialize the service proxy
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+	
+			// Set up the callback object
+			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+	
+				public void onSuccess(Void result) {
+					houseTable.refreshTable();
+				}
+			};
+			// TODO Make the call to the house data service to edit for data in the
+			// server
+			//houseDataSvc.updateHouse(owner, housePrice, yesSelling, house, 
+			//latitude, longitude, callback);
+		}
 	}
 
 }
