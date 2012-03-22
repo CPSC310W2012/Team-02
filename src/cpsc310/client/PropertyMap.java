@@ -10,6 +10,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.InfoWindowContent.InfoWindowTab;
 import com.google.gwt.maps.client.control.LargeMapControl3D;
 import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
@@ -42,7 +43,7 @@ public class PropertyMap {
 	private StreetviewClient svClient;
 	// keep a stack of all the markers
 	private Stack<Marker> markers = new Stack();
-	
+
 	// polygon settings
 	private String color = "#FF0000";
 	private double opacity = 0.1;
@@ -62,19 +63,18 @@ public class PropertyMap {
 	public PropertyMap(LatLng location) {
 		buildStreetViewMap(location);
 		buildStandardMap(location);
-		
+
 		map.addMapClickHandler(new MapClickHandler() {
 			public void onClick(MapClickEvent e) {
-		        LatLng point = e.getLatLng();
-				if(specifyingRegion)
-				{
+				LatLng point = e.getLatLng();
+				if (specifyingRegion) {
 					drawSquare(point);
-					//allow only one square to be drawn at a time
+					// allow only one square to be drawn at a time
 					setSpecifyingRegion(false);
 				}
-		      }
-		    });
-		
+			}
+		});
+
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class PropertyMap {
 				// check if it's on sale, true for third param if so.
 				addSpecialMarker(point, house, true);
 				refreshStreetView(point);
-				//isPointInPolygon(point); //for testing
+				// isPointInPolygon(point); //for testing
 			}
 		};
 		Geocoder geocoder = new Geocoder();
@@ -161,58 +161,66 @@ public class PropertyMap {
 
 			}
 		});
-		
+
 		markers.push(marker);
 	}
 
-	
 	/**
-	 * Adds a marker to the map, if the property is on sale, it will be a green marker
+	 * Adds a marker to the map, if the property is on sale, it will be a green
+	 * marker
 	 * 
 	 * @param point
 	 *            latitude and longitude
 	 * @param location
 	 *            string representation of the location to be displayed in
 	 *            overlay
-	 * @param onSale true if the property is on sale
-	 *
+	 * @param onSale
+	 *            true if the property is on sale
+	 * 
 	 */
-	private void addSpecialMarker(final LatLng point, final HouseData house, boolean onSale) {
+	private void addSpecialMarker(final LatLng point, final HouseData house,
+			boolean onSale) {
+		// Set the icon
 		Icon icon;
 		// marker is a for sale sign if it's on sale, red otherwise
-		if(onSale){
-			 //icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/green-dot.png");
-			 icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
-			 icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png"); 
-		}
-		else{ 
+		if (onSale) {
+			icon = Icon
+					.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
+			icon
+					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png");
+		} else {
 			icon = Icon.newInstance();
-			icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+			icon
+					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
 		}
-		
-		
-	    icon.setIconAnchor(Point.newInstance(6, 20));
-	    icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		icon.setIconAnchor(Point.newInstance(6, 20));
+		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		MarkerOptions options = MarkerOptions.newInstance();
+		options.setIcon(icon);
 
-	    MarkerOptions options = MarkerOptions.newInstance();
-	    options.setIcon(icon);
-	    
 		final Marker marker = new Marker(point, options);
 		map.addOverlay(marker);
 		map.setCenter(point);
-		
-		// Info window containing house data information
-		
-		final InfoWindowContent content = new InfoWindowContent(getMarkerPanel(house));
-	    
-	    map.getInfoWindow().open(marker, content);
+
+		// Assemble the info window
+		final InfoWindowContent content;
+		VerticalPanel firstTab = getHouseInfoMarkerPanel(house);
+		// Show additional information if the house is being sold
+		// if(house.getIsSelling()){
+		VerticalPanel secondTab = getContactInfoMarkerPanel();
+		content = getInfoWindowTabs(firstTab, secondTab);
+		// }
+		// else content = new InfoWindowContent(firstTab);
+
+		map.getInfoWindow().open(marker, content);
 
 		refreshStreetView(point);
 
+		// Click handler for each marker
 		marker.addMarkerClickHandler(new MarkerClickHandler() {
 			public void onClick(MarkerClickEvent event) {
 				try {
-					map.getInfoWindow().open(marker,content);
+					map.getInfoWindow().open(marker, content);
 					refreshStreetView(point);
 				} catch (Exception e) {
 					Window.alert(e.getMessage());
@@ -220,61 +228,112 @@ public class PropertyMap {
 
 			}
 		});
-		
+
 		markers.push(marker);
 	}
-	
-	private VerticalPanel getMarkerPanel(HouseData house)
-	{
+
+	/**
+	 * 
+	 * Takes in two vertical panels and puts them together
+	 * 
+	 * @param p1
+	 *            first tab content
+	 * @param p2
+	 *            second tab content
+	 * 
+	 */
+
+	private InfoWindowContent getInfoWindowTabs(VerticalPanel p1,
+			VerticalPanel p2) {
+
+		InfoWindowTab tabs[] = new InfoWindowTab[2];
+
+		tabs[0] = new InfoWindowTab("Info", p1);
+		tabs[1] = new InfoWindowTab("Contact", p2);
+		final InfoWindowContent content = new InfoWindowContent(tabs, 0);
+		return content;
+	}
+
+	/**
+	 * 
+	 * Takes in house data object and adds house info into panel
+	 * 
+	 * @param house
+	 *            the house object
+	 * 
+	 */
+
+	private VerticalPanel getHouseInfoMarkerPanel(HouseData house) {
 		VerticalPanel markerInfoWindow = new VerticalPanel();
 		HTML htmlWidget;
-		// If the house is on sale, provide extra field for sale price and realtor information
-		if(house.getIsSelling()){
-			//TODO: isSelling field for a house is not set when realtor edits on table
+		// If the house is on sale, provide extra field for sale price and
+		// realtor information
+		if (house.getIsSelling()) {
+			// TODO: isSelling field for a house is not set when realtor edits
+			// on table
 			// need to add event handler and modify houseData point
-			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
-	    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
-	    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
-	    		"<b>Year built: </b>" + house.getYearBuilt() + "</br>" +
-	    		"<b>Selling Price: </b>" +house.getPrice()+"</br>" +
-	    		"<b>Owner: </b>" +house.getOwner()+ "</p>");
+			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> "
+					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
+					+ "</br>" + "<b>Current Land Value: </b>"
+					+ house.getCurrentLandValue() + "</br>"
+					+ "<b>Year built: </b>" + house.getYearBuilt() + "</br>"
+					+ "<b>Selling Price: </b>" + house.getPrice() + "</br>"
+					+ "<b>Owner: </b>" + house.getOwner() + "</p>");
+		} else {
+			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> "
+					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
+					+ "</br>" + "<b>Current Land Value: </b>"
+					+ house.getCurrentLandValue() + "</br>"
+					+ "<b>Year built: </b>" + house.getYearBuilt() + "</p>");
 		}
-		else
-		{
-			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> " +
-		    		"<b>Address: </b>" + house.getAddress().toLowerCase()+ "</br>" +
-		    		"<b>Current Land Value: </b>" + house.getCurrentLandValue()+ "</br>" + 
-		    		"<b>Year built: </b>" + house.getYearBuilt() + "</p>");
-		}
-		
+
 		markerInfoWindow.add(htmlWidget);
 		// TODO: Add Facebook share buttoN
-		
-		//Richard Added
-		/* Other idea that I didn't try
-		MetaElement houseMeta = Document.get().createMetaElement();
-		houseMeta.setAttribute("og:description", "This house");
-		*/
-		NodeList<Element> metaTags = Document.get().getElementsByTagName("meta");
-		for(int i = 0; i < metaTags.getLength(); i++)
-		{
+
+		// Richard Added
+		/*
+		 * Other idea that I didn't try MetaElement houseMeta =
+		 * Document.get().createMetaElement();
+		 * houseMeta.setAttribute("og:description", "This house");
+		 */
+		NodeList<Element> metaTags = Document.get()
+				.getElementsByTagName("meta");
+		for (int i = 0; i < metaTags.getLength(); i++) {
 			MetaElement tagRetrieved = (MetaElement) metaTags.getItem(i);
-			if(tagRetrieved.getAttribute("property").equals("og:description"))
-			{
+			if (tagRetrieved.getAttribute("property").equals("og:description")) {
 				tagRetrieved.setContent("This house");
 			}
 		}
-		
-		String shareText = "hello\nhello\n";
-		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), shareText);
+
+		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "");
 		markerInfoWindow.add(shareBtn);
-		
+
 		return markerInfoWindow;
 	}
-	
 
-	
-	
+	/**
+	 * 
+	 *TODO: get Realtor information Assumes the house is being sold and realtor
+	 * information is available Want to get info possibly from fb profile..
+	 * 
+	 * @param house
+	 *            the house object
+	 * 
+	 */
+
+	private VerticalPanel getContactInfoMarkerPanel() {
+		VerticalPanel markerInfoWindow = new VerticalPanel();
+		HTML htmlWidget;
+		String realtor = "John Doe";
+		String email = "JohnDoe@gmail.com";
+		htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+				+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+				+ email + "</br></p>");
+
+		markerInfoWindow.add(htmlWidget);
+		return markerInfoWindow;
+	}
+
 	/**
 	 * Changes streetview location given location coordinates
 	 * 
@@ -302,28 +361,25 @@ public class PropertyMap {
 	 */
 	public void clearMap() {
 		map.clearOverlays();
-		if(lastPolygon != null)
+		if (lastPolygon != null)
 			lastPolygon = null;
 	}
-	
+
 	/**
 	 * Clears all of the markers from the map
 	 */
 	public void clearMarkers() {
 
-		while(!markers.empty())
-		{
+		while (!markers.empty()) {
 			map.removeOverlay(markers.pop());
 		}
 	}
-	
-	
+
 	/**
 	 * deletes the specified region on the map
 	 */
 	public void clearSpecifiedRegion() {
-		if(lastPolygon != null)
-		{
+		if (lastPolygon != null) {
 			map.removeOverlay(lastPolygon);
 			lastPolygon = null;
 		}
@@ -370,109 +426,112 @@ public class PropertyMap {
 		poly.setDrawingEnabled();
 		poly.setStrokeStyle(style);
 	}
-	
+
 	/**
 	 * 
 	 * Algorithm that calculates whether or not the point is in the polygon
 	 * 
-	 * @param point  the point to check if it is in the polygon
+	 * @param point
+	 *            the point to check if it is in the polygon
 	 * 
 	 */
 	boolean isPointInPolygon(LatLng point) {
 
-	if(lastPolygon == null)
-	{
-	 Window.alert("No region specified");
-	 return false;
-	}
-
-	int j = 0;
-	boolean oddNodes = false;
-	double y = point.getLatitude();
-	double x = point.getLongitude();
-	int numVertexes = lastPolygon.getVertexCount();
-
-	for(int i = 0; i < numVertexes; i++)
-	{
-		j++; 
-	    if (j == numVertexes) {
-			j = 0;
+		if (lastPolygon == null) {
+			Window.alert("No region specified");
+			return false;
 		}
-	    if (((lastPolygon.getVertex(i).getLatitude() < y) && (lastPolygon.getVertex(j).getLatitude() >= y)) 
-	      || ((lastPolygon.getVertex(j).getLatitude() < y) && (lastPolygon.getVertex(i).getLatitude() >= y))) 
-		{ 
-	        if ( lastPolygon.getVertex(i).getLongitude() + (y - lastPolygon.getVertex(i).getLatitude()) 
-	        /  (lastPolygon.getVertex(j).getLatitude()-lastPolygon.getVertex(i).getLatitude()) 
-	        *  (lastPolygon.getVertex(j).getLongitude() - lastPolygon.getVertex(i).getLongitude())<x ) { 
-	          oddNodes = !oddNodes; 
-	        } 
-	    } 
-	} 
-	
-	if(oddNodes)
-		Window.alert("point is in the polygon");
-	else 
-		Window.alert("point is not in the polygon");
-	    return oddNodes; 
+
+		int j = 0;
+		boolean oddNodes = false;
+		double y = point.getLatitude();
+		double x = point.getLongitude();
+		int numVertexes = lastPolygon.getVertexCount();
+
+		for (int i = 0; i < numVertexes; i++) {
+			j++;
+			if (j == numVertexes) {
+				j = 0;
+			}
+			if (((lastPolygon.getVertex(i).getLatitude() < y) && (lastPolygon
+					.getVertex(j).getLatitude() >= y))
+					|| ((lastPolygon.getVertex(j).getLatitude() < y) && (lastPolygon
+							.getVertex(i).getLatitude() >= y))) {
+				if (lastPolygon.getVertex(i).getLongitude()
+						+ (y - lastPolygon.getVertex(i).getLatitude())
+						/ (lastPolygon.getVertex(j).getLatitude() - lastPolygon
+								.getVertex(i).getLatitude())
+						* (lastPolygon.getVertex(j).getLongitude() - lastPolygon
+								.getVertex(i).getLongitude()) < x) {
+					oddNodes = !oddNodes;
+				}
+			}
+		}
+
+		if (oddNodes)
+			Window.alert("point is in the polygon");
+		else
+			Window.alert("point is not in the polygon");
+		return oddNodes;
 	}
-	
-	
+
 	/**
 	 * 
 	 * Draws a rectangle on the map given a corner point
 	 * 
-	 * @param point  location of the corner of the rectangle
+	 * @param point
+	 *            location of the corner of the rectangle
 	 * 
 	 */
-	public void drawSquare(LatLng point)
-	{
+	public void drawSquare(LatLng point) {
 		PolyStyleOptions style = PolyStyleOptions.newInstance(color, weight,
 				opacity);
-		//the other four points of the triangle
-		LatLng point1 = LatLng.newInstance(point.getLatitude(), point.getLongitude()+0.1);
-		LatLng point2 = LatLng.newInstance(point.getLatitude()-0.02, point.getLongitude()+0.1);
-		LatLng point3 = LatLng.newInstance(point.getLatitude()-0.02, point.getLongitude());
-		
+		// the other four points of the triangle
+		LatLng point1 = LatLng.newInstance(point.getLatitude(), point
+				.getLongitude() + 0.1);
+		LatLng point2 = LatLng.newInstance(point.getLatitude() - 0.02, point
+				.getLongitude() + 0.1);
+		LatLng point3 = LatLng.newInstance(point.getLatitude() - 0.02, point
+				.getLongitude());
+
 		LatLng[] polygonPoints = new LatLng[5];
 		polygonPoints[0] = point;
 		polygonPoints[1] = point1;
 		polygonPoints[2] = point2;
 		polygonPoints[3] = point3;
 		polygonPoints[4] = point;
-		
-		
+
 		final Polygon poly = new Polygon(polygonPoints, color, weight, opacity,
 				color, fillFlag ? .7 : 0.0);
 		lastPolygon = poly;
 		map.addOverlay(poly);
 		poly.setStrokeStyle(style);
 		lastPolygon.setEditingEnabled(PolyEditingOptions.newInstance(5));
-		
-		
-	
+
 	}
-	
+
 	/**
 	 * 
 	 * setter method for map click handler when drawing rectangle
 	 * 
-	 * @param specifyingRegion  if the user is specifying a region, it's true
+	 * @param specifyingRegion
+	 *            if the user is specifying a region, it's true
 	 * 
 	 */
 	public void setSpecifyingRegion(boolean specifyingRegion) {
 		this.specifyingRegion = specifyingRegion;
 	}
 
-	
 	/**
 	 * 
 	 * access to the private boolean value specifyingRegion
 	 * 
-	 * @param specifyingRegion  if the user is specifying a region, it's true
+	 * @param specifyingRegion
+	 *            if the user is specifying a region, it's true
 	 * 
 	 */
 	public boolean isSpecifyingRegion() {
 		return specifyingRegion;
 	}
-	
+
 }
