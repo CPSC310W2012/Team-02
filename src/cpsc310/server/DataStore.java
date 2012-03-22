@@ -1,6 +1,7 @@
 package cpsc310.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,37 +29,37 @@ public class DataStore {
 	private HashMap<String, ArrayList<Integer>> streetNames;
 
 	// To facilitate postalCode look up
-	private HashMap<String, ArrayList<String>> postalCodes;
+	private HashMap<String, List<String>> postalCodes;
 
 	// To facilitate owner lookups
-	private HashMap<String, ArrayList<String>> owners;
+	private HashMap<String, List<String>> owners;
 
 	// To facilitate forSale lookups
 	private HashSet<String> forSaleHomes;
 
 	// To facilitate land value search
-	private TreeMap<Integer, ArrayList<String>> currentLandValues;
+	private TreeMap<Integer, List<String>> currentLandValues;
 
 	// To facilitate improvement values search
-	private TreeMap<Integer, ArrayList<String>> improvementValues;
+	private TreeMap<Integer, List<String>> currentImprovementValues;
 
 	// To facilitate assessment year search
-	private TreeMap<Integer, ArrayList<String>> assessmentYears;
+	private TreeMap<Integer, List<String>> assessmentYears;
 
 	// To facilitate previous land value search
-	private TreeMap<Integer, ArrayList<String>> previousLandValues;
+	private TreeMap<Integer, List<String>> previousLandValues;
 
 	// To facilitate previous improvement year search
-	private TreeMap<Integer, ArrayList<String>> previousImprovementValues;
+	private TreeMap<Integer, List<String>> previousImprovementValues;
 
 	// To facilitate year build search
-	private TreeMap<Integer, ArrayList<String>> yearsBuilt;
+	private TreeMap<Integer, List<String>> yearsBuilt;
 
 	// To facilitate big improvement year search
-	private TreeMap<Integer, ArrayList<String>> bigImprovementYears;
+	private TreeMap<Integer, List<String>> bigImprovementYears;
 
 	// To facilitate price search
-	private TreeMap<Integer, ArrayList<String>> price;
+	private TreeMap<Integer, List<String>> price;
 
 	public DataStore() {
 		initilizeDataStorage();
@@ -75,6 +76,7 @@ public class DataStore {
 		List<String> rawData = observerService
 				.downloadFile("http://www.ugrad.cs.ubc.ca/~d2t6/property_tax_report_csv.zip");
 		// Parse raw data
+		// TODO throws an error if download fails and the tempStore is null
 		FileParser parser = new FileParser();
 		HashMap<String, HouseDataPoint> tempStore = parser.parseData(rawData);
 
@@ -107,17 +109,17 @@ public class DataStore {
 	private void initalizeLookups(HashMap<String, HouseDataPoint> houses) {
 		// initialize data-lookup structures
 		streetNames = new HashMap<String, ArrayList<Integer>>();
-		postalCodes = new HashMap<String, ArrayList<String>>();
-		owners = new HashMap<String, ArrayList<String>>();
+		postalCodes = new HashMap<String, List<String>>();
+		owners = new HashMap<String, List<String>>();
 		forSaleHomes = new HashSet<String>();
-		currentLandValues = new TreeMap<Integer, ArrayList<String>>();
-		improvementValues = new TreeMap<Integer, ArrayList<String>>();
-		assessmentYears = new TreeMap<Integer, ArrayList<String>>();
-		previousLandValues = new TreeMap<Integer, ArrayList<String>>();
-		previousImprovementValues = new TreeMap<Integer, ArrayList<String>>();
-		yearsBuilt = new TreeMap<Integer, ArrayList<String>>();
-		bigImprovementYears = new TreeMap<Integer, ArrayList<String>>();
-		price = new TreeMap<Integer, ArrayList<String>>();
+		currentLandValues = new TreeMap<Integer, List<String>>();
+		currentImprovementValues = new TreeMap<Integer, List<String>>();
+		assessmentYears = new TreeMap<Integer, List<String>>();
+		previousLandValues = new TreeMap<Integer, List<String>>();
+		previousImprovementValues = new TreeMap<Integer, List<String>>();
+		yearsBuilt = new TreeMap<Integer, List<String>>();
+		bigImprovementYears = new TreeMap<Integer, List<String>>();
+		price = new TreeMap<Integer, List<String>>();
 
 		Iterator<String> tempItr = houses.keySet().iterator();
 		while (tempItr.hasNext()) {
@@ -139,7 +141,7 @@ public class DataStore {
 				currentLandValues.get(currentHouse.getCurrentLandValue()).add(
 						currentHouse.getHouseID());
 			} else {
-				ArrayList<String> tempHouseIDs = new ArrayList<String>();
+				List<String> tempHouseIDs = new ArrayList<String>();
 				tempHouseIDs.add(currentHouse.getHouseID());
 				currentLandValues.put(currentHouse.getCurrentLandValue(),
 						tempHouseIDs);
@@ -147,15 +149,15 @@ public class DataStore {
 
 			// Populate improvementValues
 			if (currentHouse.getCurrentImprovementValue() != -1) {
-				if (improvementValues.containsKey(currentHouse
+				if (currentImprovementValues.containsKey(currentHouse
 						.getCurrentImprovementValue())) {
-					improvementValues.get(
+					currentImprovementValues.get(
 							currentHouse.getCurrentImprovementValue()).add(
 							currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
-					improvementValues.put(
+					currentImprovementValues.put(
 							currentHouse.getCurrentImprovementValue(),
 							tempHouseIDs);
 				}
@@ -168,7 +170,7 @@ public class DataStore {
 					assessmentYears.get(currentHouse.getAssessmentYear()).add(
 							currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
 					assessmentYears.put(currentHouse.getAssessmentYear(),
 							tempHouseIDs);
@@ -182,7 +184,7 @@ public class DataStore {
 					previousLandValues.get(currentHouse.getPreviousLandValue())
 							.add(currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
 					previousLandValues.put(currentHouse.getPreviousLandValue(),
 							tempHouseIDs);
@@ -197,7 +199,7 @@ public class DataStore {
 							currentHouse.getPreviousImprovementValue()).add(
 							currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
 					previousImprovementValues.put(
 							currentHouse.getPreviousImprovementValue(),
@@ -211,7 +213,7 @@ public class DataStore {
 					yearsBuilt.get(currentHouse.getYearBuilt()).add(
 							currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
 					yearsBuilt.put(currentHouse.getYearBuilt(), tempHouseIDs);
 				}
@@ -225,7 +227,7 @@ public class DataStore {
 							currentHouse.getBigImprovementYear()).add(
 							currentHouse.getHouseID());
 				} else {
-					ArrayList<String> tempHouseIDs = new ArrayList<String>();
+					List<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
 					bigImprovementYears.put(
 							currentHouse.getBigImprovementYear(), tempHouseIDs);
@@ -250,7 +252,7 @@ public class DataStore {
 				postalCodes.get(currentHouse.getPostalCode()).add(
 						currentHouse.getHouseID());
 			} else {
-				ArrayList<String> tempHouseIDs = new ArrayList<String>();
+				List<String> tempHouseIDs = new ArrayList<String>();
 				tempHouseIDs.add(currentHouse.getHouseID());
 				postalCodes.put(currentHouse.getPostalCode(), tempHouseIDs);
 			}
@@ -262,7 +264,7 @@ public class DataStore {
 				owners.get(currentHouse.getOwner()).add(
 						currentHouse.getHouseID());
 			} else {
-				ArrayList<String> tempHouseIDs = new ArrayList<String>();
+				List<String> tempHouseIDs = new ArrayList<String>();
 				tempHouseIDs.add(currentHouse.getHouseID());
 				owners.put(currentHouse.getOwner(), tempHouseIDs);
 			}
@@ -281,7 +283,7 @@ public class DataStore {
 				price.get(currentHouse.getPrice()).add(
 						currentHouse.getHouseID());
 			} else {
-				ArrayList<String> tempHouseIDs = new ArrayList<String>();
+				List<String> tempHouseIDs = new ArrayList<String>();
 				tempHouseIDs.add(currentHouse.getHouseID());
 				price.put(currentHouse.getPrice(), tempHouseIDs);
 			}
@@ -351,8 +353,8 @@ public class DataStore {
 	 * 
 	 * @return keys
 	 */
-	public ArrayList<String> getAllKeys() {
-		ArrayList<String> keys = new ArrayList<String>();
+	public List<String> getAllKeys() {
+		List<String> keys = new ArrayList<String>();
 		keys.addAll(store.keySet());
 		return keys;
 	}
@@ -362,8 +364,8 @@ public class DataStore {
 	 * 
 	 * @return keys (list of street names)
 	 */
-	public ArrayList<String> getStreets() {
-		ArrayList<String> keys = new ArrayList<String>();
+	public List<String> getStreets() {
+		List<String> keys = new ArrayList<String>();
 		keys.addAll(streetNames.keySet());
 		return keys;
 	}
@@ -376,7 +378,7 @@ public class DataStore {
 	 * @param range
 	 * @return list of HouseDataPoint
 	 */
-	public List<HouseDataPoint> getHouses(ArrayList<String> keys, int start,
+	public List<HouseDataPoint> getHouses(List<String> keys, int start,
 			int range) {
 		List<HouseDataPoint> grab = new ArrayList<HouseDataPoint>();
 		int end = start + range;
@@ -399,8 +401,8 @@ public class DataStore {
 	 * @param street
 	 * @return housesFound
 	 */
-	public ArrayList<String> searchByAddress(int civicNumber, String street) {
-		ArrayList<String> keys = new ArrayList<String>();
+	public List<String> searchByAddress(int civicNumber, String street) {
+		List<String> keys = new ArrayList<String>();
 		if (store.containsKey(civicNumber + " " + street)) {
 			keys.add(civicNumber + " " + street);
 		}
@@ -413,12 +415,14 @@ public class DataStore {
 	 * @param street
 	 * @return housesFound
 	 */
-	public ArrayList<String> searchByStreet(String street) {
-		ArrayList<String> keys = new ArrayList<String>();
+	public List<String> searchByStreet(String street) {
+		List<String> keys = new ArrayList<String>();
 		ArrayList<Integer> currentCivicNumbers = streetNames.get(street);
-		Iterator<Integer> tempItr = currentCivicNumbers.iterator();
-		while (tempItr.hasNext()) {
-			keys.add(tempItr.next() + " " + street);
+		if (currentCivicNumbers != null) {
+			Iterator<Integer> tempItr = currentCivicNumbers.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(tempItr.next() + " " + street);
+			}
 		}
 		return keys;
 	}
@@ -429,12 +433,14 @@ public class DataStore {
 	 * @param postalCode
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByPostalCode(String postalCode) {
-		ArrayList<String> keys = new ArrayList<String>();
-		ArrayList<String> currentPostalCodes = postalCodes.get(postalCode);
-		Iterator<String> tempItr = currentPostalCodes.iterator();
-		while (tempItr.hasNext()) {
-			keys.add(tempItr.next());
+	public List<String> searchByPostalCode(String postalCode) {
+		List<String> keys = new ArrayList<String>();
+		List<String> currentPostalCodes = postalCodes.get(postalCode);
+		if (currentPostalCodes != null) {
+			Iterator<String> tempItr = currentPostalCodes.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(tempItr.next());
+			}
 		}
 		return keys;
 	}
@@ -444,8 +450,8 @@ public class DataStore {
 	 * 
 	 * @return house - houses that are for sale
 	 */
-	public ArrayList<String> getForSaleHomes() {
-		ArrayList<String> tempList = new ArrayList<String>();
+	public List<String> getForSaleHomes() {
+		List<String> tempList = new ArrayList<String>();
 		tempList.addAll(forSaleHomes);
 		return tempList;
 	}
@@ -460,8 +466,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByCurrentLandValue(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = currentLandValues
+	public List<String> searchByCurrentLandValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = currentLandValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -476,8 +482,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByImprovementValue(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = improvementValues
+	public List<String> searchByCurrentImprovementValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = currentImprovementValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -492,9 +498,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByAssessmentYear(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = assessmentYears.subMap(
-				min, max);
+	public List<String> searchByAssessmentYear(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = assessmentYears.subMap(
+				min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -508,8 +514,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByPreviousLandValue(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = previousLandValues
+	public List<String> searchByPreviousLandValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = previousLandValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -524,8 +530,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByPreviousImprovementValue(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = previousImprovementValues
+	public List<String> searchByPreviousImprovementValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = previousImprovementValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -540,9 +546,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByYearBuilt(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = yearsBuilt.subMap(min,
-				max);
+	public List<String> searchByYearBuilt(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = yearsBuilt.subMap(min,
+				true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -556,8 +562,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByBigImprovementYear(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = bigImprovementYears
+	public List<String> searchByBigImprovementYear(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = bigImprovementYears
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -572,8 +578,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByPrice(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = price.subMap(min, true,
+	public List<String> searchByPrice(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = price.subMap(min, true,
 				max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -586,18 +592,197 @@ public class DataStore {
 	 * @return convertedList - ArrayList of houseIDs
 	 */
 	private ArrayList<String> convertRangedSearchResult(
-			SortedMap<Integer, ArrayList<String>> result) {
+			SortedMap<Integer, List<String>> result) {
 		ArrayList<String> keys = new ArrayList<String>();
 		Iterator<Integer> tempItr = result.keySet().iterator();
 		while (tempItr.hasNext()) {
 			// retrieve from list of houses
-			ArrayList<String> currentList = result.get(tempItr.next());
+			List<String> currentList = result.get(tempItr.next());
 			Iterator<String> tempKeyItr = currentList.iterator();
 			while (tempKeyItr.hasNext()) {
 				keys.add(tempKeyItr.next());
 			}
 		}
 		return keys;
+	}
+
+	// sorting functions
+
+	/**
+	 * Sorts houses by HouseID
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByHouseID(List<String> currentList) {
+		HouseIDComparator comp = new HouseIDComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by Owner
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByOwner(List<String> currentList) {
+		OwnerComparator comp = new OwnerComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by postalCodes
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPostalCode(List<String> currentList) {
+		PostalCodeComparator comp = new PostalCodeComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by forSaleHomes
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByForSale(List<String> currentList) {
+		ForSaleComparator comp = new ForSaleComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentLandValues
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByCurrentLandValue(
+			List<String> currentList) {
+		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentImprovementValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByCurrentImprovementValue(
+			List<String> currentList) {
+		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by assessmentYear
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByAssessmentYear(List<String> currentList) {
+		AssessmentYearComparator comp = new AssessmentYearComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousLandValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPreviousLandValue(
+			List<String> currentList) {
+		PreviousLandValueComparator comp = new PreviousLandValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousImprovementValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPreviousImprovementValue(
+			List<String> currentList) {
+		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by yearBuilt
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByYearBuilt(List<String> currentList) {
+		YearBuiltComparator comp = new YearBuiltComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by bigImprovementYear
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByBigImprovementYear(
+			List<String> currentList) {
+		BigImprovementYearComparator comp = new BigImprovementYearComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by price
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPrice(List<String> currentList) {
+		PriceComparator comp = new PriceComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
 	}
 
 	/**

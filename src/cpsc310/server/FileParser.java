@@ -11,6 +11,11 @@ import au.com.bytecode.opencsv.CSVParser;
 import java.util.HashMap;
 import java.util.regex.*;
 
+/**
+ * Parses CSV files to houseDataPoints
+ * @author Justin
+ *
+ */
 public class FileParser {
 
 	/**
@@ -23,7 +28,6 @@ public class FileParser {
 	 * Method to parse the lines of the house data csv file and store the
 	 * information into an ArrayList<HouseDataPoint> object.
 	 * 
-	 * @pre rawFile != null;
 	 * @post true;
 	 * @param rawFile
 	 *            - a List<String> containing the lines of the .csv file.
