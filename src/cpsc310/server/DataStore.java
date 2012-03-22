@@ -1,6 +1,7 @@
 package cpsc310.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,7 +41,7 @@ public class DataStore {
 	private TreeMap<Integer, ArrayList<String>> currentLandValues;
 
 	// To facilitate improvement values search
-	private TreeMap<Integer, ArrayList<String>> improvementValues;
+	private TreeMap<Integer, ArrayList<String>> currentImprovementValues;
 
 	// To facilitate assessment year search
 	private TreeMap<Integer, ArrayList<String>> assessmentYears;
@@ -75,6 +76,7 @@ public class DataStore {
 		List<String> rawData = observerService
 				.downloadFile("http://www.ugrad.cs.ubc.ca/~d2t6/property_tax_report_csv.zip");
 		// Parse raw data
+		// TODO throws an error if download fails and the tempStore is null
 		FileParser parser = new FileParser();
 		HashMap<String, HouseDataPoint> tempStore = parser.parseData(rawData);
 
@@ -111,7 +113,7 @@ public class DataStore {
 		owners = new HashMap<String, ArrayList<String>>();
 		forSaleHomes = new HashSet<String>();
 		currentLandValues = new TreeMap<Integer, ArrayList<String>>();
-		improvementValues = new TreeMap<Integer, ArrayList<String>>();
+		currentImprovementValues = new TreeMap<Integer, ArrayList<String>>();
 		assessmentYears = new TreeMap<Integer, ArrayList<String>>();
 		previousLandValues = new TreeMap<Integer, ArrayList<String>>();
 		previousImprovementValues = new TreeMap<Integer, ArrayList<String>>();
@@ -147,15 +149,15 @@ public class DataStore {
 
 			// Populate improvementValues
 			if (currentHouse.getCurrentImprovementValue() != -1) {
-				if (improvementValues.containsKey(currentHouse
+				if (currentImprovementValues.containsKey(currentHouse
 						.getCurrentImprovementValue())) {
-					improvementValues.get(
+					currentImprovementValues.get(
 							currentHouse.getCurrentImprovementValue()).add(
 							currentHouse.getHouseID());
 				} else {
 					ArrayList<String> tempHouseIDs = new ArrayList<String>();
 					tempHouseIDs.add(currentHouse.getHouseID());
-					improvementValues.put(
+					currentImprovementValues.put(
 							currentHouse.getCurrentImprovementValue(),
 							tempHouseIDs);
 				}
@@ -416,9 +418,11 @@ public class DataStore {
 	public ArrayList<String> searchByStreet(String street) {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<Integer> currentCivicNumbers = streetNames.get(street);
-		Iterator<Integer> tempItr = currentCivicNumbers.iterator();
-		while (tempItr.hasNext()) {
-			keys.add(tempItr.next() + " " + street);
+		if (currentCivicNumbers != null) {
+			Iterator<Integer> tempItr = currentCivicNumbers.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(tempItr.next() + " " + street);
+			}
 		}
 		return keys;
 	}
@@ -432,9 +436,11 @@ public class DataStore {
 	public ArrayList<String> searchByPostalCode(String postalCode) {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> currentPostalCodes = postalCodes.get(postalCode);
+		if (currentPostalCodes != null) {
 		Iterator<String> tempItr = currentPostalCodes.iterator();
 		while (tempItr.hasNext()) {
 			keys.add(tempItr.next());
+		}
 		}
 		return keys;
 	}
@@ -476,8 +482,8 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public ArrayList<String> searchByImprovementValue(int min, int max) {
-		SortedMap<Integer, ArrayList<String>> tempMap = improvementValues
+	public ArrayList<String> searchByCurrentImprovementValue(int min, int max) {
+		SortedMap<Integer, ArrayList<String>> tempMap = currentImprovementValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
@@ -494,7 +500,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByAssessmentYear(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = assessmentYears.subMap(
-				min, max);
+				min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -542,7 +548,7 @@ public class DataStore {
 	 */
 	public ArrayList<String> searchByYearBuilt(int min, int max) {
 		SortedMap<Integer, ArrayList<String>> tempMap = yearsBuilt.subMap(min,
-				max);
+				true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -598,6 +604,21 @@ public class DataStore {
 			}
 		}
 		return keys;
+	}
+
+	// sorting functions
+
+	/**
+	 * Sorts houses by streetName
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	public ArrayList<String> sortByStreetNames(ArrayList<String> currentList) {
+		StreetNameComparator comp = new StreetNameComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
 	}
 
 	/**
