@@ -1,32 +1,22 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
-import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionModel;
 
 
 /**
@@ -39,23 +29,13 @@ public class HouseTable {
 	private CellTable.Resources resource = GWT.create(CellTableResources.class);	
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
-	private MultiSelectionModel<HouseData> selectionModel;
 	private int currentStartItem = 0;
 	private int pageLength = 0;
 	private int databaseLength = 0;
-	private List<HouseData> currentHouseList = null;
+	private List<String> currentSearchList = new ArrayList<String>();
 	private boolean isSearching = false;
-	private Column<HouseData, String> ownerColumn;
-	private Column<HouseData, String> priceColumn;
-	private Column<HouseData, String> isSellingColumn;
-	private SelectionCell editSellingCell;
-	private List<String> category = new ArrayList<String>(2);
-	private String[] searchCriteria = 
-		{"Address", "Postal Code", "Current Land Value",
-			"Current Improvement Value", "Assessment Year", "Previous Land Value", 
-			"Previous Improvement Value", "Year Built", "Big Improvement Year",
-			"Price", "Realtor", "For Sale"};
-
+	private boolean isSorting = false;
+	private ArrayList<String> columnName = new ArrayList<String>();
 	
 	/**
 	 * Singleton constructor. Create one CellTable which contains HouseData. 
@@ -105,6 +85,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(addrColumn, "Address");		
 	  	addrColumn.setSortable(true);
+	  	columnName.add("Address");
 	  	
 	  	// Postal code column
 	  	TextColumn<HouseData> postalColumn = new TextColumn<HouseData>() {
@@ -115,6 +96,7 @@ public class HouseTable {
 		};
 		homesCellTable.addColumn(postalColumn, "Postal Code");		
 	  	postalColumn.setSortable(true);
+	  	columnName.add("Postal Code");
 	  		  	
 	  	// Current Land Value column
 	  	Column<HouseData, Number> currlandValColumn = 
@@ -126,6 +108,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(currlandValColumn, "Current Land Value");				
 	  	currlandValColumn.setSortable(true);
+	  	columnName.add("Current Land Value");
 	  	
 	  	// Current Improvement Value column
 	  	Column<HouseData, Number> currImprovValColumn = 
@@ -136,7 +119,8 @@ public class HouseTable {
 	  		}
 	  	};
 	  	homesCellTable.addColumn(currImprovValColumn, "Current Improvement Value");				
-	  	currImprovValColumn.setSortable(true);  	  	
+	  	currImprovValColumn.setSortable(true);
+	  	columnName.add("Current Improvement Value");
 	  	
 	  	
 	  	// Assessment Year column
@@ -149,7 +133,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(assYearColumn, "Assessment Year");				
 	  	assYearColumn.setSortable(true);
-	  	
+	  	columnName.add("Assessment Year");
 	  	
 	  	// Previous Land Value column
 	  	Column<HouseData, Number> prevlandValColumn = 
@@ -161,6 +145,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(prevlandValColumn, "Previous Land Value");				
 	  	prevlandValColumn.setSortable(true);
+	  	columnName.add("Previous Land Value");
 	  	
 	  	// Previous Improvement Value column
 	  	Column<HouseData, Number> prevImprovValColumn = 
@@ -172,7 +157,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(prevImprovValColumn, "Previous Improvement Value");				
 	  	prevImprovValColumn.setSortable(true);  	  	
-	  	
+	  	columnName.add("Previous Improvement Value");
 	  	
 	  	// Built Year column
 	  	Column<HouseData, Number> yrBuiltColumn = 
@@ -184,6 +169,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(yrBuiltColumn, "Year Built");				
 	  	yrBuiltColumn.setSortable(true);
+	  	columnName.add("Year Built");
 	  	
 	  	// Big Improvement Year column
 	  	Column<HouseData, Number> improvYearColumn = 
@@ -195,6 +181,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(improvYearColumn, "Big Improvement Year");				
 	  	improvYearColumn.setSortable(true);
+	  	columnName.add("Big Improvement Year");
 	  	
 	  	
 	  	/* User specified column begins.
@@ -202,7 +189,7 @@ public class HouseTable {
 	  	 * replace following columns with editable cells.
 	  	 */
 	  	// Realtor column 
-	  	ownerColumn = new TextColumn<HouseData>() {
+	  	Column<HouseData, String> ownerColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			return house.getOwner();
@@ -210,19 +197,21 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(ownerColumn, "Realtor");
 	  	ownerColumn.setSortable(true);
+	  	columnName.add("Realtor");
 	  	
 	  	// Price column
-	  	priceColumn = new TextColumn<HouseData>() {
+	  	Column<HouseData, String> priceColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			return Double.toString(house.getPrice());
 	  		}
 	  	};
 	  	homesCellTable.addColumn(priceColumn, "Price");
-	  	priceColumn.setSortable(true);	  		  
+	  	priceColumn.setSortable(true);
+	  	columnName.add("Price");
 	  	
 	  	// For Sale column
-	  	isSellingColumn = new TextColumn<HouseData>() {
+	  	Column<HouseData, String> isSellingColumn = new TextColumn<HouseData>() {
 	  		@Override
 	  		public String getValue(HouseData house) {
 	  			if (house.getIsSelling())
@@ -232,6 +221,7 @@ public class HouseTable {
 	  	};
 	  	homesCellTable.addColumn(isSellingColumn, "Sale");
 	  	isSellingColumn.setSortable(true);
+	  	columnName.add("Sale");
 	  	  	
 	}
 	
@@ -266,10 +256,21 @@ public class HouseTable {
 				int range = display.getVisibleRange().getLength();
 				pageLength = range;
 				
+				// Get the ColumnSortInfo from the table.
+		        final ColumnSortList sortList = homesCellTable.getColumnSortList();				
+				
 				if (isSearching) {
-					int end = currentHouseList.size();
-					homesCellTable.setRowData(currentStartItem, currentHouseList.subList(currentStartItem, end));
-					return;
+					AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+						@Override
+						public void onFailure (Throwable caught) {
+							Window.alert(caught.getMessage());	
+						}
+						@Override
+						public void onSuccess (List<HouseData> result) {
+							updateRowData(currentStartItem, result);
+						}
+					};
+					houseDataSvc.getHouses(currentSearchList, currentStartItem, range, callback);
 				}
 				
 				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
@@ -282,7 +283,20 @@ public class HouseTable {
 						updateRowData(currentStartItem, result);
 					}
 				};
-				houseDataSvc.getHouses(currentStartItem, range, callback);
+				houseDataSvc.getHouses(currentStartItem, range, callback);				
+				
+				// Call server-side sort
+				String sortColumnName="";
+				boolean isAscending = true;
+				if (sortList != null && sortList.size() != 0){
+				     @SuppressWarnings("unchecked")
+					Column <HouseData, ?> sortColumn = 
+				    		 (Column <HouseData, ?>) sortList.get(0).getColumn();
+				     int columnIndex = homesCellTable.getColumnIndex(sortColumn);
+				     sortColumnName = columnName.get(columnIndex);
+				     isAscending = sortList.get(0).isAscending();
+				}
+									
 			}
 		};
 		dataProvider.addDataDisplay(homesCellTable);		
@@ -294,7 +308,8 @@ public class HouseTable {
 	 * attaches comparators to enable sorting, and attaches the hander to the table.
 	 */
 	private void createSort() {
-		// Create sort handler, associate sort handler to the table		
+		/* local sort
+		 // Create sort handler, associate sort handler to the table		
 		homesCellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
 			public void onColumnSort(ColumnSortEvent event) {
 				@SuppressWarnings("unchecked")
@@ -352,11 +367,10 @@ public class HouseTable {
 				homesCellTable.setRowData(homesCellTable.getPageStart(), newData);
 			}
 		});
-			
-		/* Server side sorting for Sprint 2
+		*/
+		// Server-side sort
 		AsyncHandler columnSortHandler = new AsyncHandler(homesCellTable);
-		homesCellTable.addColumnSortHandler(columnSortHandler);
-		*/		
+		homesCellTable.addColumnSortHandler(columnSortHandler);		
 	}
 	
 	// Getter begins
@@ -391,7 +405,6 @@ public class HouseTable {
 	public void enableSelection (MultiSelectionModel<HouseData> model) {
 		// Associate the selection model with the table
 		homesCellTable.setSelectionModel(model);
-		selectionModel = model;
 	}
 	
 	/**
@@ -436,9 +449,9 @@ public class HouseTable {
 	 * @param isSearching - true if search is in effect
 	 * @param searchResults - results of search to display in table
 	 */
-	public void setSearch(boolean isSearching, List<HouseData> searchResults) {
+	public void setSearch(boolean isSearching, List<String> searchResults) {
 		this.isSearching = isSearching;
-		this.currentHouseList = searchResults;
+		this.currentSearchList = searchResults;
 	}
 	
 	/**
@@ -447,6 +460,16 @@ public class HouseTable {
 	 */
 	public void expandElement(int pageSize) {
 		this.homesCellTable.setPageSize(pageSize);
+	}
+
+	/**
+	 * 
+	 */
+	public void updateTable() {
+		if (isSearching) {
+			
+		}
+		
 	}	
 	
 }

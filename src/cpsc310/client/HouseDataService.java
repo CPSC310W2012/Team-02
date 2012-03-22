@@ -1,6 +1,8 @@
 package cpsc310.client;
 
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -38,7 +40,7 @@ public interface HouseDataService extends RemoteService {
 	 *            - boolean value of "for sale" criteria
 	 * @return list of House data within specified criteria
 	 */
-	public List<HouseData> getSearchedHouses(String[] userSearchInput,
+	public List<String> getSearchedHouses(String[] userSearchInput,
 			int isSelling);
 
 	/**
@@ -184,4 +186,16 @@ public interface HouseDataService extends RemoteService {
 	 * @return list of StreetNames
 	 */
 	public List<String> getStreetNames();
+	
+	/**
+	 * Returns a list of houses sorted by specified column. 
+	 * 
+	 * @param sortColumnName - name of the column to sort
+	 * @param isAscending - boolean indicating sort order 
+	 * @param currentStartItem - index of current page's start item
+	 * @param range - range of page (= page length)
+	 * @return list of house data sorted by sortColumnName
+	 */
+	public List<HouseData> getSortedHouses(String sortColumnName, boolean isAscending, 
+			int currentStartItem, int range);	
 }

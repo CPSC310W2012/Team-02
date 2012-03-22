@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
@@ -24,6 +25,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
@@ -55,8 +58,6 @@ public class Team_02 implements EntryPoint {
 	private boolean isEditable = false;
 	private boolean isSearching = false;
 	private boolean isAdvSearchPanelHidden = true;
-	private int databaseLength = 0;
-	private int pageLength = 0;
 	private Set<HouseData> selectedHouses = null;
 	private List<HouseData> searchHouseList = null;
 	final private String[] searchCriteria = { "Address", "Postal Code",
@@ -64,8 +65,8 @@ public class Team_02 implements EntryPoint {
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
 			"Price", "Realtor", "For Sale" };
-	private List<HouseData> currentHouseList = null;
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
+	private List<String> addresses = new ArrayList<String>();
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
@@ -397,10 +398,10 @@ public class Team_02 implements EntryPoint {
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
 		Button searchBtn = new Button("Search");
 		final Button advancedSearchBtn = new Button ("Advanced Search"); 
-		final List<TextBox> searchValues = new ArrayList<TextBox>(
-				searchCriteria.length * 2);
+		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
-		final String[] basicSearchCriteria = { "Address", "Current Land Value",
+		final ListBox addressDropDown = new ListBox(true);
+		final String[] basicSearchCriteria = { "Street Number", "Address", "Current Land Value",
 				"Price", "Realtor", "For Sale"};
 		final String[] advancedSearchCriteria = {"Postal Code", "Current Improvement Value",
 				"Assessment Year", "Previous Land Value",
@@ -413,9 +414,10 @@ public class Team_02 implements EntryPoint {
 
 		// Build searchSettingPanel
 		searchSettingPanel.add(new HTML("<div class='border'></div>"));
-		buildSearchFields(searchSettingPanel, basicSearchCriteria, searchValues, forSale);
+		buildSearchFields(searchSettingPanel, basicSearchCriteria, 
+				searchValues, forSale, addressDropDown);
 		buildSearchFields(advancedSettingPanel, advancedSearchCriteria, 
-				searchValues, forSale);
+				searchValues, forSale, addressDropDown);
 		advancedSettingPopup.setAnimationEnabled(true);
 		advancedSettingPopup.setWidget(advancedSettingPanel);	
 		
@@ -431,7 +433,7 @@ public class Team_02 implements EntryPoint {
 		// Listen for mouse events on Search Button
 		searchBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				searchHouse(searchValues, forSale);
+				searchHouse(addressDropDown, searchValues, forSale);
 			}
 		});
 		
@@ -466,9 +468,11 @@ public class Team_02 implements EntryPoint {
 	 * @param searchCriteria - search criteria to add
 	 * @param searchValues - list of search field text box
 	 * @param forSale - list of 'for sale' radio buttons
+	 * @param addressDropDown - Drop Down list of address
 	 */
 	private void buildSearchFields(FlowPanel searchSettingPanel,
-			String[] searchCriteria, List<TextBox> searchValues, List<RadioButton> forSale) {
+			String[] searchCriteria, List<TextBox> searchValues, 
+			List<RadioButton> forSale, ListBox addressDropDown) {
 		
 		for (String criterion : searchCriteria) {
 			searchSettingPanel.add(new Label(criterion));
@@ -477,12 +481,55 @@ public class Team_02 implements EntryPoint {
 					|| criterion.endsWith("Year")
 					|| criterion.startsWith("Year")) {
 				buildRangeBoxes(searchValues, searchSettingPanel);
-			} else if (criterion.endsWith("Sale")) {
+			} 
+			else if (criterion.endsWith("Sale")) {
 				buildForSale(forSale, searchSettingPanel);
-			} else {
+			} 
+			else if (criterion.equals("Address")) {
+				buildAddressDropMenu(addressDropDown, searchSettingPanel);
+			}
+			else {
 				buildRegularBoxes(searchValues, searchSettingPanel);
 			}
 		}
+	}
+	
+	/**
+	 * Helper to buildSearchField(). Adds address drop down menu.
+	 * @param addressDropDown - address drop down to be constructed
+	 * @param searchSettingPanel - panel to add address drop down
+	 */
+	private void buildAddressDropMenu(final ListBox addressDropDown,
+			FlowPanel searchSettingPanel) {
+		addresses.add("");
+		// If address list is empty, fetch from server
+		if (addresses.size() == 1) {
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+			
+			// Fetch address list from server
+			AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+	
+				public void onSuccess(List<String> result) {
+					addresses = result;
+					for (int i = 0; i < result.size(); i++) {
+					      addressDropDown.addItem(result.get(i));				
+					}
+				}
+			};
+			houseDataSvc.getStreetNames(callback);
+		}
+		// Otherwise, build list from local store of addresses
+		else {
+			for (int i = 0; i < addresses.size(); i++) {
+			      addressDropDown.addItem(addresses.get(i));				
+			}
+		}
+		searchSettingPanel.add(addressDropDown);
 	}
 
 	/**
@@ -636,10 +683,10 @@ public class Team_02 implements EntryPoint {
 	 * call to server-side search, stores search result into local store, and
 	 * updates table with the search result.
 	 */
-	private void searchHouse(List<TextBox> searchValues,
+	private void searchHouse(ListBox addressDropDown, List<TextBox> searchValues,
 			List<RadioButton> forSale) {
 		// Get user input into search boxes
-		String[] userSearchInput = getUserSearchInput(searchValues);
+		String[] userSearchInput = getUserSearchInput(addressDropDown, searchValues);
 
 		// Validate user input
 		if (!validateUserSearchInput(userSearchInput))
@@ -654,20 +701,19 @@ public class Team_02 implements EntryPoint {
 		}
 
 		// Set up the callback object
-		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
+		AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
 
-			public void onSuccess(List<HouseData> result) {
-				if (result != null) {
-					searchHouseList = result;
+			public void onSuccess(List<String> result) {
+				if (result != null && result.size() != 0) {
 					isSearching = true;
 					houseTable.setSearch(isSearching, result);
-					houseTable.updateTable(result, result.size(), 0, false);
+					houseTable.updateTable();
 				} else {
-					result = new ArrayList<HouseData>();
-					houseTable.updateTable(result, 0, 0, false);
+					List<HouseData> noResult = new ArrayList<HouseData>();
+					houseTable.updateTable(noResult, 0, 0, false);
 					Window.alert("No result found");
 				}
 			}
@@ -680,21 +726,30 @@ public class Team_02 implements EntryPoint {
 	/**
 	 * Helper to searchHouse(). Grabs the user's input into the search boxes.
 	 * 
-	 * @param searchValues
-	 *            list of search boxes
+	 * @param addressDropDown - address drop-down list
+	 * @param searchValues - list of search boxes
 	 * @return array of user's search input into text boxes
 	 */
-	private String[] getUserSearchInput(List<TextBox> searchValues) {
-		String[] userInput = new String[searchValues.size()];
-		int i = 0;
-
-		for (TextBox value : searchValues) {
-			String temp = value.getText().trim();
+	private String[] getUserSearchInput(ListBox addressDropDown, List<TextBox> searchValues) {
+		// + 1 for adding address
+		String[] userInput = new String[searchValues.size() + 1];	
+		
+		// Add civic number
+		userInput[0] = searchValues.get(0).getText().trim();
+		
+		// index 1 is reserved for address
+		int selectedAddrIndex = addressDropDown.getSelectedIndex();
+		userInput[1] = addressDropDown.getValue(selectedAddrIndex);
+		
+		// Because civic number(street number) is already added, begin adding from index 1
+		for (int i = 1; i < searchValues.size(); i++) {
+			String temp = searchValues.get(i).getText().trim();		
+			
 			// if user left min/max labels, then the criterion is empty.
 			if (temp.equals("min") || temp.equals("max"))
 				temp = "";
-			userInput[i] = temp;
-			i++;
+			// Because 0 and 1 is reserved for civic number and address, begin from 2
+			userInput[i+2] = temp;
 		}
 
 		return userInput;

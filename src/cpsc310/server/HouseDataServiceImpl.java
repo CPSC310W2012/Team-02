@@ -46,7 +46,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 * @return list of House data within specified criteria
 	 */
 	@Override
-	public List<HouseData> getSearchedHouses(String[] userSearchInput,
+	public List<String> getSearchedHouses(String[] userSearchInput,
 			int isSelling) {
 				return null;
 		// @TODO rework method to work with new houseDataPoints
@@ -242,5 +242,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<String> getStreetNames() {
 		return store.getStreets();
+	}
+
+	@Override
+	public List<HouseData> getSortedHouses(String sortColumnName,
+			boolean isAscending, int currentStartItem, int range) {
+		//TODO server-side sort		
+		return null;
 	}
 }

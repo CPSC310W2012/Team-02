@@ -18,7 +18,7 @@ public interface HouseDataServiceAsync {
 			AsyncCallback<List<HouseData>> callback);
 
 	public void getSearchedHouses(String[] userSearchInput, int isSelling,
-			AsyncCallback<List<HouseData>> callback);
+			AsyncCallback<List<String>> callback);
 
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 
@@ -63,4 +63,7 @@ public interface HouseDataServiceAsync {
 			String postalCode, AsyncCallback<Void> callback);
 
 	public void getStreetNames(AsyncCallback<List<String>> callback);
+
+	public void getSortedHouses(String sortColumnName, boolean isAscending, 
+			int currentStartItem, int range, AsyncCallback<List<HouseData>> callback);
 }
