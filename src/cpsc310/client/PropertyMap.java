@@ -179,12 +179,18 @@ public class PropertyMap {
 	 */
 	private void addSpecialMarker(final LatLng point, final HouseData house, boolean onSale) {
 		Icon icon;
-		// icon is green if it's on sale, red otherwise
-		if(onSale)
-			 icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/green-dot.png");
-		else icon = Icon.newInstance();
+		// marker is a for sale sign if it's on sale, red otherwise
+		if(onSale){
+			 //icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/green-dot.png");
+			 icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
+			 icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png"); 
+		}
+		else{ 
+			icon = Icon.newInstance();
+			icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+		}
 		
-		icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+		
 	    icon.setIconAnchor(Point.newInstance(6, 20));
 	    icon.setInfoWindowAnchor(Point.newInstance(5, 1));
 
