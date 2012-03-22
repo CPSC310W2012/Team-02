@@ -238,4 +238,9 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		store.updateHouse(Owner, price, isSelling, houseID, longitude, latitude,
 				postalCode);
 	}
+
+	@Override
+	public List<String> getStreetNames() {
+		return store.getStreets();
+	}
 }

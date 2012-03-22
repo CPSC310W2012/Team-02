@@ -61,4 +61,6 @@ public interface HouseDataServiceAsync {
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			String houseID, double latitude, double longitude,
 			String postalCode, AsyncCallback<Void> callback);
+
+	public void getStreetNames(AsyncCallback<List<String>> callback);
 }

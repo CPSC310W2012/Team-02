@@ -176,6 +176,12 @@ public interface HouseDataService extends RemoteService {
 	 *            - postal code derived from google maps
 	 */
 	public void updateHouse(String Owner, int price, boolean isSelling,
-			String houseID, double latitude, double longitude,
-			String postalCode);
+			String houseID, double latitude, double longitude, String postalCode);
+
+	/**
+	 * Returns a list of streetNames to address searches
+	 * 
+	 * @return list of StreetNames
+	 */
+	public List<String> getStreetNames();
 }
