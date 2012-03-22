@@ -4,11 +4,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 /**
- * Street Name Comparator
+ * Address Comparator
  * @author Justin
  *
  */
-public class StreetNameComparator implements Comparator {
+public class HouseIDComparator implements Comparator {
 	
 	private HashMap<String, HouseDataPoint> tempStore;
 	
@@ -16,17 +16,17 @@ public class StreetNameComparator implements Comparator {
 	 * Constructor for the Comparator
 	 * @param houseHash
 	 */
-	public StreetNameComparator(HashMap<String, HouseDataPoint> houseHash)
+	public HouseIDComparator(HashMap<String, HouseDataPoint> houseHash)
 	{
 		tempStore = houseHash;
 	}
 	
 	@Override
 	public int compare(Object arg0, Object arg1) {
-		String street0 = tempStore.get(arg0).getStreetName();
-		String street1 = tempStore.get(arg1).getStreetName();
+		String houseID0 = tempStore.get(arg0).getHouseID();
+		String houseID1 = tempStore.get(arg1).getHouseID();
 
-		return street0.compareTo(street1);
+		return houseID0.compareTo(houseID1);
 
 	}
 }

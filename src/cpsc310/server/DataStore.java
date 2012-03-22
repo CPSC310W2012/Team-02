@@ -609,15 +609,15 @@ public class DataStore {
 	// sorting functions
 
 	/**
-	 * Sorts houses by streetName
+	 * Sorts houses by HouseID
 	 * 
 	 * @param currentList
 	 *            - list to be sorted
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<String> sortByStreetNames(ArrayList<String> currentList) {
-		StreetNameComparator comp = new StreetNameComparator(store);
+	public ArrayList<String> sortByHouseID(ArrayList<String> currentList) {
+		HouseIDComparator comp = new HouseIDComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
 	}
@@ -717,7 +717,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public ArrayList<String> sortByPreviousLandValues(
+	public ArrayList<String> sortByPreviousLandValue(
 			ArrayList<String> currentList) {
 		PreviousLandValueComparator comp = new PreviousLandValueComparator(
 				store);

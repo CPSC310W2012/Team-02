@@ -2,8 +2,12 @@ package tests;
 
 import static org.junit.Assert.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import cpsc310.server.DataStore;
@@ -365,18 +369,178 @@ public class DataStoreTests {
 	// TODO updating houses test function
 
 	// Sorting function tests
-	// Test Street Sort
+	// Test address Sort
 	@Test
-	public void testSortStreet() {
+	public void testSortByAddress() {
 		ArrayList<String> tempArray = datastore.getAllKeys();
-		tempArray = datastore.sortByStreetNames(tempArray);
+		tempArray = datastore.sortByHouseID(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
 		Iterator<HouseDataPoint> tempItr = houses.iterator();
-		String prevVal = tempItr.next().getStreetName();
+		String prevVal = tempItr.next().getHouseID();
 		while (tempItr.hasNext()) {
-			String currentValue = tempItr.next().getStreetName();
+			String currentValue = tempItr.next().getHouseID();
 			assertTrue(currentValue.compareTo(prevVal) >= 0);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test postal code Sort
+	@Test
+	public void testSortByPostalCode() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByPostalCode(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		String prevVal = tempItr.next().getPostalCode();
+		while (tempItr.hasNext()) {
+			String currentValue = tempItr.next().getPostalCode();
+			assertTrue(currentValue.compareTo(prevVal) >= 0);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test owners Sort
+	@Test
+	public void testSortByOwner() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByOwner(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		String prevVal = tempItr.next().getOwner();
+		while (tempItr.hasNext()) {
+			String currentValue = tempItr.next().getOwner();
+			assertTrue(currentValue.compareTo(prevVal) >= 0);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by sale sort
+	@Test
+	public void testSortByForSale() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByForSale(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		boolean prevVal = tempItr.next().getIsSelling();
+		while (tempItr.hasNext()) {
+			boolean currentValue = tempItr.next().getIsSelling();
+			assertTrue(prevVal||(prevVal == currentValue));
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by currentLandValue sort
+	@Test
+	public void testSortByCurrentLandValue() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByCurrentLandValue(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getCurrentLandValue();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getCurrentLandValue();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by currentImprovementValue sort
+	@Test
+	public void testSortByCurrentImprovementValue() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByCurrentImprovementValue(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getCurrentImprovementValue();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getCurrentImprovementValue();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by assessmentYear sort
+	@Test
+	public void testSortByAssessmentYear() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByAssessmentYear(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getAssessmentYear();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getAssessmentYear();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by previousLandValue sort
+	@Test
+	public void testSortByPreviousLandValue() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByPreviousLandValue(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getPreviousLandValue();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getPreviousLandValue();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by previousImprovementValue sort
+	@Test
+	public void testSortByPreviousImprovementValue() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByPreviousImprovementValue(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getPreviousImprovementValue();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getPreviousImprovementValue();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by YearBuilt sort
+	@Test
+	public void testSortByYearBuilt() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByYearBuilt(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getYearBuilt();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getYearBuilt();
+			assertTrue(prevVal <= currentValue);
+			prevVal = currentValue;
+		}
+	}
+	
+	// Test by BigImprovementYear sort
+	@Test
+	public void testSortByBigImprovementYear() {
+		ArrayList<String> tempArray = datastore.getAllKeys();
+		tempArray = datastore.sortByBigImprovementYear(tempArray);
+		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
+				tempArray.size());
+		Iterator<HouseDataPoint> tempItr = houses.iterator();
+		int prevVal = tempItr.next().getBigImprovementYear();
+		while (tempItr.hasNext()) {
+			int currentValue = tempItr.next().getBigImprovementYear();
+			assertTrue(prevVal <= currentValue);
 			prevVal = currentValue;
 		}
 	}
