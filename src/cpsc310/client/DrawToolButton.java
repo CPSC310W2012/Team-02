@@ -1,9 +1,9 @@
 package cpsc310.client;
 
-import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ToggleButton;
 
-public class DrawToolButton extends CustomButton {
+public class DrawToolButton extends ToggleButton {
 		
 	private BtnType buttonType;
 	private Boolean isDrawing;
