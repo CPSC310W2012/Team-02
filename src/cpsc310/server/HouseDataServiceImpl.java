@@ -1,15 +1,9 @@
 package cpsc310.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.appengine.api.datastore.QueryResultIterable;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyService;
 import cpsc310.client.HouseDataService;
 import cpsc310.client.HouseData;
 
@@ -19,36 +13,7 @@ import cpsc310.client.HouseData;
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 
-	// Currently we store whole file on module load.
-	private HashMap<String, HouseDataPoint> store = populateMemoryStore();
-
-	/**
-	 * Retrives data from data store and datasources parsing into a hashmap of houseDataPoints
-	 * returns HashMap of houseDataPoints
-	 */
-	private HashMap<String, HouseDataPoint> populateMemoryStore() {
-		// register objectify objects if not already registered
-		initilizeDataStorage();
-		
-		DataCatalogueObserverImpl observerService = new DataCatalogueObserverImpl();
-		List<String> rawData = observerService
-				.downloadFile("http://www.ugrad.cs.ubc.ca/~d2t6/property_tax_report_csv.zip");
-		// Parse raw data
-		FileParser parser = new FileParser();
-		HashMap<String, HouseDataPoint> tempStore = parser.parseData(rawData);
-		
-		//Populate memory store with changed entries
-		Objectify ofy = ObjectifyService.begin();
-		Iterable<Key<HouseDataPoint>> allKeys = ofy.query(HouseDataPoint.class).fetchKeys();
-		Iterator<Key<HouseDataPoint>> houseIDs = allKeys.iterator();
-		while(houseIDs.hasNext())
-		{
-			HouseDataPoint tempHouse = ofy.get(houseIDs.next());
-			tempStore.put(tempHouse.getHouseID(), tempHouse);
-		}
-		
-		return tempStore;
-	}
+	DataStore store = new DataStore();
 
 	/**
 	 * Get house data for initial drawing of table. Returning list must be
@@ -60,26 +25,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
-		List<HouseData> grab = null;
-		int newRange = range;
-		int end = start + range;
-
-		// Check for end condition to prevent accessing out-of-array.
-		if (end > getHouseDatabaseLength()) {
-			end = getHouseDatabaseLength();
-			newRange = end - start;
-		}
-
-		// Set the size of returning array.
-		grab = new ArrayList<HouseData>(newRange);
-
-		// Get homes in a generic non-repeated fashion
-		Iterator<String> houserItr = store.keySet().iterator();
+		// retrieve house data points
+		List<HouseDataPoint> tempList = store.getHouses(store.getAllKeys(),
+				start, range);
 
 		// Convert HouseDataPoint into HouseData
-		for (int i = start; (i < end) && (houserItr.hasNext()); i++) {
-			grab.add(convertToHouseData(store.get(houserItr.next())));
-		}
+		List<HouseData> grab = convertToListHouseData(tempList);
 
 		// Change below to return grab
 		return grab;
@@ -97,6 +48,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<HouseData> getSearchedHouses(String[] userSearchInput,
 			int isSelling) {
+				return null;
 		// @TODO rework method to work with new houseDataPoints
 		// List<HouseData> result = new ArrayList <HouseData> (store.size());
 		// boolean searchCoord = false;
@@ -143,7 +95,6 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// return null;
 		//
 		// return result;
-		return null;
 	}
 
 	/**
@@ -153,57 +104,28 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public int getHouseDatabaseLength() {
-		// TODO get database length
-		int databaseLength = store.size();
-
+		int databaseLength = store.getAllKeys().size();
 		return databaseLength;
 	}
 
 	/**
-	 * For Sprint 2. server-side sorting
+	 * Helper to convert HouseDataPoint into HouseDataPoint (data transfer
+	 * object).
+	 * 
+	 * @param houseList
+	 *            - HouseDataPoint to convert into HouseData
+	 * @return the converted HouseDataPoint (returned as a HouseData object)
 	 */
-	@Override
-	public void sortHouses() {
-		// TODO sort database
+	private List<HouseData> convertToListHouseData(
+			List<HouseDataPoint> houseList) {
+		List<HouseData> converted = new ArrayList<HouseData>();
+		Iterator<HouseDataPoint> tempItr = houseList.iterator();
 
-	}
-
-	/**
-	 * Add/update user specified information about the specified data in the
-	 * database.
-	 * 
-	 * @pre Owner, price, isSelling, house, longitude, latitude != null
-	 * @post the current memory set is refreshed to reflect changes and when
-	 *       datastore is updated a true value is returned
-	 * 
-	 * @param Owner
-	 *            - name of realtor
-	 * @param price
-	 *            - price of house
-	 * @param isSelling
-	 *            - for-sale indicator
-	 * @param houses
-	 *            - set of houses to update
-	 * @param latitude
-	 *            - latitude geolocation for house
-	 * @param longitude
-	 *            - longitude geolocation for house
-	 * @return boolean - if successful true, if not false
-	 * 
-	 */
-	@Override
-	public void updateHouse(String Owner, int price, boolean isSelling,
-			HouseData house, double longitude, double latitude) {
-		// create and set object variables
-		HouseDataPoint currentHouse = store.get(house.getHouseID());
-		currentHouse.setOwner(Owner);
-		currentHouse.setPrice(price);
-		currentHouse.setIsSelling(isSelling);
-		currentHouse.setLatLng(latitude, longitude);
-
-		// Store object
-		Objectify ofy = ObjectifyService.begin();
-		ofy.put(currentHouse);
+		// Convert HouseDataPoint into HouseData
+		while (tempItr.hasNext()) {
+			converted.add(convertToHouseData(tempItr.next()));
+		}
+		return converted;
 	}
 
 	/**
@@ -237,15 +159,83 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		return converted;
 	}
 
-	/*
-	 * initilizes DataStore Objects if not already
-	 */
-	public void initilizeDataStorage() {
-		// try to register
-		try {
-			ObjectifyService.register(HouseDataPoint.class);
-		} catch (Exception e) {
-			// already registered
-		}
+	@Override
+	public List<HouseData> getHouses(List<String> list, int start, int range) {
+		// retrieve house data points
+		List<HouseDataPoint> tempList = store.getHouses(list, start, range);
+
+		// Convert HouseDataPoint into HouseData
+		List<HouseData> grab = convertToListHouseData(tempList);
+
+		// Change below to return grab
+		return grab;
+	}
+
+	@Override
+	public List<String> sortByAddress(List<String> list) {
+		return store.sortByHouseID(list);
+	}
+
+	@Override
+	public List<String> sortByPostalCode(List<String> list) {
+		return store.sortByPostalCode(list);
+	}
+
+	@Override
+	public List<String> sortByOwner(List<String> list) {
+		return store.sortByOwner(list);
+	}
+
+	@Override
+	public List<String> sortByForSale(List<String> list) {
+		return store.sortByForSale(list);
+	}
+
+	@Override
+	public List<String> sortByCurrentLandValue(List<String> list) {
+		return store.sortByCurrentLandValue(list);
+	}
+
+	@Override
+	public List<String> sortByCurrentImprovementValue(List<String> list) {
+		return store.sortByCurrentImprovementValue(list);
+	}
+
+	@Override
+	public List<String> sortByAssessmentYear(List<String> list) {
+		return store.sortByAssessmentYear(list);
+	}
+
+	@Override
+	public List<String> sortByPreviousLandValue(List<String> list) {
+		return store.sortByPreviousLandValue(list);
+	}
+
+	@Override
+	public List<String> sortByPreviousImprovementValue(List<String> list) {
+		return store.sortByPreviousImprovementValue(list);
+	}
+
+	@Override
+	public List<String> sortByYearBuilt(List<String> list) {
+		return store.sortByYearBuilt(list);
+	}
+
+	@Override
+	public List<String> sortByBigImprovementYear(List<String> list) {
+		return store.sortByBigImprovementYear(list);
+	}
+
+	@Override
+	public List<String> sortByPrice(List<String> list) {
+		return store.sortByPrice(list);
+	}
+
+	@Override
+	public void updateHouse(String Owner, int price, boolean isSelling,
+			String houseID, double latitude, double longitude,
+			String postalCode) {
+		store.updateHouse(Owner, price, isSelling, houseID, longitude, latitude,
+				postalCode);
 	}
 }
