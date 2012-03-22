@@ -437,10 +437,10 @@ public class DataStore {
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> currentPostalCodes = postalCodes.get(postalCode);
 		if (currentPostalCodes != null) {
-		Iterator<String> tempItr = currentPostalCodes.iterator();
-		while (tempItr.hasNext()) {
-			keys.add(tempItr.next());
-		}
+			Iterator<String> tempItr = currentPostalCodes.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(tempItr.next());
+			}
 		}
 		return keys;
 	}
@@ -615,8 +615,172 @@ public class DataStore {
 	 *            - list to be sorted
 	 * @return sortedList - ArrayList of houseIDs
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> sortByStreetNames(ArrayList<String> currentList) {
 		StreetNameComparator comp = new StreetNameComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by Owner
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByOwner(ArrayList<String> currentList) {
+		OwnerComparator comp = new OwnerComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by postalCodes
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByPostalCode(ArrayList<String> currentList) {
+		PostalCodeComparator comp = new PostalCodeComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by forSaleHomes
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByForSale(ArrayList<String> currentList) {
+		ForSaleComparator comp = new ForSaleComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentLandValues
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByCurrentLandValue(
+			ArrayList<String> currentList) {
+		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentImprovementValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByCurrentImprovementValue(
+			ArrayList<String> currentList) {
+		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by assessmentYear
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByAssessmentYear(ArrayList<String> currentList) {
+		AssessmentYearComparator comp = new AssessmentYearComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousLandValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByPreviousLandValues(
+			ArrayList<String> currentList) {
+		PreviousLandValueComparator comp = new PreviousLandValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousImprovementValue
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByPreviousImprovementValue(
+			ArrayList<String> currentList) {
+		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by yearBuilt
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByYearBuilt(ArrayList<String> currentList) {
+		YearBuiltComparator comp = new YearBuiltComparator(store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by bigImprovementYear
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByBigImprovementYear(
+			ArrayList<String> currentList) {
+		BigImprovementYearComparator comp = new BigImprovementYearComparator(
+				store);
+		Collections.sort(currentList, comp);
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by price
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> sortByPrice(ArrayList<String> currentList) {
+		PriceComparator comp = new PriceComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
 	}
