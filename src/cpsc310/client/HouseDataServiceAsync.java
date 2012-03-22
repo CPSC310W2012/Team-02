@@ -22,45 +22,35 @@ public interface HouseDataServiceAsync {
 
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 
-	public void sortByAddress(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByAddress(AsyncCallback<Void> callback);
 
-	public void sortByPostalCode(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByPostalCode(AsyncCallback<Void> callback);
 
-	public void sortByOwner(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByOwner(AsyncCallback<Void> callback);
 
-	public void sortByForSale(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByForSale(AsyncCallback<Void> callback);
 
-	public void sortByCurrentLandValue(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByCurrentLandValue(AsyncCallback<Void> callback);
 
-	public void sortByCurrentImprovementValue(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByCurrentImprovementValue(AsyncCallback<Void> callback);
 
-	public void sortByAssessmentYear(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByAssessmentYear(AsyncCallback<Void> callback);
 
-	public void sortByPreviousLandValue(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByPreviousLandValue(AsyncCallback<Void> callback);
 
-	public void sortByPreviousImprovementValue(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByPreviousImprovementValue(AsyncCallback<Void> callback);
 
-	public void sortByYearBuilt(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByYearBuilt(AsyncCallback<Void> callback);
 
-	public void sortByBigImprovementYear(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByBigImprovementYear(AsyncCallback<Void> callback);
 
-	public void sortByPrice(List<String> list,
-			AsyncCallback<List<String>> callback);
+	public void sortByPrice(AsyncCallback<Void> callback);
 
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			String houseID, double latitude, double longitude,
 			String postalCode, AsyncCallback<Void> callback);
 
 	public void getStreetNames(AsyncCallback<List<String>> callback);
+	
+	public void refreshIDStore(AsyncCallback<Void> callback);
 }

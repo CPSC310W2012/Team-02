@@ -49,112 +49,64 @@ public interface HouseDataService extends RemoteService {
 	public int getHouseDatabaseLength();
 
 	/**
-	 * Sort by Address
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Address in server side current working id set
 	 */
-	public List<String> sortByAddress(List<String> list);
+	public void sortByAddress();
 
 	/**
-	 * Sort by Postal Code
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Postal Code in server side current working id set
 	 */
-	public List<String> sortByPostalCode(List<String> list);
+	public void sortByPostalCode();
 
 	/**
-	 * Sort by Realtor
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Realtor in server side current working id set
 	 */
-	public List<String> sortByOwner(List<String> list);
+	public void sortByOwner();
 
 	/**
-	 * Sort by For Sale Status
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by For Sale Status in server side current working id set
 	 */
-	public List<String> sortByForSale(List<String> list);
+	public void sortByForSale();
 
 	/**
-	 * Sort by land value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by land value in server side current working id set
 	 */
-	public List<String> sortByCurrentLandValue(List<String> list);
+	public void sortByCurrentLandValue();
 
 	/**
-	 * Sort by Improvement Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Improvement Value in server side current working id set
 	 */
-	public List<String> sortByCurrentImprovementValue(List<String> list);
+	public void sortByCurrentImprovementValue();
 
 	/**
-	 * Sort by Assessment Year
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Assessment Year in server side current working id set
 	 */
-	public List<String> sortByAssessmentYear(List<String> list);
+	public void sortByAssessmentYear();
 
 	/**
-	 * Sort by Previous Land Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Previous Land Value in server side current working id set
 	 */
-	public List<String> sortByPreviousLandValue(List<String> list);
+	public void sortByPreviousLandValue();
 
 	/**
-	 * Sort by Previous Improvement Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Previous Improvement Value in server side current working id set
 	 */
-	public List<String> sortByPreviousImprovementValue(List<String> list);
+	public void sortByPreviousImprovementValue();
 
 	/**
-	 * Sort by Year Built
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Year Built in server side current working id set
 	 */
-	public List<String> sortByYearBuilt(List<String> list);
+	public void sortByYearBuilt();
 
 	/**
-	 * Sort by Big Improvement Year
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Big Improvement Year in server side current working id set
 	 */
-	public List<String> sortByBigImprovementYear(List<String> list);
+	public void sortByBigImprovementYear();
 
 	/**
-	 * Sort by Price
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Price in server side current working id set
 	 */
-	public List<String> sortByPrice(List<String> list);
+	public void sortByPrice();
 
 	/**
 	 * Add/update user specified information about the specified data in the
@@ -184,4 +136,9 @@ public interface HouseDataService extends RemoteService {
 	 * @return list of StreetNames
 	 */
 	public List<String> getStreetNames();
+	
+	/**
+	 * Sets ID store to all the keys of the DB
+	 */
+	public void refreshIDStore();
 }

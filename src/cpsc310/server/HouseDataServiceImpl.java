@@ -13,7 +13,23 @@ import cpsc310.client.HouseData;
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 
-	DataStore store = new DataStore();
+	DataStore store;
+	List<String> workingIDStore;
+	/**
+	 * Constructor
+	 */
+	public HouseDataServiceImpl(){
+		store = new DataStore();
+		refreshIDStore(); 
+	}
+	
+	/**
+	 * 
+	 */
+	public void refreshIDStore()
+	{
+		workingIDStore = store.getAllKeys();
+	}
 
 	/**
 	 * Get house data for initial drawing of table. Returning list must be
@@ -26,8 +42,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
 		// retrieve house data points
-		List<HouseDataPoint> tempList = store.getHouses(store.getAllKeys(),
-				start, range);
+		List<HouseDataPoint> tempList = store.getHouses(workingIDStore, start, range);
 
 		// Convert HouseDataPoint into HouseData
 		List<HouseData> grab = convertToListHouseData(tempList);
@@ -172,63 +187,63 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public List<String> sortByAddress(List<String> list) {
-		return store.sortByHouseID(list);
+	public void sortByAddress() {
+		workingIDStore = store.sortByHouseID(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPostalCode(List<String> list) {
-		return store.sortByPostalCode(list);
+	public void sortByPostalCode() {
+		workingIDStore = store.sortByPostalCode(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByOwner(List<String> list) {
-		return store.sortByOwner(list);
+	public void sortByOwner() {
+		workingIDStore =  store.sortByOwner(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByForSale(List<String> list) {
-		return store.sortByForSale(list);
+	public void sortByForSale() {
+		workingIDStore = store.sortByForSale(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByCurrentLandValue(List<String> list) {
-		return store.sortByCurrentLandValue(list);
+	public void sortByCurrentLandValue() {
+		workingIDStore = store.sortByCurrentLandValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByCurrentImprovementValue(List<String> list) {
-		return store.sortByCurrentImprovementValue(list);
+	public void sortByCurrentImprovementValue() {
+		workingIDStore = store.sortByCurrentImprovementValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByAssessmentYear(List<String> list) {
-		return store.sortByAssessmentYear(list);
+	public void sortByAssessmentYear() {
+		workingIDStore = store.sortByAssessmentYear(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPreviousLandValue(List<String> list) {
-		return store.sortByPreviousLandValue(list);
+	public void sortByPreviousLandValue() {
+		workingIDStore = store.sortByPreviousLandValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPreviousImprovementValue(List<String> list) {
-		return store.sortByPreviousImprovementValue(list);
+	public void sortByPreviousImprovementValue() {
+		workingIDStore = store.sortByPreviousImprovementValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByYearBuilt(List<String> list) {
-		return store.sortByYearBuilt(list);
+	public void sortByYearBuilt() {
+		workingIDStore = store.sortByYearBuilt(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByBigImprovementYear(List<String> list) {
-		return store.sortByBigImprovementYear(list);
+	public void sortByBigImprovementYear() {
+		workingIDStore = store.sortByBigImprovementYear(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPrice(List<String> list) {
-		return store.sortByPrice(list);
+	public void sortByPrice() {
+		workingIDStore = store.sortByPrice(workingIDStore);
 	}
 
 	@Override
