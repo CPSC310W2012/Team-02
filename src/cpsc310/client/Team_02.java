@@ -321,13 +321,10 @@ public class Team_02 implements EntryPoint {
 		FlowPanel faceBookTemp = new FlowPanel();
 		Facebook.init("257432264338889");
 		LoginButton faceBookBtn = new LoginButton(true);
-		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),
-				"Check out this house!!!");
+		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),"Check out this house!!!");
 		faceBookTemp.add(faceBookBtn);
 		faceBookTemp.add(shareBtn);
-		faceBookTemp
-				.add(new HTML(
-						"<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>"));
+		faceBookTemp.add(new HTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>"));
 		docPanel.add(faceBookTemp);
 
 		// Assemble login panel
@@ -337,11 +334,11 @@ public class Team_02 implements EntryPoint {
 		buildSearchPanel(searchPanel);
 
 		// Assemble widgets to go into the side panel
-		sidebarTabPanel.add(new HTML("<br />"));
-		sidebarTabPanel.add(new HTML("<br />"));
+/*Commented Out		sidebarTabPanel.add(new HTML("<br />"));
+		sidebarTabPanel.add(new HTML("<br />")); */
 		// Richard Added
-		sidebarTabPanel.add(docPanel);
-		sidebarTabPanel.add(new HTML("<br />"));
+		sidebarTabPanel.add(docPanel, "Documents");
+//Commented Out		sidebarTabPanel.add(new HTML("<br />"));
 		
 		sidebarTabPanel.add(searchPanel, "Search");
 		sidebarTabPanel.add(loginPanel, "User Info");
@@ -407,10 +404,29 @@ public class Team_02 implements EntryPoint {
 		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 		final ListBox addressDropDown = new ListBox(true);
-		final List<String> advancedSearchCriteria = searchCriteria.subList(4, 9);
+/*Commented Out		final List<String> advancedSearchCriteria = searchCriteria.subList(4, 9);
+		advancedSearchCriteria.add("Postal Code");*/
+		final List<String> advancedSearchCriteria = new ArrayList<String>();
 		advancedSearchCriteria.add("Postal Code");
-		final List<String> basicSearchCriteria = searchCriteria.subList(0, searchCriteria.size() - 1);
-		basicSearchCriteria.removeAll(advancedSearchCriteria);
+		advancedSearchCriteria.add("Current Improvement Value");
+		advancedSearchCriteria.add("Assessment Year");
+		advancedSearchCriteria.add("Previous Land Value");
+		advancedSearchCriteria.add("Previous Improvement Value");
+		advancedSearchCriteria.add("Year Built");
+		advancedSearchCriteria.add("Big Improvement Year");
+		
+		final List<String> basicSearchCriteria = new ArrayList<String>();
+		basicSearchCriteria.add("Street Number");
+		basicSearchCriteria.add("Address");
+		basicSearchCriteria.add("Current Land Value");
+		basicSearchCriteria.add("Price");
+		basicSearchCriteria.add("Realtor");
+		basicSearchCriteria.add("For Sale");
+		
+/*Commented Out		final List<String> basicSearchCriteria = searchCriteria.subList(0, searchCriteria.size() - 1);
+		basicSearchCriteria.removeAll(advancedSearchCriteria);*/
+		
+
 		
 		// Append style
 		searchPanel.setStyleName("searchPanel");
