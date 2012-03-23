@@ -113,8 +113,9 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 				results.removeAll(store.getForSaleHomes());
 			}
 		}
+		// TODO: Start performing single value evaluation increase speed?
 
-		// Second Pass
+		// Second Pass, requires tree traversal
 		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
 			if (results == null) {
 				results = store.searchByPrice(

@@ -392,6 +392,7 @@ public class DataStore {
 	public List<String> getStreets() {
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(streetNames.keySet());
+		Collections.sort(keys);
 		return keys;
 	}
 
