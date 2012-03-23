@@ -86,90 +86,43 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 					.parseInt(userSearchInput[0]));
 		}
 		if (!userSearchInput[7].equals("")) {
-			if (results == null) {
-				results = store.searchByPostalCode(userSearchInput[7]);
-			} else {
-				results.retainAll(store.searchByPostalCode(userSearchInput[7]));
-			}
+			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
 		}
 		if (!userSearchInput[6].equals("")) {
-			if (results == null) {
-				results = store.searchByOwner(userSearchInput[6]);
-			} else {
-				results.retainAll(store.searchByOwner(userSearchInput[6]));
-			}
+			results.retainAll(store.searchByOwner(userSearchInput[6]));
 		}
 		if (isSelling == 1) {
-			if (results == null) {
-				results = store.getForSaleHomes();
-			} else {
-				results.retainAll(store.getForSaleHomes());
-			}
+			results.retainAll(store.getForSaleHomes());
 		} else if (isSelling == 0) {
-			if (results == null) {
-				results = store.getAllKeysSet();
-				results.removeAll(store.getForSaleHomes());
-			} else {
-				results.removeAll(store.getForSaleHomes());
-			}
+			results.removeAll(store.getForSaleHomes());
 		}
 		// TODO: Start performing single value evaluation increase speed?
 
 		// Second Pass, requires tree traversal
 		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
-			if (results == null) {
-				results = store.searchByPrice(
-						Integer.parseInt(userSearchInput[4]),
-						Integer.parseInt(userSearchInput[5]));
-			} else {
-				results.retainAll(store.searchByPrice(
-						Integer.parseInt(userSearchInput[4]),
-						Integer.parseInt(userSearchInput[5])));
-			}
+			results.retainAll(store.searchByPrice(
+					Integer.parseInt(userSearchInput[4]),
+					Integer.parseInt(userSearchInput[5])));
 		}
 		if (!userSearchInput[2].equals("") && !userSearchInput[3].equals("")) {
-			if (results == null) {
-				results = store.searchByCurrentLandValue(
-						Integer.parseInt(userSearchInput[2]),
-						Integer.parseInt(userSearchInput[3]));
-			} else {
-				results.retainAll(store.searchByCurrentLandValue(
-						Integer.parseInt(userSearchInput[2]),
-						Integer.parseInt(userSearchInput[3])));
-			}
+			results.retainAll(store.searchByCurrentLandValue(
+					Integer.parseInt(userSearchInput[2]),
+					Integer.parseInt(userSearchInput[3])));
 		}
 		if (!userSearchInput[8].equals("") && !userSearchInput[9].equals("")) {
-			if (results == null) {
-				results = store.searchByCurrentImprovementValue(
-						Integer.parseInt(userSearchInput[8]),
-						Integer.parseInt(userSearchInput[9]));
-			} else {
-				results.retainAll(store.searchByCurrentImprovementValue(
-						Integer.parseInt(userSearchInput[8]),
-						Integer.parseInt(userSearchInput[9])));
-			}
+			results.retainAll(store.searchByCurrentImprovementValue(
+					Integer.parseInt(userSearchInput[8]),
+					Integer.parseInt(userSearchInput[9])));
 		}
 		if (!userSearchInput[12].equals("") && !userSearchInput[13].equals("")) {
-			if (results == null) {
-				results = store.searchByPreviousLandValue(
-						Integer.parseInt(userSearchInput[12]),
-						Integer.parseInt(userSearchInput[13]));
-			} else {
-				results.retainAll(store.searchByPreviousLandValue(
-						Integer.parseInt(userSearchInput[12]),
-						Integer.parseInt(userSearchInput[13])));
-			}
+			results.retainAll(store.searchByPreviousLandValue(
+					Integer.parseInt(userSearchInput[12]),
+					Integer.parseInt(userSearchInput[13])));
 		}
 		if (!userSearchInput[14].equals("") && !userSearchInput[15].equals("")) {
-			if (results == null) {
-				results = store.searchByPreviousImprovementValue(
-						Integer.parseInt(userSearchInput[14]),
-						Integer.parseInt(userSearchInput[15]));
-			} else {
-				results.retainAll(store.searchByPreviousImprovementValue(
-						Integer.parseInt(userSearchInput[14]),
-						Integer.parseInt(userSearchInput[15])));
-			}
+			results.retainAll(store.searchByPreviousImprovementValue(
+					Integer.parseInt(userSearchInput[14]),
+					Integer.parseInt(userSearchInput[15])));
 		}
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
