@@ -57,15 +57,20 @@ public class DrawToolButton extends ToggleButton {
 	 * Method to set the button as a draw button.
 	 */
 	public void setDrawImage() {
-		this.getUpFace().setImage(new Image("https://fbcdn-photos-a.akamaihd.net/photos-ak-snc1/v85006/101/257432264338889/app_1_257432264338889_9807.gif"));
-		this.getDownFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Water_lilies.jpg"));
+		this.getUpFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/DrawUp.png"));
+		this.getUpHoveringFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/DrawUpHov.png"));
+		this.getDownFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/DrawDown.png"));
+		this.getDownHoveringFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/DrawDownHov.png"));
 	}
 	
 	/**
-	 * Method to set the button as an erase button.
+	 * Method to set the button as an erase button
 	 */
 	public void setEraseImage() {
-		//this.getUpFace().setImage(image);
+		this.getUpFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/EraseUp.png"));
+		this.getUpHoveringFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/EraseUpHov.png"));
+		this.getDownFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/EraseDown.png"));
+		this.getDownHoveringFace().setImage(new Image("http://www.ugrad.cs.ubc.ca/~y0c7/Buttons/EraseDownHov.png"));
+		
 	}
-	
 }

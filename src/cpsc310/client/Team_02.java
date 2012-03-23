@@ -560,13 +560,13 @@ public class Team_02 implements EntryPoint {
 	 *            - panel to hold selection tool
 	 */
 	private void buildPolygonSelection(FlowPanel searchSettingPanel) {
-		final Button specifyRegionBtn = new Button();
-		final Button clearPolygonBtn = new Button();
+		final DrawToolButton specifyRegionBtn = new DrawToolButton();
+		final DrawToolButton clearPolygonBtn = new DrawToolButton();
 		final Button editPolygonBtn = new Button();
 
 		// Polygon settings
-		specifyRegionBtn.setText("Specify region on map");
-		clearPolygonBtn.setText("Clear specified region");
+		specifyRegionBtn.setDrawImage();
+		clearPolygonBtn.setEraseImage();
 		editPolygonBtn.setText("Edit specified region");
 		clearPolygonBtn.setEnabled(false);
 		editPolygonBtn.setEnabled(false);
