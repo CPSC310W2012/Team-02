@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import cpsc310.client.HouseDataService;
 import cpsc310.client.HouseData;
