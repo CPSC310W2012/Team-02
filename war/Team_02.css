@@ -19,23 +19,22 @@ body {
 	background:#00B4FF;
 	padding-top: 30px;
 	padding-bottom: 30px;
-	margin-right: 20px;
 	text-align: center;
 }
 
 h1 {
 	margin: 0 30px;	
 	color: #FCFCFC;
-	font-size: 35px;
+	font-size: 30px;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 100;
 }
 
 
 a {
-	font-size: 17px;
-	color: #FCFCFC;
-	font-family: Helvetica, Arial, sans-serif;
+	color: #757575;
+	font-weight: bold;
+	text-decoration: none;
 }
 
 #footer {
@@ -60,8 +59,9 @@ a {
 .mainPanel {
 }
 
-.loginPanel {
+.menuPanel {
 	margin-top: 30px;
+	text-align: center;
 }
 
 .pager {
@@ -130,9 +130,6 @@ a {
   cursor: default;
   color: #999999;
 }
-.gwt-TabPanel {
-	margin-right: 20px;
-}
 
 .gwt-TabPanelBottom {
   background:#fff;
@@ -194,9 +191,10 @@ a {
 	width: 100%;
 	background-color:#FCFCFC;
 }
-.sidePanelContentWrap {
-	padding-left: 25px;
+
+.sideTabPanel {
 }
+
 .searchSettingPanel {
 	width: 100%;
 	clear: both;
@@ -279,4 +277,16 @@ a {
   background-color: #000;
   opacity: 0.3;
   filter: alpha(opacity=30);
+}
+
+.gwt-Button-textButton {
+	margin: 0;
+	padding: 3px 5px;
+	background-color: transparent;
+	border: none;
+	color: #757575;
+	font-size: 11px;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: pointer;
 }
