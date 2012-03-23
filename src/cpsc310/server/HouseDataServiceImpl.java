@@ -27,7 +27,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * 
+	 * Refreshes the working set of IDs
 	 */
 	public void refreshIDStore() {
 		workingIDStore = store.getAllKeys();
@@ -325,5 +325,10 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<String> getStreetNames() {
 		return store.getStreets();
+	}
+
+	@Override
+	public void resetHouse(String houseID) {
+		store.resetHouse(houseID);
 	}
 }

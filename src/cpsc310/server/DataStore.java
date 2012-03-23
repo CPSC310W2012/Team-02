@@ -1105,4 +1105,28 @@ public class DataStore {
 		Objectify ofy = ObjectifyService.begin();
 		ofy.put(currentHouse);
 	}
+	
+	/**
+	 * Given a houseID, removes house from datastore and resets owner and price
+	 * @param house
+	 */
+	public void resetHouse(String house) {
+		// create and set object variables
+		HouseDataPoint currentHouse = store.get(house);
+		
+		// remove from datastore
+		Objectify ofy = ObjectifyService.begin();
+		ofy.delete(currentHouse);
+
+		// remove from indexes
+		removeFromIndexes(currentHouse);
+
+		// Update house values
+		currentHouse.setOwner("");
+		currentHouse.setPrice(-1);
+		currentHouse.setIsSelling(false);
+
+		// re-add to indexes
+		updateIndexes(currentHouse);
+	}
 }

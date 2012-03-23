@@ -140,4 +140,11 @@ public interface HouseDataService extends RemoteService {
 	 * Sets ID store to all the keys of the DB
 	 */
 	public void refreshIDStore();
+	
+	/**
+	 * resets the house (owner status, for sale) and removes from datastore
+	 * 
+	 * @param houseID
+	 */
+	public void resetHouse(String houseID);
 }
