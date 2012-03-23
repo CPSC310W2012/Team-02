@@ -924,8 +924,8 @@ public class Team_02 implements EntryPoint {
 			}
 			
 			//TODO REPLACE with getLat/getLong FROM MAP method once
-			double latitude = 0;
-			double longitude = 0;
+			Double[] ll = theMap.getLL(house);
+			
 			
 			if (!price.isEmpty()) 
 				housePrice = Integer.parseInt(price);
@@ -946,7 +946,7 @@ public class Team_02 implements EntryPoint {
 				}
 			};
 			houseDataSvc.updateHouse(owner, housePrice, yesSelling, 
-					house.getHouseID(), latitude, longitude, house.getPostalCode(), callback);
+					house.getHouseID(), ll[0], ll[1], house.getPostalCode(), callback);
 		}
 	}
 
