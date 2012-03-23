@@ -42,6 +42,13 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
 /**
  * Main EntryPoint class. UI is built, client-side request is handled.
  */
+/**
+ * To RICHARD
+ * Do not touch the UI code unless you are adding something really necessary. 
+ * I'm cleaning up the UI code and fixing the bugs.
+ * If you are moving UI elements around, they cause me so many conflicts.
+ *
+ */
 public class Team_02 implements EntryPoint {
 	private LayoutPanel mainPanel = new LayoutPanel();
 	private DockLayoutPanel submainPanel = new DockLayoutPanel(Unit.PX);
@@ -403,7 +410,7 @@ public class Team_02 implements EntryPoint {
 		final Button advancedSearchBtn = new Button ("Advanced Search"); 
 		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
-		final ListBox addressDropDown = new ListBox(true);
+		final ListBox addressDropDown = new ListBox(false);
 /*Commented Out		final List<String> advancedSearchCriteria = searchCriteria.subList(4, 9);
 		advancedSearchCriteria.add("Postal Code");*/
 		final List<String> advancedSearchCriteria = new ArrayList<String>();
@@ -939,7 +946,8 @@ public class Team_02 implements EntryPoint {
 				house = h;
 			}
 			
-			//TODO REPLACE with getLat/getLong FROM MAP method once
+			//This is an array of latitude and longitude. 
+			// index 0 = latitude, index 1 = longitude 
 			Double[] ll = theMap.getLL(house);
 			
 			
