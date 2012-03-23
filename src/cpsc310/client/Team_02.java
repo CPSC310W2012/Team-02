@@ -524,9 +524,8 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildAddressDropMenu(final ListBox addressDropDown,
 			FlowPanel searchSettingPanel) {
-		addresses.add("");
 		// If address list is empty, fetch from server
-		if (addresses.size() == 1) {
+		if (addresses.isEmpty()) {
 			if (houseDataSvc == null) {
 				houseDataSvc = GWT.create(HouseDataService.class);
 			}
@@ -538,9 +537,10 @@ public class Team_02 implements EntryPoint {
 				}
 	
 				public void onSuccess(List<String> result) {
-					addresses.addAll(result);
+					addresses.add("");
+					addresses.addAll(1, result);
 					for (int i = 0; i < result.size(); i++) {
-					      addressDropDown.addItem(result.get(i));				
+					      addressDropDown.addItem(addresses.get(i));				
 					}
 				}
 			};
@@ -905,7 +905,9 @@ public class Team_02 implements EntryPoint {
 		okBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				editHouse(priceBox.getValue(), yesSell.getValue());
+				boolean isSelling = false;
+				isSelling = yesSell.getValue();
+				editHouse(priceBox.getValue(), isSelling);
 				editDialog.clear();
 				editDialog.hide();
 			}
@@ -931,21 +933,28 @@ public class Team_02 implements EntryPoint {
 	 * @param price - price of house that user specified.
 	 * @param yesSelling - for-sale indicator that user specified.
 	 */
-	private void editHouse(String price, Boolean yesSelling) {
+	private void editHouse(String price, boolean yesSelling) {
 		if (selectedHouses.size() == 1) {
-			// Assemble edit field			
-			HouseData house = null;
+			// Assemble edit field
 			int housePrice = 0;
 			String owner = loginInfo.getEmailAddress();
+			String houseID ="";
+			String postalCode = "";
+			double latitude = 0;
+			double longitude = 0;
 			
 			for (HouseData h : selectedHouses) {
-				house = h;
-			}
-			
-			//This is an array of latitude and longitude. 
-			// index 0 = latitude, index 1 = longitude 
-			Double[] ll = theMap.getLL(house);
-			
+				houseID = h.getHouseID();
+				postalCode = h.getPostalCode();
+				//This is an array of latitude and longitude. 
+				// index 0 = latitude, index 1 = longitude 
+				Double[] ll = theMap.getLL(h);
+				
+				if (ll != null) {
+					latitude = ll[0];
+					longitude = ll[1];
+				}
+			}			
 			
 			if (!price.isEmpty()) 
 				housePrice = Integer.parseInt(price);
@@ -966,7 +975,7 @@ public class Team_02 implements EntryPoint {
 				}
 			};
 			houseDataSvc.updateHouse(owner, housePrice, yesSelling, 
-					house.getHouseID(), ll[0], ll[1], house.getPostalCode(), callback);
+					houseID, latitude, longitude, postalCode, callback);
 		}
 	}
 
