@@ -330,8 +330,8 @@ public class DataStore {
 				owners.get(currentHouse.getOwner()).remove(
 						currentHouse.getHouseID());
 				// if position has any empty array remove the whole thing
-				if (postalCodes.get(currentHouse.getOwner()).size() <= 0) {
-					postalCodes.remove(currentHouse.getOwner());
+				if (owners.get(currentHouse.getOwner()).size() <= 0) {
+					owners.remove(currentHouse.getOwner());
 				}
 			}
 		}
@@ -342,8 +342,8 @@ public class DataStore {
 				price.get(currentHouse.getPrice()).remove(
 						currentHouse.getHouseID());
 				// if position has any empty array remove the whole thing
-				if (postalCodes.get(currentHouse.getPrice()).size() <= 0) {
-					postalCodes.remove(currentHouse.getPrice());
+				if (price.get(currentHouse.getPrice()).size() <= 0) {
+					price.remove(currentHouse.getPrice());
 				}
 			}
 		}
