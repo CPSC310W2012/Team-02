@@ -755,7 +755,7 @@ public class Team_02 implements EntryPoint {
 		userInput[1] = addressDropDown.getValue(selectedAddrIndex);
 		
 		// Because civic number(street number) is already added, begin adding from index 1
-		for (int i = 1; i < searchValues.size(); i++) {
+		for (int i = 0; i < searchValues.size(); i++) {
 			String temp = searchValues.get(i).getText().trim();		
 			
 			// if user left min/max labels, then the criterion is empty.

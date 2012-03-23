@@ -365,7 +365,7 @@ public class DataStore {
 	// HouseID retrieval Methods
 
 	/**
-	 * Gets keys of all of entire datastore
+	 * Gets keys of all of entire datastore as an array
 	 * 
 	 * @return keys
 	 */
@@ -373,6 +373,15 @@ public class DataStore {
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(store.keySet());
 		return keys;
+	}
+	
+	/**
+	 * Gets keys of all of entire datastore as a set
+	 * 
+	 * @return keys
+	 */
+	public Set<String> getAllKeysSet() {
+		return store.keySet();
 	}
 
 	/**
