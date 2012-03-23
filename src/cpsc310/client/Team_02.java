@@ -95,12 +95,14 @@ public class Team_02 implements EntryPoint {
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
+						resetDatabase();
 						buildUI();
 					}
 
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
+						resetDatabase();
 						buildUI();
 					}
 				});
@@ -977,6 +979,26 @@ public class Team_02 implements EntryPoint {
 			houseDataSvc.updateHouse(owner, housePrice, yesSelling, 
 					houseID, latitude, longitude, postalCode, callback);
 		}
+	}
+	
+	/**
+	 * Resets database to the initial view.
+	 */
+	private void resetDatabase() {
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(Void result) {
+			}
+		};
+		houseDataSvc.refreshIDStore(callback);
 	}
 
 }
