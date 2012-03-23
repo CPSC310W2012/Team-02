@@ -3,6 +3,7 @@ package cpsc310.client;
 import java.util.Stack;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.MetaElement;
@@ -16,6 +17,8 @@ import com.google.gwt.maps.client.event.MapClickHandler;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LatLngCallback;
+import com.google.gwt.maps.client.geocode.LocationCallback;
+import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
@@ -43,6 +46,7 @@ public class PropertyMap {
 	private StreetviewClient svClient;
 	// keep a stack of all the markers
 	private Stack<Marker> markers = new Stack();
+	private Geocoder geocoder;
 
 	// polygon settings
 	private String color = "#FF0000";
@@ -112,10 +116,15 @@ public class PropertyMap {
 	 * 
 	 * @param location
 	 *            - string representation of the address
+	 * @param placeMarker - true if you want to place a marker on map and update streetview, false otherwise.
+	 * @return returns LatLng point
+	 *      
 	 */
-	public void findLocation(final HouseData house) {
+	public LatLng findLocation(final HouseData house, final boolean placeMarker) {
+		final LatLngWrapper llWrap = new LatLngWrapper();
+		
 		LatLngCallback callback = new LatLngCallback() {
-
+			
 			public void onFailure() {
 				Window.alert("Location not found");
 			}
@@ -123,14 +132,104 @@ public class PropertyMap {
 			public void onSuccess(LatLng point) {
 				// add the location onto the map
 				// check if it's on sale, true for third param if so.
-				addSpecialMarker(point, house, true);
-				refreshStreetView(point);
-				// isPointInPolygon(point); //for testing
+				if(placeMarker){
+					//addSpecialMarker(point, house, house.getIsSelling());
+					addSpecialMarker(point, house, true);
+					refreshStreetView(point);
+				}
+				llWrap.setResponse(point);
 			}
 		};
-		Geocoder geocoder = new Geocoder();
+		geocoder = new Geocoder();
 		geocoder.getLatLng(house.getAddress() + " VANCOUVER, BC", callback);
+		
+		return llWrap.getLL();
 	}
+	
+	/**
+	 * get the lat and long in an array
+	 * 
+	 * @param house houseData object
+	 * @return a size 2 double array of lat and long given the house address - array at index 0 is latitude, array at index 1 is longitude
+	 * Returns null if the lat and long was not found.
+	 * 
+	 */
+	
+	public Double[] getLL(final HouseData house)
+	{
+		Double[] latLong = new Double[2];
+		LatLng point = findLocation(house, false);
+		if(point != null){
+			latLong[0] = point.getLatitude();
+			latLong[1] = point.getLongitude();
+		}
+		else return null;
+		return latLong;
+	}
+	
+	
+	// Wrapper class for latlng
+	class LatLngWrapper {
+	    LatLng theLatLng;
+	    void setResponse(LatLng ll) {
+	        this.theLatLng = ll;
+	    }
+	    LatLng getLL() {
+	        return theLatLng;
+	    }
+	}
+	
+	// Wrapper class for postalCode
+	class PCWrapper {
+	    String thePC;
+	    void setPC(String pc) {
+	        this.thePC = pc;
+	    }
+	    String getPC() {
+	        return thePC;
+	    }
+	}
+	
+	/**
+	 * Reverse geocoding to get the postal Code
+	 * 
+	 * @param address
+	 *            Address of the postal code to be found
+	 * @return postal code    
+	 * 
+	 */
+	
+	public String getPostalCodeInVancouver(String address)
+	{ 
+		final PCWrapper pcWrap = new PCWrapper();
+
+		LocationCallback callback = new LocationCallback(){
+			
+	          public void onFailure(int statusCode) {
+	            Window.alert("Failed to geocode position ");
+	          }
+
+	          public void onSuccess(JsArray<Placemark> locations) {
+	            if(locations.length()>1)
+	            	{
+	            	 //Window.alert("more than one postal code found");
+	            	}
+	        	for (int i = 0; i < locations.length(); ++i) {
+	              Placemark location = locations.get(i);
+	              String pc = location.getPostalCode();
+	              //Window.alert(pc);
+	              pcWrap.setPC(pc);
+	            }
+	          }
+	        };
+	        
+		geocoder = new Geocoder();
+		geocoder.getLocations(address + " VANCOUVER, BC", callback);
+		return pcWrap.getPC();
+	}
+	
+	
+	
 
 	/**
 	 * Adds a marker to the map
