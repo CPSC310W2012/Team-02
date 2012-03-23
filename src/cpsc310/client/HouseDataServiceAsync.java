@@ -17,8 +17,8 @@ public interface HouseDataServiceAsync {
 	public void getHouses(List<String> list, int start, int range,
 			AsyncCallback<List<HouseData>> callback);
 
-	public void getSearchedHouses(String[] userSearchInput, int isSelling,
-			AsyncCallback<List<HouseData>> callback);
+	public void searchHouses(String[] userSearchInput, int isSelling,
+			AsyncCallback<Void> callback);
 
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 

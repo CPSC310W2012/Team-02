@@ -35,10 +35,9 @@ public interface HouseDataService extends RemoteService {
 	 * @param userSearchInput
 	 *            - list of user's search input into search boxes
 	 * @param isSelling
-	 *            - boolean value of "for sale" criteria
-	 * @return list of House data within specified criteria
+	 *            - integer values, 0 not for sale, 1 for sale, -1 all
 	 */
-	public List<HouseData> getSearchedHouses(String[] userSearchInput,
+	public void searchHouses(String[] userSearchInput,
 			int isSelling);
 
 	/**

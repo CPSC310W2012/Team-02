@@ -1,8 +1,12 @@
 package cpsc310.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import cpsc310.client.HouseDataService;
 import cpsc310.client.HouseData;
@@ -15,19 +19,19 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 	DataStore store;
 	List<String> workingIDStore;
+
 	/**
 	 * Constructor
 	 */
-	public HouseDataServiceImpl(){
+	public HouseDataServiceImpl() {
 		store = new DataStore();
-		refreshIDStore(); 
+		refreshIDStore();
 	}
-	
+
 	/**
 	 * 
 	 */
-	public void refreshIDStore()
-	{
+	public void refreshIDStore() {
 		workingIDStore = store.getAllKeys();
 	}
 
@@ -42,7 +46,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
 		// retrieve house data points
-		List<HouseDataPoint> tempList = store.getHouses(workingIDStore, start, range);
+		List<HouseDataPoint> tempList = store.getHouses(workingIDStore, start,
+				range);
 
 		// Convert HouseDataPoint into HouseData
 		List<HouseData> grab = convertToListHouseData(tempList);
@@ -51,65 +56,95 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		return grab;
 	}
 
-	/**
-	 * Get house data within specified search criteria.
-	 * 
-	 * @param userSearchInput
-	 *            - list of user's search input into search boxes
-	 * @param isSelling
-	 *            - boolean value of "for sale" criteria
-	 * @return list of House data within specified criteria
-	 */
 	@Override
-	public List<HouseData> getSearchedHouses(String[] userSearchInput,
-			int isSelling) {
-				return null;
-		// @TODO rework method to work with new houseDataPoints
-		// List<HouseData> result = new ArrayList <HouseData> (store.size());
-		// boolean searchCoord = false;
-		// boolean searchLandVal = false;
-		// boolean searchOwner = false;
-		//
-		// // If user did not specify coordinate range or land value range,
-		// // lowerCoord, upperCoord, lowerVal, upperVal will be -1!!
-		// if (lowerCoord != -1 || upperCoord != -1) {
-		// searchCoord = true;
-		// }
-		// if (lowerLandVal != -1 || upperLandVal != -1) {
-		// searchLandVal = true;
-		// }
-		// if (owner != null) {
-		// searchOwner = true;
-		// }
-		//
-		// // TODO Search database and grab necessary data.
-		// Iterator<HouseDataPoint> houserItr = store.iterator();
-		// HouseDataPoint check = null;
-		//
-		// // Convert HouseDataPoint into HouseData
-		// for (int i = 0; (i < store.size()) && (houserItr.hasNext()); i++) {
-		// check = houserItr.next();
-		//
-		// if (searchLandVal == true) {
-		// if ((check.getLandValue() > lowerLandVal) &&
-		// (check.getLandValue() < upperLandVal)) {
-		// result.add(convertToHouseData(check));
-		// }
-		// }
-		//
-		// if (searchOwner == true) {
-		// if (check.getOwner() != null) {
-		// if (check.getOwner().equals(owner)) {
-		// result.add(convertToHouseData(check));
-		// }
-		// }
-		// }
-		// }
-		//
-		// if (result.isEmpty())
-		// return null;
-		//
-		// return result;
+	public void searchHouses(String[] userSearchInput, int isSelling) {
+		// [0]"civicNumber"
+		// [1]"StreetName",
+		// Value "Current Land Value" - [2]min, [3]max
+		// Value "Price" - [4]min, [5]max
+		// [6]"Realtor"
+		// [7]"Postal Code"
+		// Value "Current Improvement Value" - [8]min, [9]max
+		// Year "Assessment Year" - [10]min, [11]max
+		// Value "Previous Land Value" - [12]min, [13]max
+		// Value "Previous Improvement Value" - [14]min, [15]max
+		// Year "Year Built" - [16]min, [17]max
+		// Year "Big Improvement Year" - [18]min, [19]max
+
+		// reduction factors (avg case) = houseID > Street > Civic Number >
+		// Postal Code > Realtor > Price > Is Selling > Values > Years > Not
+		// Selling
+//
+//		Set<String> results = null;
+//
+//		// First pass checks in order of reduction factors
+//		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
+//			if (results == null) {
+//				results = store.searchByAddress(
+//						Integer.parseInt(userSearchInput[0]),
+//						userSearchInput[1]);
+//			} else {
+//				results = Sets.intersection(results, store.searchByAddress(
+//						Integer.parseInt(userSearchInput[0]),
+//						userSearchInput[1]));
+//			}
+//		}
+//		if (!userSearchInput[1].equals("")) {
+//			if (results == null) {
+//				results = store.searchByStreet(userSearchInput[1]);
+//			} else {
+//				results = Sets.intersection(results,store.searchByStreet(userSearchInput[1]));
+//			}
+//		}
+//		if (!userSearchInput[0].equals("")) {
+//			results = store.searchByCivicNumber(Integer
+//					.parseInt(userSearchInput[0]));
+//			workingIDStore = results;
+//			firstPassPruned = true;
+//		}
+//		if (!userSearchInput[7].equals("")) {
+//			results = store.searchByPostalCode(userSearchInput[7]);
+//			workingIDStore = results;
+//			firstPassPruned = true;
+//		}
+//		if (!userSearchInput[6].equals("")) {
+//			results = store.searchByOwner(userSearchInput[6]);
+//		}
+//
+//		// Second Pass
+//		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
+//			results = store.searchByPrice(Integer.parseInt(userSearchInput[4]),
+//					Integer.parseInt(userSearchInput[5]));
+//			workingIDStore = results;
+//		} else if (isSelling == 1) {
+//			results = store.getForSaleHomes();
+//			workingIDStore = results;
+//		} else if (!userSearchInput[2].equals("")
+//				&& !userSearchInput[3].equals("")) {
+//			results = store.searchByCurrentLandValue(
+//					Integer.parseInt(userSearchInput[2]),
+//					Integer.parseInt(userSearchInput[3]));
+//			workingIDStore = results;
+//		} else if (!userSearchInput[8].equals("")
+//				&& !userSearchInput[9].equals("")) {
+//			results = store.searchByCurrentImprovementValue(
+//					Integer.parseInt(userSearchInput[8]),
+//					Integer.parseInt(userSearchInput[9]));
+//			workingIDStore = results;
+//		} else if (!userSearchInput[12].equals("")
+//				&& !userSearchInput[13].equals("")) {
+//			results = store.searchByPreviousLandValue(
+//					Integer.parseInt(userSearchInput[12]),
+//					Integer.parseInt(userSearchInput[13]));
+//			workingIDStore = results;
+//		} else if (!userSearchInput[14].equals("")
+//				&& !userSearchInput[15].equals("")) {
+//			results = store.searchByPreviousImprovementValue(
+//					Integer.parseInt(userSearchInput[14]),
+//					Integer.parseInt(userSearchInput[15]));
+//			workingIDStore = results;
+//		}
+//		workingIDStore = results;
 	}
 
 	/**
@@ -188,70 +223,121 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public void sortByAddress(boolean isSortAscending) {
-		workingIDStore = store.sortByHouseID(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByHouseID(workingIDStore);
+		} else {
+			workingIDStore = store.sortByHouseIDDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByPostalCode(boolean isSortAscending) {
-		workingIDStore = store.sortByPostalCode(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByPostalCode(workingIDStore);
+		} else {
+			workingIDStore = store.sortByPostalCodeDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByOwner(boolean isSortAscending) {
-		workingIDStore =  store.sortByOwner(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByOwner(workingIDStore);
+		} else {
+			workingIDStore = store.sortByOwnerDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByForSale(boolean isSortAscending) {
-		workingIDStore = store.sortByForSale(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByForSale(workingIDStore);
+		} else {
+			workingIDStore = store.sortByForSaleDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByCurrentLandValue(boolean isSortAscending) {
-		workingIDStore = store.sortByCurrentLandValue(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByCurrentLandValue(workingIDStore);
+		} else {
+			workingIDStore = store.sortByCurrentLandValueDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByCurrentImprovementValue(boolean isSortAscending) {
-		workingIDStore = store.sortByCurrentImprovementValue(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store
+					.sortByCurrentImprovementValue(workingIDStore);
+		} else {
+			workingIDStore = store
+					.sortByCurrentImprovementValueDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByAssessmentYear(boolean isSortAscending) {
-		workingIDStore = store.sortByAssessmentYear(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByAssessmentYear(workingIDStore);
+		} else {
+			workingIDStore = store.sortByAssessmentYearDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByPreviousLandValue(boolean isSortAscending) {
-		workingIDStore = store.sortByPreviousLandValue(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByPreviousLandValue(workingIDStore);
+		} else {
+			workingIDStore = store.sortByPreviousLandValueDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByPreviousImprovementValue(boolean isSortAscending) {
-		workingIDStore = store.sortByPreviousImprovementValue(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store
+					.sortByPreviousImprovementValue(workingIDStore);
+		} else {
+			workingIDStore = store
+					.sortByPreviousImprovementValueDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByYearBuilt(boolean isSortAscending) {
-		workingIDStore = store.sortByYearBuilt(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByYearBuilt(workingIDStore);
+		} else {
+			workingIDStore = store.sortByYearBuiltDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByBigImprovementYear(boolean isSortAscending) {
-		workingIDStore = store.sortByBigImprovementYear(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByBigImprovementYear(workingIDStore);
+		} else {
+			workingIDStore = store.sortByBigImprovementYearDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void sortByPrice(boolean isSortAscending) {
-		workingIDStore = store.sortByPrice(workingIDStore);
+		if (isSortAscending) {
+			workingIDStore = store.sortByPrice(workingIDStore);
+		} else {
+			workingIDStore = store.sortByPriceDes(workingIDStore);
+		}
 	}
 
 	@Override
 	public void updateHouse(String Owner, int price, boolean isSelling,
-			String houseID, double latitude, double longitude,
-			String postalCode) {
-		store.updateHouse(Owner, price, isSelling, houseID, longitude, latitude,
-				postalCode);
+			String houseID, double latitude, double longitude, String postalCode) {
+		store.updateHouse(Owner, price, isSelling, houseID, longitude,
+				latitude, postalCode);
 	}
 
 	@Override

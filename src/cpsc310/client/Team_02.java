@@ -706,18 +706,18 @@ public class Team_02 implements EntryPoint {
 		}
 
 		// Set up the callback object
-		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
 
-			public void onSuccess(List<HouseData> result) {
+			public void onSuccess(Void result) {
 				houseTable.refreshTableFromBeginning();
 			}
 		};
 		// Make the call to the house data service to search for data in the
 		// server
-		houseDataSvc.getSearchedHouses(userSearchInput, isSelling, callback);
+		houseDataSvc.searchHouses(userSearchInput, isSelling, callback);
 	}
 
 	/**

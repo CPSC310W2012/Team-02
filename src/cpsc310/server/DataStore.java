@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -26,7 +27,10 @@ public class DataStore {
 	private HashMap<String, HouseDataPoint> store;
 
 	// To facilitate address look up
-	private HashMap<String, ArrayList<Integer>> streetNames;
+	private HashMap<String, List<Integer>> streetNames;
+
+	// To facilitate civic Number look up
+	private HashMap<Integer, List<String>> civicNumbers;
 
 	// To facilitate postalCode look up
 	private HashMap<String, List<String>> postalCodes;
@@ -108,8 +112,9 @@ public class DataStore {
 	 */
 	private void initalizeLookups(HashMap<String, HouseDataPoint> houses) {
 		// initialize data-lookup structures
-		streetNames = new HashMap<String, ArrayList<Integer>>();
+		streetNames = new HashMap<String, List<Integer>>();
 		postalCodes = new HashMap<String, List<String>>();
+		civicNumbers = new HashMap<Integer, List<String>>();
 		owners = new HashMap<String, List<String>>();
 		forSaleHomes = new HashSet<String>();
 		currentLandValues = new TreeMap<Integer, List<String>>();
@@ -133,6 +138,16 @@ public class DataStore {
 				ArrayList<Integer> tempCivicList = new ArrayList<Integer>();
 				tempCivicList.add(currentHouse.getCivicNumber());
 				streetNames.put(currentHouse.getStreetName(), tempCivicList);
+			}
+
+			// Populate Civic Number Hash
+			if (civicNumbers.containsKey(currentHouse.getCivicNumber())) {
+				civicNumbers.get(currentHouse.getCivicNumber()).add(
+						currentHouse.getStreetName());
+			} else {
+				ArrayList<String> tempStreetList = new ArrayList<String>();
+				tempStreetList.add(currentHouse.getStreetName());
+				civicNumbers.put(currentHouse.getCivicNumber(), tempStreetList);
 			}
 
 			// Populate current land value tree
@@ -341,8 +356,9 @@ public class DataStore {
 		// try to register
 		try {
 			ObjectifyService.register(HouseDataPoint.class);
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			// already registered
+			System.out.println("HouseDataPoints already registered in data store");
 		}
 	}
 
@@ -373,21 +389,21 @@ public class DataStore {
 	/**
 	 * Get house data for table display
 	 * 
-	 * @param keys
+	 * @param tempArray
 	 * @param start
 	 * @param range
 	 * @return list of HouseDataPoint
 	 */
-	public List<HouseDataPoint> getHouses(List<String> keys, int start,
+	public List<HouseDataPoint> getHouses(List<String> tempArray, int start,
 			int range) {
 		List<HouseDataPoint> grab = new ArrayList<HouseDataPoint>();
 		int end = start + range;
 		// Check for end condition to prevent accessing out-of-array.
-		if (end > keys.size()) {
-			end = keys.size();
+		if (end > tempArray.size()) {
+			end = tempArray.size();
 		}
 		for (int i = start; i < end; i++) {
-			grab.add(store.get(keys.get(i)));
+			grab.add(store.get(tempArray.get(i)));
 		}
 		// Change below to return grab
 		return grab;
@@ -401,8 +417,8 @@ public class DataStore {
 	 * @param street
 	 * @return housesFound
 	 */
-	public List<String> searchByAddress(int civicNumber, String street) {
-		List<String> keys = new ArrayList<String>();
+	public Set<String> searchByAddress(int civicNumber, String street) {
+		Set<String> keys = new HashSet<String>();
 		if (store.containsKey(civicNumber + " " + street)) {
 			keys.add(civicNumber + " " + street);
 		}
@@ -415,13 +431,31 @@ public class DataStore {
 	 * @param street
 	 * @return housesFound
 	 */
-	public List<String> searchByStreet(String street) {
-		List<String> keys = new ArrayList<String>();
-		ArrayList<Integer> currentCivicNumbers = streetNames.get(street);
+	public Set<String> searchByStreet(String street) {
+		Set<String> keys = new HashSet<String>();
+		List<Integer> currentCivicNumbers = streetNames.get(street);
 		if (currentCivicNumbers != null) {
 			Iterator<Integer> tempItr = currentCivicNumbers.iterator();
 			while (tempItr.hasNext()) {
 				keys.add(tempItr.next() + " " + street);
+			}
+		}
+		return keys;
+	}
+
+	/**
+	 * Searches for user inputed civic number returns all address associated.
+	 * 
+	 * @param civicNumber
+	 * @return housesFound
+	 */
+	public Set<String> searchByCivicNumber(int civicNumber) {
+		Set<String> keys = new HashSet<String>();
+		List<String> currentCivicNumbers = civicNumbers.get(civicNumber);
+		if (currentCivicNumbers != null) {
+			Iterator<String> tempItr = currentCivicNumbers.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(civicNumber + " " + tempItr.next());
 			}
 		}
 		return keys;
@@ -433,11 +467,29 @@ public class DataStore {
 	 * @param postalCode
 	 * @return houseFound
 	 */
-	public List<String> searchByPostalCode(String postalCode) {
-		List<String> keys = new ArrayList<String>();
+	public Set<String> searchByPostalCode(String postalCode) {
+		Set<String> keys = new HashSet<String>();
 		List<String> currentPostalCodes = postalCodes.get(postalCode);
 		if (currentPostalCodes != null) {
 			Iterator<String> tempItr = currentPostalCodes.iterator();
+			while (tempItr.hasNext()) {
+				keys.add(tempItr.next());
+			}
+		}
+		return keys;
+	}
+	
+	/**
+	 * Searches for houses via owner
+	 * 
+	 * @param owner - realtor
+	 * @return houseFound
+	 */
+	public Set<String> searchByOwner(String realtor) {
+		Set<String> keys = new HashSet<String>();
+		List<String> currentOwners = owners.get(realtor);
+		if (currentOwners != null) {
+			Iterator<String> tempItr = currentOwners.iterator();
 			while (tempItr.hasNext()) {
 				keys.add(tempItr.next());
 			}
@@ -450,10 +502,8 @@ public class DataStore {
 	 * 
 	 * @return house - houses that are for sale
 	 */
-	public List<String> getForSaleHomes() {
-		List<String> tempList = new ArrayList<String>();
-		tempList.addAll(forSaleHomes);
-		return tempList;
+	public Set<String> getForSaleHomes() {
+		return forSaleHomes;
 	}
 
 	/**
@@ -466,9 +516,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByCurrentLandValue(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = currentLandValues
-				.subMap(min, true, max, true);
+	public Set<String> searchByCurrentLandValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = currentLandValues.subMap(
+				min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -482,7 +532,7 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByCurrentImprovementValue(int min, int max) {
+	public Set<String> searchByCurrentImprovementValue(int min, int max) {
 		SortedMap<Integer, List<String>> tempMap = currentImprovementValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
@@ -498,9 +548,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByAssessmentYear(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = assessmentYears.subMap(
-				min, true, max, true);
+	public Set<String> searchByAssessmentYear(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = assessmentYears.subMap(min,
+				true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -514,9 +564,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByPreviousLandValue(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = previousLandValues
-				.subMap(min, true, max, true);
+	public Set<String> searchByPreviousLandValue(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = previousLandValues.subMap(
+				min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -530,7 +580,7 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByPreviousImprovementValue(int min, int max) {
+	public Set<String> searchByPreviousImprovementValue(int min, int max) {
 		SortedMap<Integer, List<String>> tempMap = previousImprovementValues
 				.subMap(min, true, max, true);
 		return convertRangedSearchResult(tempMap);
@@ -546,9 +596,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByYearBuilt(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = yearsBuilt.subMap(min,
-				true, max, true);
+	public Set<String> searchByYearBuilt(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = yearsBuilt.subMap(min, true,
+				max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -562,9 +612,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByBigImprovementYear(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = bigImprovementYears
-				.subMap(min, true, max, true);
+	public Set<String> searchByBigImprovementYear(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = bigImprovementYears.subMap(
+				min, true, max, true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -578,9 +628,9 @@ public class DataStore {
 	 *            -lower bound
 	 * @return houseFound
 	 */
-	public List<String> searchByPrice(int min, int max) {
-		SortedMap<Integer, List<String>> tempMap = price.subMap(min, true,
-				max, true);
+	public Set<String> searchByPrice(int min, int max) {
+		SortedMap<Integer, List<String>> tempMap = price.subMap(min, true, max,
+				true);
 		return convertRangedSearchResult(tempMap);
 	}
 
@@ -591,9 +641,9 @@ public class DataStore {
 	 * @param result
 	 * @return convertedList - ArrayList of houseIDs
 	 */
-	private ArrayList<String> convertRangedSearchResult(
+	private Set<String> convertRangedSearchResult(
 			SortedMap<Integer, List<String>> result) {
-		ArrayList<String> keys = new ArrayList<String>();
+		Set<String> keys = new HashSet<String>();
 		Iterator<Integer> tempItr = result.keySet().iterator();
 		while (tempItr.hasNext()) {
 			// retrieve from list of houses
@@ -672,8 +722,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentLandValue(
-			List<String> currentList) {
+	public List<String> sortByCurrentLandValue(List<String> currentList) {
 		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -687,8 +736,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentImprovementValue(
-			List<String> currentList) {
+	public List<String> sortByCurrentImprovementValue(List<String> currentList) {
 		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -717,8 +765,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousLandValue(
-			List<String> currentList) {
+	public List<String> sortByPreviousLandValue(List<String> currentList) {
 		PreviousLandValueComparator comp = new PreviousLandValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -733,8 +780,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousImprovementValue(
-			List<String> currentList) {
+	public List<String> sortByPreviousImprovementValue(List<String> currentList) {
 		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -763,8 +809,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByBigImprovementYear(
-			List<String> currentList) {
+	public List<String> sortByBigImprovementYear(List<String> currentList) {
 		BigImprovementYearComparator comp = new BigImprovementYearComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -783,6 +828,224 @@ public class DataStore {
 		PriceComparator comp = new PriceComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
+	}
+	
+	/**
+	 * Sorts houses by HouseID descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByHouseIDDes(List<String> currentList) {
+		HouseIDComparator comp = new HouseIDComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by Owner descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByOwnerDes(List<String> currentList) {
+		OwnerComparator comp = new OwnerComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by postalCodes descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPostalCodeDes(List<String> currentList) {
+		PostalCodeComparator comp = new PostalCodeComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by forSaleHomes descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByForSaleDes(List<String> currentList) {
+		ForSaleComparator comp = new ForSaleComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentLandValues descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByCurrentLandValueDes(List<String> currentList) {
+		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by currentImprovementValue descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByCurrentImprovementValueDes(List<String> currentList) {
+		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
+				store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by assessmentYear descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByAssessmentYearDes(List<String> currentList) {
+		AssessmentYearComparator comp = new AssessmentYearComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousLandValue descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPreviousLandValueDes(List<String> currentList) {
+		PreviousLandValueComparator comp = new PreviousLandValueComparator(
+				store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by previousImprovementValue descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPreviousImprovementValueDes(List<String> currentList) {
+		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
+				store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by yearBuilt descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByYearBuiltDes(List<String> currentList) {
+		YearBuiltComparator comp = new YearBuiltComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by bigImprovementYear descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByBigImprovementYearDes(List<String> currentList) {
+		BigImprovementYearComparator comp = new BigImprovementYearComparator(
+				store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+
+	/**
+	 * Sorts houses by price descending
+	 * 
+	 * @param currentList
+	 *            - list to be sorted
+	 * @return sortedList - ArrayList of houseIDs
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> sortByPriceDes(List<String> currentList) {
+		PriceComparator comp = new PriceComparator(store);
+		Collections.sort(currentList, Collections.reverseOrder(comp));
+		return currentList;
+	}
+	
+	//Other methods
+	/**
+	 * validates house given restriction criteria
+	 * 
+	 * @param houseID
+	 * @param userSearchInput
+	 * @return boolean - true if house is valid, false if not valid
+	 */
+	public boolean validateHouseParams(String houseID, String[] userSearchInput)
+	{
+		// [0]"civicNumber"
+		// [1]"streetName",
+		// Value "Current Land Value" - [2]min, [3]max
+		// Value "Price" - [4]min, [5]max
+		// [6]"Realtor"
+		// [7]"Postal Code"
+		// Value "Current Improvement Value" - [8]min, [9]max
+		// Year "Assessment Year" - [10]min, [11]max
+		// Value "Previous Land Value" - [12]min, [13]max
+		// Value "Previous Improvement Value" - [14]min, [15]max
+		// Year "Year Built" - [16]min, [17]max
+		// Year "Big Improvement Year" - [18]min, [19]max
+		HouseDataPoint currentHouse = store.get(houseID);
+		if(	currentHouse.getCivicNumber() != Integer.parseInt(userSearchInput[0]))
+		{
+			return false;
+		}
+		if(	!currentHouse.getStreetName().equals(userSearchInput[1]))
+		{
+			return false;
+		}
+		if(	currentHouse.getCurrentLandValue() < Integer.parseInt(userSearchInput[2]))
+		{
+			return false;
+		}
+		if(	currentHouse.getCurrentLandValue() > Integer.parseInt(userSearchInput[4]))
+		{
+			return false;
+		}
+		if(	currentHouse.getCurrentLandValue() > Integer.parseInt(userSearchInput[3]))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
