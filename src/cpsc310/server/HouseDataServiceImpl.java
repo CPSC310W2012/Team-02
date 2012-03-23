@@ -73,7 +73,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// Postal Code > Realtor > Price > Is Selling > Values > Years > Not
 		// Selling
 
-		Set<String> results = null;
+		Set<String> results = store.getAllKeysSet();
 
 		// First pass checks in order of reduction factors
 		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
