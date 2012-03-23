@@ -159,7 +159,7 @@ public class Team_02 implements EntryPoint {
 						theMap.clearMarkers();
 						// add marker onto map
 						for (HouseData house : selectedHouses)
-							theMap.findLocation(house);
+							theMap.findLocation(house, true);
 					}
 				});
 
