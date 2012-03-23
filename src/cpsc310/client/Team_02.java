@@ -1,6 +1,7 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -54,17 +56,17 @@ public class Team_02 implements EntryPoint {
 			.create(HouseDataService.class);
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	private LoginInfo loginInfo = null;
-	private boolean isLoginServiceAvailable = false;
 	private boolean isEditable = false;
-	private boolean isSearching = false;
+	private boolean isLoginServiceAvailable = false;
 	private boolean isAdvSearchPanelHidden = true;
-	private Set<HouseData> selectedHouses = null;
-	private List<HouseData> searchHouseList = null;
-	final private String[] searchCriteria = { "Address", "Postal Code",
+	private Set<HouseData> selectedHouses = null;	
+	final private List<String> searchCriteria = 
+			Arrays.asList("Street Number", "Address", "Postal Code",
 			"Current Land Value", "Current Improvement Value",
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
-			"Price", "Realtor", "For Sale" };
+			"Price", "Realtor", "For Sale");
+	
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private List<String> addresses = new ArrayList<String>();
 
@@ -77,6 +79,7 @@ public class Team_02 implements EntryPoint {
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
 		}
+		
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
 		loginService.login(GWT.getHostPageBaseURL()
@@ -152,6 +155,7 @@ public class Team_02 implements EntryPoint {
 					@Override
 					public void onSelectionChange(SelectionChangeEvent event) {
 						selectedHouses = selectionModel.getSelectedSet();
+						
 						if (selectedHouses.isEmpty()) {
 							theMap.clearMarkers();
 							return;
@@ -245,19 +249,19 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSidePanel(FlowPanel sidePanel) {
 		Button hideShowSidePanelButton = new Button("-");
-		FlowPanel sidePanelContentWrap = new FlowPanel();
+		TabPanel sidebarTabPanel = new TabPanel();
 
 		// Create hide/show ability into the button
 		buildSidePanelButton(hideShowSidePanelButton);
 
 		// Assemble GWT widgets to occupy side panel
-		buildSidePanelWidgets(sidePanelContentWrap);
+		buildSidePanelWidgets(sidebarTabPanel);
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
 				"<div id ='header'><h1>iVan</br>Homes</br>Prices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
-		sidePanel.add(sidePanelContentWrap);
+		sidePanel.add(sidebarTabPanel);
 		sidePanel
 				.add(new HTML(
 						"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
@@ -294,12 +298,13 @@ public class Team_02 implements EntryPoint {
 	 * Helper to buildSidePanel() Assembles GWT widgets that needs to be
 	 * included in the sidePanel.
 	 * 
-	 * @param sidePanelContentWrap
+	 * @param sidebarTabPanel
 	 *            - flow panel to wrap the widgets
 	 */
-	private void buildSidePanelWidgets(FlowPanel sidePanelContentWrap) {
+	private void buildSidePanelWidgets(TabPanel sidebarTabPanel) {
 		FlowPanel loginPanel = new FlowPanel();
 		FlowPanel searchPanel = new FlowPanel();
+		
 
 		// Richard Added
 		HorizontalPanel docPanel = new HorizontalPanel();
@@ -332,16 +337,17 @@ public class Team_02 implements EntryPoint {
 		buildSearchPanel(searchPanel);
 
 		// Assemble widgets to go into the side panel
-		sidePanelContentWrap.add(loginPanel);
-		sidePanelContentWrap.add(new HTML("<br />"));
-		sidePanelContentWrap.add(searchPanel);
-		sidePanelContentWrap.add(new HTML("<br />"));
+		sidebarTabPanel.add(new HTML("<br />"));
+		sidebarTabPanel.add(new HTML("<br />"));
 		// Richard Added
-		sidePanelContentWrap.add(docPanel);
-		sidePanelContentWrap.add(new HTML("<br />"));
+		sidebarTabPanel.add(docPanel);
+		sidebarTabPanel.add(new HTML("<br />"));
+		
+		sidebarTabPanel.add(searchPanel, "Search");
+		sidebarTabPanel.add(loginPanel, "User Info");
 
 		// Set style
-		sidePanelContentWrap.setStyleName("sidePanelContentWrap");
+		sidebarTabPanel.setStyleName("sidePanelContentWrap");
 	}
 
 	/**
@@ -401,11 +407,10 @@ public class Team_02 implements EntryPoint {
 		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 		final ListBox addressDropDown = new ListBox(true);
-		final String[] basicSearchCriteria = { "Street Number", "Address", "Current Land Value",
-				"Price", "Realtor", "For Sale"};
-		final String[] advancedSearchCriteria = {"Postal Code", "Current Improvement Value",
-				"Assessment Year", "Previous Land Value",
-				"Previous Improvement Value", "Year Built", "Big Improvement Year"};		
+		final List<String> advancedSearchCriteria = searchCriteria.subList(4, 9);
+		advancedSearchCriteria.add("Postal Code");
+		final List<String> basicSearchCriteria = searchCriteria.subList(0, searchCriteria.size() - 1);
+		basicSearchCriteria.removeAll(advancedSearchCriteria);
 		
 		// Append style
 		searchPanel.setStyleName("searchPanel");
@@ -465,16 +470,16 @@ public class Team_02 implements EntryPoint {
 	 * Helper to buildSearchPanel().
 	 * Adds search fields to given search setting panels.
 	 * @param searchSettingPanel - panel to add in fields
-	 * @param searchCriteria - search criteria to add
+	 * @param basicSearchCriteria - search criteria to add
 	 * @param searchValues - list of search field text box
 	 * @param forSale - list of 'for sale' radio buttons
 	 * @param addressDropDown - Drop Down list of address
 	 */
 	private void buildSearchFields(FlowPanel searchSettingPanel,
-			String[] searchCriteria, List<TextBox> searchValues, 
+			List<String> basicSearchCriteria, List<TextBox> searchValues, 
 			List<RadioButton> forSale, ListBox addressDropDown) {
 		
-		for (String criterion : searchCriteria) {
+		for (String criterion : basicSearchCriteria) {
 			searchSettingPanel.add(new Label(criterion));
 
 			if (criterion.endsWith("Value") || criterion.endsWith("Price")
@@ -701,21 +706,13 @@ public class Team_02 implements EntryPoint {
 		}
 
 		// Set up the callback object
-		AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
 
-			public void onSuccess(List<String> result) {
-				if (result != null && result.size() != 0) {
-					isSearching = true;
-					houseTable.setSearch(isSearching, result);
-					houseTable.updateTable();
-				} else {
-					List<HouseData> noResult = new ArrayList<HouseData>();
-					houseTable.updateTable(noResult, 0, 0, false);
-					Window.alert("No result found");
-				}
+			public void onSuccess(List<HouseData> result) {
+				houseTable.refreshTableFromBeginning();
 			}
 		};
 		// Make the call to the house data service to search for data in the
@@ -917,20 +914,22 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void editHouse(String price, Boolean yesSelling) {
 		if (selectedHouses.size() == 1) {
-			HouseData house;
+			// Assemble edit field			
+			HouseData house = null;
+			int housePrice = 0;
 			String owner = loginInfo.getEmailAddress();
-			int housePrice;
 			
 			for (HouseData h : selectedHouses) {
 				house = h;
-			}	
+			}
 			
-			if (price.isEmpty())
-				 housePrice = 0;
-			else 
+			//TODO REPLACE with getLat/getLong FROM MAP method once
+			double latitude = 0;
+			double longitude = 0;
+			
+			if (!price.isEmpty()) 
 				housePrice = Integer.parseInt(price);
-				
-			
+						
 			// Initialize the service proxy
 			if (houseDataSvc == null) {
 				houseDataSvc = GWT.create(HouseDataService.class);
@@ -943,13 +942,11 @@ public class Team_02 implements EntryPoint {
 				}
 	
 				public void onSuccess(Void result) {
-					houseTable.refreshTable();
+					houseTable.refreshTableCurrentView();
 				}
 			};
-			// TODO Make the call to the house data service to edit for data in the
-			// server
-			//houseDataSvc.updateHouse(owner, housePrice, yesSelling, house, 
-			//latitude, longitude, callback);
+			houseDataSvc.updateHouse(owner, housePrice, yesSelling, 
+					house.getHouseID(), latitude, longitude, house.getPostalCode(), callback);
 		}
 	}
 

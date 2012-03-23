@@ -13,7 +13,23 @@ import cpsc310.client.HouseData;
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 
-	DataStore store = new DataStore();
+	DataStore store;
+	List<String> workingIDStore;
+	/**
+	 * Constructor
+	 */
+	public HouseDataServiceImpl(){
+		store = new DataStore();
+		refreshIDStore(); 
+	}
+	
+	/**
+	 * 
+	 */
+	public void refreshIDStore()
+	{
+		workingIDStore = store.getAllKeys();
+	}
 
 	/**
 	 * Get house data for initial drawing of table. Returning list must be
@@ -26,8 +42,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<HouseData> getHouses(int start, int range) {
 		// retrieve house data points
-		List<HouseDataPoint> tempList = store.getHouses(store.getAllKeys(),
-				start, range);
+		List<HouseDataPoint> tempList = store.getHouses(workingIDStore, start, range);
 
 		// Convert HouseDataPoint into HouseData
 		List<HouseData> grab = convertToListHouseData(tempList);
@@ -46,7 +61,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 * @return list of House data within specified criteria
 	 */
 	@Override
-	public List<String> getSearchedHouses(String[] userSearchInput,
+	public List<HouseData> getSearchedHouses(String[] userSearchInput,
 			int isSelling) {
 				return null;
 		// @TODO rework method to work with new houseDataPoints
@@ -172,63 +187,63 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public List<String> sortByAddress(List<String> list) {
-		return store.sortByHouseID(list);
+	public void sortByAddress(boolean isSortAscending) {
+		workingIDStore = store.sortByHouseID(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPostalCode(List<String> list) {
-		return store.sortByPostalCode(list);
+	public void sortByPostalCode(boolean isSortAscending) {
+		workingIDStore = store.sortByPostalCode(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByOwner(List<String> list) {
-		return store.sortByOwner(list);
+	public void sortByOwner(boolean isSortAscending) {
+		workingIDStore =  store.sortByOwner(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByForSale(List<String> list) {
-		return store.sortByForSale(list);
+	public void sortByForSale(boolean isSortAscending) {
+		workingIDStore = store.sortByForSale(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByCurrentLandValue(List<String> list) {
-		return store.sortByCurrentLandValue(list);
+	public void sortByCurrentLandValue(boolean isSortAscending) {
+		workingIDStore = store.sortByCurrentLandValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByCurrentImprovementValue(List<String> list) {
-		return store.sortByCurrentImprovementValue(list);
+	public void sortByCurrentImprovementValue(boolean isSortAscending) {
+		workingIDStore = store.sortByCurrentImprovementValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByAssessmentYear(List<String> list) {
-		return store.sortByAssessmentYear(list);
+	public void sortByAssessmentYear(boolean isSortAscending) {
+		workingIDStore = store.sortByAssessmentYear(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPreviousLandValue(List<String> list) {
-		return store.sortByPreviousLandValue(list);
+	public void sortByPreviousLandValue(boolean isSortAscending) {
+		workingIDStore = store.sortByPreviousLandValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPreviousImprovementValue(List<String> list) {
-		return store.sortByPreviousImprovementValue(list);
+	public void sortByPreviousImprovementValue(boolean isSortAscending) {
+		workingIDStore = store.sortByPreviousImprovementValue(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByYearBuilt(List<String> list) {
-		return store.sortByYearBuilt(list);
+	public void sortByYearBuilt(boolean isSortAscending) {
+		workingIDStore = store.sortByYearBuilt(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByBigImprovementYear(List<String> list) {
-		return store.sortByBigImprovementYear(list);
+	public void sortByBigImprovementYear(boolean isSortAscending) {
+		workingIDStore = store.sortByBigImprovementYear(workingIDStore);
 	}
 
 	@Override
-	public List<String> sortByPrice(List<String> list) {
-		return store.sortByPrice(list);
+	public void sortByPrice(boolean isSortAscending) {
+		workingIDStore = store.sortByPrice(workingIDStore);
 	}
 
 	@Override
@@ -242,12 +257,5 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<String> getStreetNames() {
 		return store.getStreets();
-	}
-
-	@Override
-	public List<HouseData> getSortedHouses(String sortColumnName,
-			boolean isAscending, int currentStartItem, int range) {
-		//TODO server-side sort		
-		return null;
 	}
 }

@@ -1,8 +1,6 @@
 package cpsc310.client;
 
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -40,7 +38,7 @@ public interface HouseDataService extends RemoteService {
 	 *            - boolean value of "for sale" criteria
 	 * @return list of House data within specified criteria
 	 */
-	public List<String> getSearchedHouses(String[] userSearchInput,
+	public List<HouseData> getSearchedHouses(String[] userSearchInput,
 			int isSelling);
 
 	/**
@@ -51,112 +49,64 @@ public interface HouseDataService extends RemoteService {
 	public int getHouseDatabaseLength();
 
 	/**
-	 * Sort by Address
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Address in server side current working id set
 	 */
-	public List<String> sortByAddress(List<String> list);
+	public void sortByAddress(boolean isSortAscending);
 
 	/**
-	 * Sort by Postal Code
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Postal Code in server side current working id set
 	 */
-	public List<String> sortByPostalCode(List<String> list);
+	public void sortByPostalCode(boolean isSortAscending);
 
 	/**
-	 * Sort by Realtor
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Realtor in server side current working id set
 	 */
-	public List<String> sortByOwner(List<String> list);
+	public void sortByOwner(boolean isSortAscending);
 
 	/**
-	 * Sort by For Sale Status
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by For Sale Status in server side current working id set
 	 */
-	public List<String> sortByForSale(List<String> list);
+	public void sortByForSale(boolean isSortAscending);
 
 	/**
-	 * Sort by land value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by land value in server side current working id set
 	 */
-	public List<String> sortByCurrentLandValue(List<String> list);
+	public void sortByCurrentLandValue(boolean isSortAscending);
 
 	/**
-	 * Sort by Improvement Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Improvement Value in server side current working id set
 	 */
-	public List<String> sortByCurrentImprovementValue(List<String> list);
+	public void sortByCurrentImprovementValue(boolean isSortAscending);
 
 	/**
-	 * Sort by Assessment Year
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Assessment Year in server side current working id set
 	 */
-	public List<String> sortByAssessmentYear(List<String> list);
+	public void sortByAssessmentYear(boolean isSortAscending);
 
 	/**
-	 * Sort by Previous Land Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Previous Land Value in server side current working id set
 	 */
-	public List<String> sortByPreviousLandValue(List<String> list);
+	public void sortByPreviousLandValue(boolean isSortAscending);
 
 	/**
-	 * Sort by Previous Improvement Value
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Previous Improvement Value in server side current working id set
 	 */
-	public List<String> sortByPreviousImprovementValue(List<String> list);
+	public void sortByPreviousImprovementValue(boolean isSortAscending);
 
 	/**
-	 * Sort by Year Built
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Year Built in server side current working id set
 	 */
-	public List<String> sortByYearBuilt(List<String> list);
+	public void sortByYearBuilt(boolean isSortAscending);
 
 	/**
-	 * Sort by Big Improvement Year
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Big Improvement Year in server side current working id set
 	 */
-	public List<String> sortByBigImprovementYear(List<String> list);
+	public void sortByBigImprovementYear(boolean isSortAscending);
 
 	/**
-	 * Sort by Price
-	 * 
-	 * @param list
-	 *            - list of unsortedHouseIDs
-	 * @return houseIDs - sorted list of house IDs
+	 * Sort by Price in server side current working id set
 	 */
-	public List<String> sortByPrice(List<String> list);
+	public void sortByPrice(boolean isSortAscending);
 
 	/**
 	 * Add/update user specified information about the specified data in the
@@ -188,14 +138,7 @@ public interface HouseDataService extends RemoteService {
 	public List<String> getStreetNames();
 	
 	/**
-	 * Returns a list of houses sorted by specified column. 
-	 * 
-	 * @param sortColumnName - name of the column to sort
-	 * @param isAscending - boolean indicating sort order 
-	 * @param currentStartItem - index of current page's start item
-	 * @param range - range of page (= page length)
-	 * @return list of house data sorted by sortColumnName
+	 * Sets ID store to all the keys of the DB
 	 */
-	public List<HouseData> getSortedHouses(String sortColumnName, boolean isAscending, 
-			int currentStartItem, int range);	
+	public void refreshIDStore();
 }

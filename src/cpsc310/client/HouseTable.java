@@ -32,9 +32,7 @@ public class HouseTable {
 	private int currentStartItem = 0;
 	private int pageLength = 0;
 	private int databaseLength = 0;
-	private List<String> currentSearchList = new ArrayList<String>();
 	private boolean isSearching = false;
-	private boolean isSorting = false;
 	private ArrayList<String> columnName = new ArrayList<String>();
 	
 	/**
@@ -234,7 +232,40 @@ public class HouseTable {
 			houseDataSvc = GWT.create(HouseDataService.class);
 		}		
 		
-		// Grab database length
+		updateRowCount();
+		
+		// Data provider to populate Table
+		dataProvider = new AsyncDataProvider<HouseData>() {
+			@Override
+			protected void onRangeChanged(HasData<HouseData> display) {
+				currentStartItem = display.getVisibleRange().getStart();
+				int range = display.getVisibleRange().getLength();
+				pageLength = range;
+								
+				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+					@Override
+					public void onFailure (Throwable caught) {
+						Window.alert(caught.getMessage());	
+					}
+					@Override
+					public void onSuccess (List<HouseData> result) {
+						updateRowData(currentStartItem, result);
+					}
+				};
+				houseDataSvc.getHouses(currentStartItem, range, callback);									
+			}
+		};
+		dataProvider.addDataDisplay(homesCellTable);		
+		
+	}
+		
+	
+	/**
+	 * Update the number of rows to the length of the current working set in
+	 * in the server. Current working set refers to either search results,
+	 * or the entire database.
+	 */
+	private void updateRowCount() {
 		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
 			@Override
 			public void onFailure (Throwable caught) {
@@ -246,70 +277,16 @@ public class HouseTable {
 				databaseLength = result;
 			}
 		};
-		houseDataSvc.getHouseDatabaseLength(callback);		
-		
-		// Data provider to populate Table
-		dataProvider = new AsyncDataProvider<HouseData>() {
-			@Override
-			protected void onRangeChanged(HasData<HouseData> display) {
-				currentStartItem = display.getVisibleRange().getStart();
-				int range = display.getVisibleRange().getLength();
-				pageLength = range;
-				
-				// Get the ColumnSortInfo from the table.
-		        final ColumnSortList sortList = homesCellTable.getColumnSortList();				
-				
-				if (isSearching) {
-					AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
-						@Override
-						public void onFailure (Throwable caught) {
-							Window.alert(caught.getMessage());	
-						}
-						@Override
-						public void onSuccess (List<HouseData> result) {
-							updateRowData(currentStartItem, result);
-						}
-					};
-					houseDataSvc.getHouses(currentSearchList, currentStartItem, range, callback);
-				}
-				
-				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
-					@Override
-					public void onFailure (Throwable caught) {
-						Window.alert(caught.getMessage());	
-					}
-					@Override
-					public void onSuccess (List<HouseData> result) {
-						updateRowData(currentStartItem, result);
-					}
-				};
-				houseDataSvc.getHouses(currentStartItem, range, callback);				
-				
-				// Call server-side sort
-				String sortColumnName="";
-				boolean isAscending = true;
-				if (sortList != null && sortList.size() != 0){
-				     @SuppressWarnings("unchecked")
-					Column <HouseData, ?> sortColumn = 
-				    		 (Column <HouseData, ?>) sortList.get(0).getColumn();
-				     int columnIndex = homesCellTable.getColumnIndex(sortColumn);
-				     sortColumnName = columnName.get(columnIndex);
-				     isAscending = sortList.get(0).isAscending();
-				}
-									
-			}
-		};
-		dataProvider.addDataDisplay(homesCellTable);		
-		
+		houseDataSvc.getHouseDatabaseLength(callback);
 	}
-		
+
 	/**
 	 * Helper to createTable(). Creates ColumnSortEvent.Handler for homesCellTable,
 	 * attaches comparators to enable sorting, and attaches the hander to the table.
 	 */
 	private void createSort() {
 		/* local sort
-		 // Create sort handler, associate sort handler to the table		
+		 // Create sort handler, associate sort handler to the table
 		homesCellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
 			public void onColumnSort(ColumnSortEvent event) {
 				@SuppressWarnings("unchecked")
@@ -367,9 +344,71 @@ public class HouseTable {
 				homesCellTable.setRowData(homesCellTable.getPageStart(), newData);
 			}
 		});
+		// Get the ColumnSortInfo from the table.
+		        		
 		*/
 		// Server-side sort
-		AsyncHandler columnSortHandler = new AsyncHandler(homesCellTable);
+		AsyncHandler columnSortHandler = new ColumnSortEvent.AsyncHandler(homesCellTable) {
+			public void onColumnSort(ColumnSortEvent event) {
+				
+				@SuppressWarnings("unchecked")
+				Column<HouseData,?> sortedColumn = (Column<HouseData, ?>) event.getColumn();				
+				int columnIndex = homesCellTable.getColumnIndex(sortedColumn);
+				boolean isSortAscending = event.isSortAscending();
+				
+				
+				AsyncCallback<Void> callback = new AsyncCallback<Void> () {
+					@Override
+					public void onFailure (Throwable caught) {
+						Window.alert(caught.getMessage());	
+					}
+					@Override
+					public void onSuccess (Void result) {
+						refreshTableCurrentView();
+					}
+				};
+				switch(columnIndex) {
+					case 0:
+						houseDataSvc.sortByAddress(isSortAscending, callback);
+						break;
+					case 1:
+						houseDataSvc.sortByPostalCode(isSortAscending, callback);
+						break;
+					case 2:
+						houseDataSvc.sortByCurrentLandValue(isSortAscending, callback);
+						break;
+					case 3:
+						houseDataSvc.sortByCurrentImprovementValue(isSortAscending, callback);
+						break;
+					case 4:
+						houseDataSvc.sortByAssessmentYear(isSortAscending, callback);
+						break;
+					case 5:
+						houseDataSvc.sortByPreviousLandValue(isSortAscending, callback);
+						break;				
+					case 6:
+						houseDataSvc.sortByPreviousImprovementValue(isSortAscending, callback);
+						break;
+					case 7:
+						houseDataSvc.sortByYearBuilt(isSortAscending, callback);
+						break;
+					case 8:
+						houseDataSvc.sortByBigImprovementYear(isSortAscending, callback);
+						break;
+					case 9:
+						houseDataSvc.sortByOwner(isSortAscending, callback);
+						break;
+					case 10:
+						houseDataSvc.sortByPrice(isSortAscending, callback);
+						break;
+					case 11:
+						houseDataSvc.sortByForSale(isSortAscending, callback);
+						break;					
+					default:
+						break;
+					}				 
+			}
+		};
 		homesCellTable.addColumnSortHandler(columnSortHandler);		
 	}
 	
@@ -408,26 +447,36 @@ public class HouseTable {
 	}
 	
 	/**
-	 * Update table with given list of houses.
-	 * @param houses - list of houses to populate the table
-	 * @param size - number of houses in the list
-	 * @param start - index of the start item in the table
-	 * @param updateWhole - true if resetting the table to the initial view
+	 * Refreshes the table from the beginning.
+	 * This is expected to be called by search methods to update table
+	 * with the search results.
 	 */
-	public void updateTable(List<HouseData> houses, int size, int start, boolean updateWhole) {
-		if (updateWhole) {
-			dataProvider.updateRowCount(databaseLength, true);
-		}
-		else {
-			dataProvider.updateRowCount(size, true);
-		}
-		dataProvider.updateRowData(start, houses);
+	public void refreshTableFromBeginning() {
+		// Refresh the count of rows (Because now it's showing search results)
+		updateRowCount();
+		
+		// Fetch new data from the server
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+			@Override
+			public void onFailure (Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			@Override
+			public void onSuccess (List<HouseData> result) {
+				dataProvider.updateRowData(0, result);
+			}
+		};
+		houseDataSvc.getHouses(0, pageLength, callback);
 	}
 	
+	
 	/**
-	 * Refresh current view of table
+	 * Refresh current view of table, fetching new data from server by
+	 * asynchronous call.
+	 * This is expected to be called by any methods that want to
+	 * refresh the view of table after edits to the database.
 	 */
-	public void refreshTable() {
+	public void refreshTableCurrentView() {
 		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
 			@Override
 			public void onFailure (Throwable caught) {
@@ -436,40 +485,18 @@ public class HouseTable {
 			@Override
 			public void onSuccess (List<HouseData> result) {
 				dataProvider.updateRowData(currentStartItem, result);
-
 			}
 		};
 		houseDataSvc.getHouses(currentStartItem, pageLength, callback);
 	}
-	
-	/**
-	 * Notify homesCellTable in HouseTable that search is in effect.
-	 * If search is in effect, the cell table will display locally stored
-	 * search results in currentHouseList.
-	 * @param isSearching - true if search is in effect
-	 * @param searchResults - results of search to display in table
-	 */
-	public void setSearch(boolean isSearching, List<String> searchResults) {
-		this.isSearching = isSearching;
-		this.currentSearchList = searchResults;
-	}
-	
+		
 	/**
 	 * Expand the page size of the table.
 	 * @param pageSize - size of the page to which the table will expand
 	 */
 	public void expandElement(int pageSize) {
 		this.homesCellTable.setPageSize(pageSize);
+		this.refreshTableCurrentView();
 	}
-
-	/**
-	 * 
-	 */
-	public void updateTable() {
-		if (isSearching) {
-			
-		}
-		
-	}	
 	
 }
