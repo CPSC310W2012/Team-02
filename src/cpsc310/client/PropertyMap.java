@@ -35,6 +35,8 @@ import com.google.gwt.maps.client.streetview.StreetviewPanoramaOptions;
 import com.google.gwt.maps.client.streetview.StreetviewPanoramaWidget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.reveregroup.gwt.facebook4gwt.Facebook;
 import com.reveregroup.gwt.facebook4gwt.ShareButton;
@@ -390,13 +392,7 @@ public class PropertyMap {
 		// TODO: Add Facebook share buttoN
 
 		// Richard Added
-		/*
-		 * Other idea that I didn't try MetaElement houseMeta =
-		 * Document.get().createMetaElement();
-		 * houseMeta.setAttribute("og:description", "This house");
-		 */
-		NodeList<Element> metaTags = Document.get()
-				.getElementsByTagName("meta");
+		NodeList<Element> metaTags = Document.get().getElementsByTagName("meta");
 		for (int i = 0; i < metaTags.getLength(); i++) {
 			MetaElement tagRetrieved = (MetaElement) metaTags.getItem(i);
 			if (tagRetrieved.getAttribute("property").equals("og:description")) {
