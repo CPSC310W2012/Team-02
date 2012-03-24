@@ -330,8 +330,8 @@ public class DataStore {
 				owners.get(currentHouse.getOwner()).remove(
 						currentHouse.getHouseID());
 				// if position has any empty array remove the whole thing
-				if (postalCodes.get(currentHouse.getOwner()).size() <= 0) {
-					postalCodes.remove(currentHouse.getOwner());
+				if (owners.get(currentHouse.getOwner()).size() <= 0) {
+					owners.remove(currentHouse.getOwner());
 				}
 			}
 		}
@@ -342,8 +342,8 @@ public class DataStore {
 				price.get(currentHouse.getPrice()).remove(
 						currentHouse.getHouseID());
 				// if position has any empty array remove the whole thing
-				if (postalCodes.get(currentHouse.getPrice()).size() <= 0) {
-					postalCodes.remove(currentHouse.getPrice());
+				if (price.get(currentHouse.getPrice()).size() <= 0) {
+					price.remove(currentHouse.getPrice());
 				}
 			}
 		}
@@ -365,7 +365,7 @@ public class DataStore {
 	// HouseID retrieval Methods
 
 	/**
-	 * Gets keys of all of entire datastore
+	 * Gets keys of all of entire datastore as an array
 	 * 
 	 * @return keys
 	 */
@@ -373,6 +373,15 @@ public class DataStore {
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(store.keySet());
 		return keys;
+	}
+	
+	/**
+	 * Gets keys of all of entire datastore as a set
+	 * 
+	 * @return keys
+	 */
+	public Set<String> getAllKeysSet() {
+		return store.keySet();
 	}
 
 	/**
@@ -383,6 +392,7 @@ public class DataStore {
 	public List<String> getStreets() {
 		List<String> keys = new ArrayList<String>();
 		keys.addAll(streetNames.keySet());
+		Collections.sort(keys);
 		return keys;
 	}
 
@@ -1094,5 +1104,29 @@ public class DataStore {
 		// Store object
 		Objectify ofy = ObjectifyService.begin();
 		ofy.put(currentHouse);
+	}
+	
+	/**
+	 * Given a houseID, removes house from datastore and resets owner and price
+	 * @param house
+	 */
+	public void resetHouse(String house) {
+		// create and set object variables
+		HouseDataPoint currentHouse = store.get(house);
+		
+		// remove from datastore
+		Objectify ofy = ObjectifyService.begin();
+		ofy.delete(currentHouse);
+
+		// remove from indexes
+		removeFromIndexes(currentHouse);
+
+		// Update house values
+		currentHouse.setOwner("");
+		currentHouse.setPrice(-1);
+		currentHouse.setIsSelling(false);
+
+		// re-add to indexes
+		updateIndexes(currentHouse);
 	}
 }

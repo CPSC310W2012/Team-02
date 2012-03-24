@@ -1,7 +1,6 @@
 package cpsc310.server;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +15,8 @@ import cpsc310.client.HouseData;
 public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 
-	DataStore store;
-	List<String> workingIDStore;
+	private DataStore store;
+	private List<String> workingIDStore;
 
 	/**
 	 * Constructor
@@ -28,7 +27,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * 
+	 * Refreshes the working set of IDs
 	 */
 	public void refreshIDStore() {
 		workingIDStore = store.getAllKeys();
@@ -73,77 +72,61 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// reduction factors (avg case) = houseID > Street > Civic Number >
 		// Postal Code > Realtor > Price > Is Selling > Values > Years > Not
 		// Selling
-//
-//		Set<String> results = null;
-//
-//		// First pass checks in order of reduction factors
-//		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
-//			if (results == null) {
-//				results = store.searchByAddress(
-//						Integer.parseInt(userSearchInput[0]),
-//						userSearchInput[1]);
-//			} else {
-//				results = Sets.intersection(results, store.searchByAddress(
-//						Integer.parseInt(userSearchInput[0]),
-//						userSearchInput[1]));
-//			}
-//		}
-//		if (!userSearchInput[1].equals("")) {
-//			if (results == null) {
-//				results = store.searchByStreet(userSearchInput[1]);
-//			} else {
-//				results = Sets.intersection(results,store.searchByStreet(userSearchInput[1]));
-//			}
-//		}
-//		if (!userSearchInput[0].equals("")) {
-//			results = store.searchByCivicNumber(Integer
-//					.parseInt(userSearchInput[0]));
-//			workingIDStore = results;
-//			firstPassPruned = true;
-//		}
-//		if (!userSearchInput[7].equals("")) {
-//			results = store.searchByPostalCode(userSearchInput[7]);
-//			workingIDStore = results;
-//			firstPassPruned = true;
-//		}
-//		if (!userSearchInput[6].equals("")) {
-//			results = store.searchByOwner(userSearchInput[6]);
-//		}
-//
-//		// Second Pass
-//		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
-//			results = store.searchByPrice(Integer.parseInt(userSearchInput[4]),
-//					Integer.parseInt(userSearchInput[5]));
-//			workingIDStore = results;
-//		} else if (isSelling == 1) {
-//			results = store.getForSaleHomes();
-//			workingIDStore = results;
-//		} else if (!userSearchInput[2].equals("")
-//				&& !userSearchInput[3].equals("")) {
-//			results = store.searchByCurrentLandValue(
-//					Integer.parseInt(userSearchInput[2]),
-//					Integer.parseInt(userSearchInput[3]));
-//			workingIDStore = results;
-//		} else if (!userSearchInput[8].equals("")
-//				&& !userSearchInput[9].equals("")) {
-//			results = store.searchByCurrentImprovementValue(
-//					Integer.parseInt(userSearchInput[8]),
-//					Integer.parseInt(userSearchInput[9]));
-//			workingIDStore = results;
-//		} else if (!userSearchInput[12].equals("")
-//				&& !userSearchInput[13].equals("")) {
-//			results = store.searchByPreviousLandValue(
-//					Integer.parseInt(userSearchInput[12]),
-//					Integer.parseInt(userSearchInput[13]));
-//			workingIDStore = results;
-//		} else if (!userSearchInput[14].equals("")
-//				&& !userSearchInput[15].equals("")) {
-//			results = store.searchByPreviousImprovementValue(
-//					Integer.parseInt(userSearchInput[14]),
-//					Integer.parseInt(userSearchInput[15]));
-//			workingIDStore = results;
-//		}
-//		workingIDStore = results;
+
+		Set<String> results = store.getAllKeysSet();
+
+		// First pass checks in order of reduction factors
+		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
+			results = store.searchByAddress(
+					Integer.parseInt(userSearchInput[0]), userSearchInput[1]);
+		} else if (!userSearchInput[1].equals("")) {
+			results = store.searchByStreet(userSearchInput[1]);
+		} else if (!userSearchInput[0].equals("")) {
+			results = store.searchByCivicNumber(Integer
+					.parseInt(userSearchInput[0]));
+		}
+		if (!userSearchInput[7].equals("")) {
+			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
+		}
+		if (!userSearchInput[6].equals("")) {
+			results.retainAll(store.searchByOwner(userSearchInput[6]));
+		}
+		if (isSelling == 1) {
+			results.retainAll(store.getForSaleHomes());
+		} else if (isSelling == 0) {
+			results.removeAll(store.getForSaleHomes());
+		}
+		// TODO: Start performing single value evaluation increase speed?
+
+		// Second Pass, requires tree traversal
+		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
+			results.retainAll(store.searchByPrice(
+					Integer.parseInt(userSearchInput[4]),
+					Integer.parseInt(userSearchInput[5])));
+		}
+		if (!userSearchInput[2].equals("") && !userSearchInput[3].equals("")) {
+			results.retainAll(store.searchByCurrentLandValue(
+					Integer.parseInt(userSearchInput[2]),
+					Integer.parseInt(userSearchInput[3])));
+		}
+		if (!userSearchInput[8].equals("") && !userSearchInput[9].equals("")) {
+			results.retainAll(store.searchByCurrentImprovementValue(
+					Integer.parseInt(userSearchInput[8]),
+					Integer.parseInt(userSearchInput[9])));
+		}
+		if (!userSearchInput[12].equals("") && !userSearchInput[13].equals("")) {
+			results.retainAll(store.searchByPreviousLandValue(
+					Integer.parseInt(userSearchInput[12]),
+					Integer.parseInt(userSearchInput[13])));
+		}
+		if (!userSearchInput[14].equals("") && !userSearchInput[15].equals("")) {
+			results.retainAll(store.searchByPreviousImprovementValue(
+					Integer.parseInt(userSearchInput[14]),
+					Integer.parseInt(userSearchInput[15])));
+		}
+		ArrayList<String> convertedResults = new ArrayList<String>();
+		convertedResults.addAll(results);
+		workingIDStore = convertedResults;
 	}
 
 	/**
@@ -153,7 +136,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	 */
 	@Override
 	public int getHouseDatabaseLength() {
-		int databaseLength = store.getAllKeys().size();
+		int databaseLength = workingIDStore.size();
 		return databaseLength;
 	}
 
@@ -342,5 +325,10 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<String> getStreetNames() {
 		return store.getStreets();
+	}
+
+	@Override
+	public void resetHouse(String houseID) {
+		store.resetHouse(houseID);
 	}
 }

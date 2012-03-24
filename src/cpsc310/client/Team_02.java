@@ -12,6 +12,7 @@ import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -42,6 +43,13 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
 /**
  * Main EntryPoint class. UI is built, client-side request is handled.
  */
+/**
+ * To RICHARD
+ * Do not touch the UI code unless you are adding something really necessary. 
+ * I'm cleaning up the UI code and fixing the bugs.
+ * If you are moving UI elements around, they cause me so many conflicts.
+ *
+ */
 public class Team_02 implements EntryPoint {
 	private LayoutPanel mainPanel = new LayoutPanel();
 	private DockLayoutPanel submainPanel = new DockLayoutPanel(Unit.PX);
@@ -60,12 +68,12 @@ public class Team_02 implements EntryPoint {
 	private boolean isLoginServiceAvailable = false;
 	private boolean isAdvSearchPanelHidden = true;
 	private Set<HouseData> selectedHouses = null;	
-	final private List<String> searchCriteria = 
-			Arrays.asList("Street Number", "Address", "Postal Code",
+	final String[] searchCriteria = 
+		{"Street Number", "Address", "Postal Code",
 			"Current Land Value", "Current Improvement Value",
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
-			"Price", "Realtor", "For Sale");
+			"Price", "Realtor", "For Sale"};
 	
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private List<String> addresses = new ArrayList<String>();
@@ -87,12 +95,14 @@ public class Team_02 implements EntryPoint {
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
+						resetDatabase();
 						buildUI();
 					}
 
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
+						resetDatabase();
 						buildUI();
 					}
 				});
@@ -231,6 +241,7 @@ public class Team_02 implements EntryPoint {
 					hideShowTablePanelButton.setText("+");
 					submainPanel.setWidgetSize(tableWrapPanel, 20);
 					submainPanel.animate(300);
+					mapContainerPanel.getWidget(0);
 				} else {
 					isTablePanelHidden = false;
 					hideShowTablePanelButton.setText("-");
@@ -250,21 +261,25 @@ public class Team_02 implements EntryPoint {
 	private void buildSidePanel(FlowPanel sidePanel) {
 		Button hideShowSidePanelButton = new Button("-");
 		TabPanel sidebarTabPanel = new TabPanel();
+		FlowPanel menuPanel = new FlowPanel();
 
 		// Create hide/show ability into the button
 		buildSidePanelButton(hideShowSidePanelButton);
 
+		// Assemble menu panel
+		buildMenuPanel(menuPanel);
+
 		// Assemble GWT widgets to occupy side panel
-		buildSidePanelWidgets(sidebarTabPanel);
+		buildSideTabPanel(sidebarTabPanel);
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
 				"<div id ='header'><h1>iVan</br>Homes</br>Prices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
+		sidePanel.add(menuPanel);
 		sidePanel.add(sidebarTabPanel);
-		sidePanel
-				.add(new HTML(
-						"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
+		sidePanel.add(new HTML(
+				"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
 	}
 
 	/**
@@ -301,21 +316,46 @@ public class Team_02 implements EntryPoint {
 	 * @param sidebarTabPanel
 	 *            - flow panel to wrap the widgets
 	 */
-	private void buildSidePanelWidgets(TabPanel sidebarTabPanel) {
-		FlowPanel loginPanel = new FlowPanel();
+	private void buildSideTabPanel(TabPanel sidebarTabPanel) {
 		FlowPanel searchPanel = new FlowPanel();
+						
+		// Assemble search panel
+		buildSearchPanel(searchPanel);
 		
+		// Add Widgets to the tab panel
+		sidebarTabPanel.add(searchPanel, "Search");
+		
+		// Set details of tab panel look
+		sidebarTabPanel.selectTab(0);
+		sidebarTabPanel.setAnimationEnabled(true);
+		sidebarTabPanel.addStyleDependentName("sideTabPanel");		
+		
+		// If user is logged in, assemble user info panel and add it to the tab
+		if (isLoginServiceAvailable == true) {
+			FlowPanel userInfoPanel = new FlowPanel();
+			if (loginInfo.isLoggedIn()) {
+				buildUserInfoPanel(userInfoPanel);	
+				sidebarTabPanel.add(userInfoPanel, "My Account");
+			}
+			else {
+				userInfoPanel.clear();
+				if (sidebarTabPanel.getWidgetCount() > 1)
+					sidebarTabPanel.remove(1);
+			}
+		}
+	}
 
-		// Richard Added
-		HorizontalPanel docPanel = new HorizontalPanel();
+	private void buildMenuPanel(FlowPanel menuPanel) {		
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
-		DrawToolButton drawBtn = new DrawToolButton();
-		drawBtn.setDrawImage();
-		drawBtn.setVisible(true);
-		docPanel.add(helpBtn);
-		docPanel.add(termsBtn);
-		docPanel.add(drawBtn);
+		
+		//Set the styles of elements
+		helpBtn.setStyleName("gwt-Button-textButton");
+		termsBtn.setStyleName("gwt-Button-textButton");
+		menuPanel.setStyleName("menuPanel");
+		
+		// Build and add the login anchors to the menu
+		buildLoginAnchor(menuPanel);
 
 		// Richard Added
 		FlowPanel faceBookTemp = new FlowPanel();
@@ -325,69 +365,50 @@ public class Team_02 implements EntryPoint {
 		faceBookTemp.add(faceBookBtn);
 		faceBookTemp.add(shareBtn);
 		faceBookTemp.add(new HTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>"));
-		docPanel.add(faceBookTemp);
-
-		// Assemble login panel
-		buildLoginPanel(loginPanel);
-
-		// Assemble search panel
-		buildSearchPanel(searchPanel);
-
-		// Assemble widgets to go into the side panel
-/*Commented Out		sidebarTabPanel.add(new HTML("<br />"));
-		sidebarTabPanel.add(new HTML("<br />")); */
-		// Richard Added
-		sidebarTabPanel.add(docPanel, "Documents");
-//Commented Out		sidebarTabPanel.add(new HTML("<br />"));
 		
-		sidebarTabPanel.add(searchPanel, "Search");
-		sidebarTabPanel.add(loginPanel, "User Info");
+		menuPanel.add(helpBtn);
+		menuPanel.add(termsBtn);
+		menuPanel.add(faceBookTemp);
+	}
 
-		// Set style
-		sidebarTabPanel.setStyleName("sidePanelContentWrap");
+	/**
+	 * Helper to buildMenuPanel. Adds login/logout links
+	 * @param menuPanel - menuPanel to add login/logout links
+	 */
+	private void buildLoginAnchor(FlowPanel menuPanel) {
+		// Enable login/logout only if the login service is available.				
+		if (isLoginServiceAvailable == true) {
+			Anchor loginLink = new Anchor("Login");
+			Anchor logoutLink = new Anchor("Logout");
+			
+			// Set Login links
+			loginLink.setHref(loginInfo.getLoginUrl());
+			logoutLink.setHref(loginInfo.getLogoutUrl());
+			
+			// Add to menu
+			menuPanel.add(loginLink);
+			menuPanel.add(logoutLink);
+
+			// Enable/disable the login/logout links depending on login/logout status
+			if (loginInfo.isLoggedIn()) {
+				loginLink.setVisible(false);
+				loginLink.setEnabled(false);
+				isEditable = true;
+			} else {
+				logoutLink.setVisible(false);
+				logoutLink.setVisible(false);
+			}
+		}
+		
 	}
 
 	/**
 	 * Helper to buildSidePanelWidgets(). Assembles login panel which holds
 	 * login/logout buttons. TODO: add user info
 	 */
-	private void buildLoginPanel(FlowPanel loginPanel) {
-		Button loginBtn = new Button("Login");
-		Button logoutBtn = new Button("Log out");
-
-		// Enable login/logout only if the login service is available.
-		if (isLoginServiceAvailable == true) {
-			// Set Login Panel
-			loginPanel.add(loginBtn);
-			loginPanel.add(logoutBtn);
-
-			// Load the login/logout button depending on login/logout status
-			if (loginInfo.isLoggedIn()) {
-				loginBtn.setVisible(false);
-				loginBtn.setEnabled(false);
-				isEditable = true;
-			} else {
-				logoutBtn.setVisible(false);
-				logoutBtn.setVisible(false);
-			}
-
-			// Listen for mouse events on Login
-			loginBtn.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					Window.Location.assign(loginInfo.getLoginUrl());
-				}
-			});
-
-			// Listen for mouse events on Logout
-			logoutBtn.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					Window.Location.assign(loginInfo.getLogoutUrl());
-				}
-			});
-		}
-
+	private void buildUserInfoPanel(FlowPanel userInfoPanel) {
 		// Set style
-		loginPanel.setStyleName("loginPanel");
+		userInfoPanel.setStyleName("userInfoPanel");
 	}
 
 	/**
@@ -403,30 +424,13 @@ public class Team_02 implements EntryPoint {
 		final Button advancedSearchBtn = new Button ("Advanced Search"); 
 		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
-		final ListBox addressDropDown = new ListBox(true);
-/*Commented Out		final List<String> advancedSearchCriteria = searchCriteria.subList(4, 9);
-		advancedSearchCriteria.add("Postal Code");*/
-		final List<String> advancedSearchCriteria = new ArrayList<String>();
-		advancedSearchCriteria.add("Postal Code");
-		advancedSearchCriteria.add("Current Improvement Value");
-		advancedSearchCriteria.add("Assessment Year");
-		advancedSearchCriteria.add("Previous Land Value");
-		advancedSearchCriteria.add("Previous Improvement Value");
-		advancedSearchCriteria.add("Year Built");
-		advancedSearchCriteria.add("Big Improvement Year");
+		final ListBox addressDropDown = new ListBox(false);
+		final String[] advancedSearchCriteria = {"Postal Code", "Current Improvement Value",
+				"Assessment Year", "Previous Land Value",
+				"Previous Improvement Value", "Year Built", "Big Improvement Year"};
 		
-		final List<String> basicSearchCriteria = new ArrayList<String>();
-		basicSearchCriteria.add("Street Number");
-		basicSearchCriteria.add("Address");
-		basicSearchCriteria.add("Current Land Value");
-		basicSearchCriteria.add("Price");
-		basicSearchCriteria.add("Realtor");
-		basicSearchCriteria.add("For Sale");
-		
-/*Commented Out		final List<String> basicSearchCriteria = searchCriteria.subList(0, searchCriteria.size() - 1);
-		basicSearchCriteria.removeAll(advancedSearchCriteria);*/
-		
-
+		final String[] basicSearchCriteria = {"Street Number", "Address", "Current Land Value", 
+				"Price", "Realtor", "For Sale"};
 		
 		// Append style
 		searchPanel.setStyleName("searchPanel");
@@ -492,7 +496,7 @@ public class Team_02 implements EntryPoint {
 	 * @param addressDropDown - Drop Down list of address
 	 */
 	private void buildSearchFields(FlowPanel searchSettingPanel,
-			List<String> basicSearchCriteria, List<TextBox> searchValues, 
+			String[] basicSearchCriteria, List<TextBox> searchValues, 
 			List<RadioButton> forSale, ListBox addressDropDown) {
 		
 		for (String criterion : basicSearchCriteria) {
@@ -503,7 +507,7 @@ public class Team_02 implements EntryPoint {
 					|| criterion.startsWith("Year")) {
 				buildRangeBoxes(searchValues, searchSettingPanel);
 			} 
-			else if (criterion.endsWith("Sale")) {
+			else if (criterion.equals("For Sale")) {
 				buildForSale(forSale, searchSettingPanel);
 			} 
 			else if (criterion.equals("Address")) {
@@ -522,9 +526,8 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildAddressDropMenu(final ListBox addressDropDown,
 			FlowPanel searchSettingPanel) {
-		addresses.add("");
 		// If address list is empty, fetch from server
-		if (addresses.size() == 1) {
+		if (addresses.isEmpty()) {
 			if (houseDataSvc == null) {
 				houseDataSvc = GWT.create(HouseDataService.class);
 			}
@@ -536,9 +539,10 @@ public class Team_02 implements EntryPoint {
 				}
 	
 				public void onSuccess(List<String> result) {
-					addresses = result;
+					addresses.add("");
+					addresses.addAll(1, result);
 					for (int i = 0; i < result.size(); i++) {
-					      addressDropDown.addItem(result.get(i));				
+					      addressDropDown.addItem(addresses.get(i));				
 					}
 				}
 			};
@@ -745,26 +749,25 @@ public class Team_02 implements EntryPoint {
 	 */
 	private String[] getUserSearchInput(ListBox addressDropDown, List<TextBox> searchValues) {
 		// + 1 for adding address
-		String[] userInput = new String[searchValues.size() + 1];	
-		
-		// Add civic number
-		userInput[0] = searchValues.get(0).getText().trim();
-		
-		// index 1 is reserved for address
-		int selectedAddrIndex = addressDropDown.getSelectedIndex();
-		userInput[1] = addressDropDown.getValue(selectedAddrIndex);
-		
+		String[] userInput = new String[searchValues.size() + 2];			
+				
 		// Because civic number(street number) is already added, begin adding from index 1
-		for (int i = 1; i < searchValues.size(); i++) {
-			String temp = searchValues.get(i).getText().trim();		
+		for (int i = 0; i < searchValues.size(); i++) {
+			String temp = searchValues.get(i).getText().trim();			
 			
-			// if user left min/max labels, then the criterion is empty.
-			if (temp.equals("min") || temp.equals("max"))
-				temp = "";
-			// Because 0 and 1 is reserved for civic number and address, begin from 2
-			userInput[i+2] = temp;
+			if (i == 0)
+				userInput[i] = temp;
+			if (i == 1) {
+				int selectedAddrIndex = addressDropDown.getSelectedIndex();
+				userInput[i] = addressDropDown.getValue(selectedAddrIndex);
+			}
+			
+			else {
+				// if user left min/max labels, then the criterion is empty
+				if (temp.equals("min") || temp.equals("max")) 	temp = "";
+				userInput[i] = temp;
+			}
 		}
-
 		return userInput;
 	}
 
@@ -829,9 +832,11 @@ public class Team_02 implements EntryPoint {
 
 		if (forSale.get(0).getValue() == true) {
 			isSelling = 1;
-		} else if (forSale.get(1).getValue() == true) {
+		} 
+		else if (forSale.get(1).getValue() == true) {
 			isSelling = 0;
-		} else
+		} 
+		else
 			isSelling = -1;
 
 		return isSelling;
@@ -902,7 +907,9 @@ public class Team_02 implements EntryPoint {
 		okBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				editHouse(priceBox.getValue(), yesSell.getValue());
+				boolean isSelling = false;
+				isSelling = yesSell.getValue();
+				editHouse(priceBox.getValue(), isSelling);
 				editDialog.clear();
 				editDialog.hide();
 			}
@@ -928,20 +935,28 @@ public class Team_02 implements EntryPoint {
 	 * @param price - price of house that user specified.
 	 * @param yesSelling - for-sale indicator that user specified.
 	 */
-	private void editHouse(String price, Boolean yesSelling) {
+	private void editHouse(String price, boolean yesSelling) {
 		if (selectedHouses.size() == 1) {
-			// Assemble edit field			
-			HouseData house = null;
+			// Assemble edit field
 			int housePrice = 0;
 			String owner = loginInfo.getEmailAddress();
+			String houseID ="";
+			String postalCode = "";
+			double latitude = 0;
+			double longitude = 0;
 			
 			for (HouseData h : selectedHouses) {
-				house = h;
-			}
-			
-			//TODO REPLACE with getLat/getLong FROM MAP method once
-			Double[] ll = theMap.getLL(house);
-			
+				houseID = h.getHouseID();
+				postalCode = h.getPostalCode();
+				//This is an array of latitude and longitude. 
+				// index 0 = latitude, index 1 = longitude 
+				Double[] ll = theMap.getLL(h);
+				
+				if (ll != null) {
+					latitude = ll[0];
+					longitude = ll[1];
+				}
+			}			
 			
 			if (!price.isEmpty()) 
 				housePrice = Integer.parseInt(price);
@@ -962,8 +977,28 @@ public class Team_02 implements EntryPoint {
 				}
 			};
 			houseDataSvc.updateHouse(owner, housePrice, yesSelling, 
-					house.getHouseID(), ll[0], ll[1], house.getPostalCode(), callback);
+					houseID, latitude, longitude, postalCode, callback);
 		}
+	}
+	
+	/**
+	 * Resets database to the initial view.
+	 */
+	private void resetDatabase() {
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(Void result) {
+			}
+		};
+		houseDataSvc.refreshIDStore(callback);
 	}
 
 }

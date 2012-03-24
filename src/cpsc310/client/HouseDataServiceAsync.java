@@ -22,35 +22,49 @@ public interface HouseDataServiceAsync {
 
 	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
 
-	public void sortByAddress(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByAddress(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByPostalCode(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByPostalCode(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByOwner(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByOwner(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByForSale(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByForSale(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByCurrentLandValue(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByCurrentLandValue(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByCurrentImprovementValue(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByCurrentImprovementValue(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByAssessmentYear(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByAssessmentYear(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByPreviousLandValue(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByPreviousLandValue(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByPreviousImprovementValue(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByPreviousImprovementValue(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByYearBuilt(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByYearBuilt(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByBigImprovementYear(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByBigImprovementYear(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
-	public void sortByPrice(boolean isSortAscending, AsyncCallback<Void> callback);
+	public void sortByPrice(boolean isSortAscending,
+			AsyncCallback<Void> callback);
 
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			String houseID, double latitude, double longitude,
 			String postalCode, AsyncCallback<Void> callback);
 
 	public void getStreetNames(AsyncCallback<List<String>> callback);
-	
+
 	public void refreshIDStore(AsyncCallback<Void> callback);
+
+	public void resetHouse(String houseID, AsyncCallback<Void> callback);
 }
