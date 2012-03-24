@@ -201,28 +201,22 @@ a {
 }
 
 .hideShowButton-horizontal {
-	width: 100%;
+	width: 20px;
 	height: 20px;
 	top: 0;
 	left: 0;
-	-moz-border-radius-topleft: 20px;
-	-webkit-border-top-left-radius: 20px;
-	border-top-left-radius: 20px; 
-	-moz-border-radius-topright: 20px;
-	-webkit-border-top-right-radius: 20px;
-	border-top-right-radius: 20px; 
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;  
 }
 .hideShowButton-vertical {
 	width:20px;
-	height: 100%;
+	height:20px;
 	top: 0;
 	right: 0;
-	-moz-border-radius-topright: 20px;
-	-webkit-border-top-right-radius: 20px;
-	border-top-right-radius: 20px; 
-	-moz-border-radius-bottomright: 20px;
-	-webkit-border-bottom-right-radius: 20px;
-	border-bottom-right-radius: 20px; 
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;  
 	
 }
 .hideShowButton {

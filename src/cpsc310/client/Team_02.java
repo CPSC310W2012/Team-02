@@ -53,10 +53,9 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
 public class Team_02 implements EntryPoint {
 	private LayoutPanel mainPanel = new LayoutPanel();
 	private DockLayoutPanel submainPanel = new DockLayoutPanel(Unit.PX);
-	private SplitLayoutPanel mapContainerPanel = new SplitLayoutPanel();
 	private FlowPanel sidePanel = new FlowPanel();
 	private FlowPanel tableWrapPanel = new FlowPanel();
-	private PropertyMap theMap;
+	private MapContainerPanel data = new MapContainerPanel(new SplitLayoutPanel());
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private HouseTable houseTable = HouseTable.createHouseTable();
@@ -135,8 +134,8 @@ public class Team_02 implements EntryPoint {
 		submainPanel.addSouth(tableWrapPanel, 300);
 
 		// Make mapContainerPanel
-		buildMapPanel(mapContainerPanel);
-		submainPanel.add(mapContainerPanel);
+		buildMapPanel(data.mapContainerPanel);
+		submainPanel.add(data.mapContainerPanel);
 
 		// Add content wrapper to the main panel
 		mainPanel.add(submainPanel);
@@ -167,14 +166,14 @@ public class Team_02 implements EntryPoint {
 						selectedHouses = selectionModel.getSelectedSet();
 						
 						if (selectedHouses.isEmpty()) {
-							theMap.clearMarkers();
+							data.theMap.clearMarkers();
 							return;
 						}
 						// clear map markers before proceeding to add new point
-						theMap.clearMarkers();
+						data.theMap.clearMarkers();
 						// add marker onto map
 						for (HouseData house : selectedHouses)
-							theMap.findLocation(house, true);
+							data.theMap.findLocation(house, true);
 					}
 				});
 
@@ -191,11 +190,12 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildMapPanel(SplitLayoutPanel mapContainerPanel) {
 		// Open a map centered on Vancouver
-		theMap = new PropertyMap(vancouver);
+		data.theMap = new PropertyMap(vancouver);
 
 		// Assemble map panel
-		mapContainerPanel.addWest(theMap.getStreetViewMap(), 500);
-		mapContainerPanel.add(theMap.getMap());
+		mapContainerPanel.addWest(data.theMap.getMap(), 600);
+		mapContainerPanel.add(data.theMap.getStreetViewMap());
+		mapContainerPanel.setWidgetMinSize(data.theMap.getMap(), 600);
 		mapContainerPanel.setStyleName("mapContainerPanel");
 	}
 
@@ -241,7 +241,7 @@ public class Team_02 implements EntryPoint {
 					hideShowTablePanelButton.setText("+");
 					submainPanel.setWidgetSize(tableWrapPanel, 20);
 					submainPanel.animate(300);
-					mapContainerPanel.getWidget(0);
+					data.mapContainerPanel.getWidget(0);
 				} else {
 					isTablePanelHidden = false;
 					hideShowTablePanelButton.setText("-");
@@ -578,7 +578,7 @@ public class Team_02 implements EntryPoint {
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				theMap.setSpecifyingRegion(true);
+				data.theMap.setSpecifyingRegion(true);
 				clearPolygonBtn.setEnabled(true);
 				specifyRegionBtn.setEnabled(false);
 				editPolygonBtn.setEnabled(true);
@@ -587,7 +587,7 @@ public class Team_02 implements EntryPoint {
 				HTML htmlWidget = new HTML(
 						"<p> Click on the map to specify region.</br> Drag corners to edit</p>");
 				content = new InfoWindowContent(htmlWidget);
-				theMap.getMap().getInfoWindow().open(vancouver, content);
+				data.theMap.getMap().getInfoWindow().open(vancouver, content);
 
 			}
 		});
@@ -596,7 +596,7 @@ public class Team_02 implements EntryPoint {
 		clearPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// theMap.clearMap();
-				theMap.clearSpecifiedRegion();
+				data.theMap.clearSpecifiedRegion();
 				specifyRegionBtn.setEnabled(true);
 				clearPolygonBtn.setEnabled(false);
 				editPolygonBtn.setEnabled(false);
@@ -606,7 +606,7 @@ public class Team_02 implements EntryPoint {
 		// Listen for mouse events on editPolygon Button
 		editPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				theMap.editPolygon();
+				data.theMap.editPolygon();
 			}
 		});
 
@@ -950,7 +950,7 @@ public class Team_02 implements EntryPoint {
 				postalCode = h.getPostalCode();
 				//This is an array of latitude and longitude. 
 				// index 0 = latitude, index 1 = longitude 
-				Double[] ll = theMap.getLL(h);
+				Double[] ll = data.theMap.getLL(h);
 				
 				if (ll != null) {
 					latitude = ll[0];
