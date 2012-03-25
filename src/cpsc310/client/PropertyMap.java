@@ -389,18 +389,9 @@ public class PropertyMap {
 		}
 
 		markerInfoWindow.add(htmlWidget);
-		// TODO: Add Facebook share buttoN
 
-		// Richard Added
-		NodeList<Element> metaTags = Document.get().getElementsByTagName("meta");
-		for (int i = 0; i < metaTags.getLength(); i++) {
-			MetaElement tagRetrieved = (MetaElement) metaTags.getItem(i);
-			if (tagRetrieved.getAttribute("property").equals("og:description")) {
-				tagRetrieved.setContent("This house");
-			}
-		}
-
-		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(), "");
+		String shareURL = generateShareURL(house);
+		ShareButton shareBtn = new ShareButton(shareURL, "");
 		markerInfoWindow.add(shareBtn);
 
 		return markerInfoWindow;
@@ -629,4 +620,26 @@ public class PropertyMap {
 		return specifyingRegion;
 	}
 
+	/**
+	 * Method to paratermize the base URL with a given house's civic number
+	 * and street name.  Civic number stored in variable cn and street name is
+	 * stored in variable sn.
+	 * @pre house != null;
+	 * @post true;
+	 * @param house - the HouseData object to get the civic number and street
+	 * 				  name from.
+	 * @return the string containing the base URL with the civic number and
+	 * 		   street name of the given house as parameters.
+	 */
+	private String generateShareURL(HouseData house) {
+		String baseURL = GWT.getHostPageBaseURL();
+		String civicNumber = String.valueOf(house.getCivicNumber());
+		String streetName = house.getStreetName().toUpperCase();
+		
+		//parameterize URL and add house parameters to the URL
+		String shareURL = baseURL + "?cn=" + civicNumber + "&sn=" + streetName;
+
+		return shareURL;
+	}
+	
 }

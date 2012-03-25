@@ -1060,12 +1060,13 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Method to search for a house based on the URL parameters.
+	 * Method to search for a house based on the URL parameters.  Searches for
+	 * the parameters cn (civic number) and sn (street name).
 	 * @pre (Window.Location.getParameter("cn") != null) &&
 	 * 		(Window.Location.getParameter("sn") != null)
 	 * @post if house exists, house is displayed on the application
 	 * 
-	 * Note: Spaces in the URL must be "%20"
+	 * Note: Spaces in the URL must be "+" or "%20"
 	 */
 	private void loadURLSearch() {
 		//acquire parameters from the URL
@@ -1074,10 +1075,7 @@ public class Team_02 implements EntryPoint {
 
 		//only search for house if the street number and address are given
 		if(civicNumber != null && streetName != null) {	
-			
-			//adds white space
-			streetName = streetName.replace("%20", " ");
-			
+
 			//create String[] to pass to the searchHouses function
 			String[] urlParameters = new String[20];
 			urlParameters[0] = civicNumber;
