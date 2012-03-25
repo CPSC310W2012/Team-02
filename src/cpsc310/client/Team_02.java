@@ -18,16 +18,13 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -224,12 +221,14 @@ public class Team_02 implements EntryPoint {
 		ScrollPanel tablePanel = new ScrollPanel(houseTable.getHouseTable());
 		FlowPanel pagerPanel = new FlowPanel();
 		Button hideShowTablePanelButton = new Button("-");
+		Button expandShrinkTableBtn = new Button("Expand table");
 		SimplePager simplePager = new SimplePager();
 
 		buildTablePanelButton(hideShowTablePanelButton);
-
+		expandShrinkTableBtn.setStyleName("gwt-Button-textButton");
 		buttonPanel.add(hideShowTablePanelButton);
-		
+		buttonPanel.add(expandShrinkTableBtn);
+				
 		// Enable edit function only if login service is available AND
 		// the user is logged in.
 		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
@@ -239,13 +238,14 @@ public class Team_02 implements EntryPoint {
 		// Create Cell Table & attach pager to table
 		simplePager.setDisplay(houseTable.getHouseTable());
 		pagerPanel.add(simplePager);
-		simplePager.setStylePrimaryName("pagerPanel");
+		simplePager.setStylePrimaryName("pager");
+		pagerPanel.setStylePrimaryName("pagerPanel");
 
 		// Assemble table panel
 		tablePanel.setStyleName("tablePanel");
 		buttonPanel.setStyleName("buttonPanel");
 		
-		tableWrapPanel.addNorth(buttonPanel, 30);
+		tableWrapPanel.addNorth(buttonPanel, 20);
 		tableWrapPanel.addSouth(pagerPanel, 30);
 		tableWrapPanel.add(tablePanel);
 		
@@ -270,10 +270,11 @@ public class Team_02 implements EntryPoint {
 				if (!isTablePanelHidden) {
 					isTablePanelHidden = true;
 					hideShowTablePanelButton.setText("+");
-					hideShowTablePanelButton.setTitle("Unminimize");					
+					hideShowTablePanelButton.setTitle("Unminimize");
+					tableWrapPanel.addStyleDependentName("collapsed");
 					mainPanel.setWidgetSize(tableWrapPanel, 20);
 					streetViewResizeTimer.schedule(400);					
-					mainPanel.animate(300);									
+					mainPanel.animate(300);							
 				} else {
 					isTablePanelHidden = false;
 					hideShowTablePanelButton.setText("-");
@@ -281,6 +282,7 @@ public class Team_02 implements EntryPoint {
 					mainPanel.setWidgetSize(tableWrapPanel, 300);
 					streetViewResizeTimer.schedule(400);					
 					mainPanel.animate(300);
+					tableWrapPanel.removeStyleDependentName("collapsed");					
 				}
 			}
 		});
@@ -294,7 +296,7 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSidePanel(FlowPanel sidePanel) {
 		Button hideShowSidePanelButton = new Button("-");
-		TabLayoutPanel sidebarStackPanel = new TabLayoutPanel(20, Unit.PX);
+		TabLayoutPanel sidebarTabPanel = new TabLayoutPanel(25, Unit.PX);
 		FlowPanel menuPanel = new FlowPanel();
 		
 		sidePanel.setStyleName("sidePanel");
@@ -306,14 +308,14 @@ public class Team_02 implements EntryPoint {
 		buildMenuPanel(menuPanel);
 
 		// Assemble GWT widgets to occupy side panel
-		buildSideTabPanel(sidebarStackPanel);
+		buildSideTabPanel(sidebarTabPanel);
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
 				"<div id ='header'><h1>iVanHomesPrices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
 		sidePanel.add(menuPanel);
-		sidePanel.add(sidebarStackPanel);
+		sidePanel.add(sidebarTabPanel);
 		sidePanel.add(new HTML(
 				"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
 	}
@@ -388,7 +390,7 @@ public class Team_02 implements EntryPoint {
 		}
 	}
 
-	private void buildMenuPanel(FlowPanel menuPanel) {		
+	private void buildMenuPanel(FlowPanel menuPanel) {
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
 		
@@ -414,6 +416,7 @@ public class Team_02 implements EntryPoint {
 		menuPanel.add(helpBtn);
 		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		menuPanel.add(termsBtn);
+		menuPanel.add(new HTML("<hr>"));
 		menuPanel.add(faceBookTemp);
 	}
 
@@ -463,6 +466,7 @@ public class Team_02 implements EntryPoint {
 	 * search field. searchPanel wraps the searchSettingsPanel and searchBtn.
 	 */
 	private void buildSearchPanel(FlowPanel searchPanel) {
+		Label errorlabel = new Label("");
 		final FlowPanel searchSettingPanel = new FlowPanel();
 		final FlowPanel polygonSettingPanel = new FlowPanel();
 		FlowPanel advancedSettingPanel = new FlowPanel();
@@ -487,6 +491,7 @@ public class Team_02 implements EntryPoint {
 
 		// Build searchSettingPanel
 		searchSettingPanel.add(new HTML("<hr>"));
+		searchSettingPanel.add(errorlabel);
 		buildSearchFields(searchSettingPanel, basicSearchCriteria, 
 				searchValues, forSale, addressDropDown);
 		buildSearchFields(advancedSettingPanel, advancedSearchCriteria, 
@@ -915,6 +920,8 @@ public class Team_02 implements EntryPoint {
 		removeBtn.setTitle("Remove information from selected house");
 		
 		editBtn.setStyleName("gwt-Button-textButton");
+		removeBtn.setStyleName("gwt-Button-textButton");
+		
 		editDialog.setStyleName("editDialog");
 		
 		editBtn.addClickHandler(new ClickHandler() {
@@ -931,6 +938,7 @@ public class Team_02 implements EntryPoint {
 			}
 		});
 		buttonPanel.add(editBtn);
+		buttonPanel.add(removeBtn);
 	}
 	
 	/**

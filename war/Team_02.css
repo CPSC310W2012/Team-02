@@ -5,16 +5,16 @@
 * {
 	margin: 0;
 	padding: 0;
-	position: relative;
 }
 
 body {
 	width: 100% !important;	
 	color: #515151;
-	background-color:#FCFCFC !important;
+	background-color:#FCFCFC;
 	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
+	background-image: url(images/bg.png);
 }
 
 hr {
@@ -22,20 +22,22 @@ hr {
 }
 
 #header {
-	background: #00B4FF;
+	background-color: #00B4FF;
+	background-color: rgba(0, 180, 255, 0.6);
 	padding: 30px 0;
 	text-align: center;
- 	-moz-box-shadow:    0 5px 3px -3px rgba(0,0,0, 0.15)  inset;
-    -webkit-box-shadow: 0 50x 3px -3px rgba(0,0,0, 0.15) inset;
-    box-shadow:         0 5px 3px -3px rgba(0,0,0, 0.15)  inset;
+	-webkit-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
 	margin: 0 auto;
-	color: #FCFCFC;
+	color: #FFF;
 	font-size: 2em;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
-	font-weight: 100;
+	font-weight: 200;
+	text-shadow: #EEE 1px 1px 1px;
 }
 
 
@@ -46,7 +48,7 @@ a {
 }
 
 a:hover {
-	color: #00365e;
+	color: #ffc33e;
 }
 
 a:active {
@@ -57,7 +59,7 @@ a:active {
 	width: 100%;
 	clear: both;
 	text-align:center;
-	height: 60px;
+	height: 50px;
 	vertical-align:middle;
 }
 
@@ -75,19 +77,21 @@ a:active {
 }
 
 .menuPanel {
-  text-align: center;
-  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
+	padding: 10px 0;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #FCFCFC;
+	background-color: rgba(252, 252, 252, 0.5);
+}
+
+.pager {
+	margin: 0 auto;
+	font-size: 1em;	
 }
 
 .pagerPanel {
-	font-size: 1em;
-	margin:0 auto;
+	width: 100%;
+	background-color: #FCFCFC;
 }
 
 .mapContainerPanel {
@@ -95,9 +99,6 @@ a:active {
 	height:100%;
 	clear: both;
 	padding: 1px;
-	-moz-border-radius: 10px;
-  	-webkit-border-radius: 10px;
-  	border-radius: 10px; 
 }
 
 .searchText {
@@ -116,46 +117,52 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 350px;
-	margin: 10px;
+	height: 370px;
+	margin: 5px 10px;
 }
 
 .gwt-TabLayoutPanel {
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
+	padding-top: 6px;
+	border-bottom: 1px solid #ccc;	
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContentContainer {
+	border-color: #ccc;
+	border-style: solid;
+	border-width: 0px 1px 1px;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-  overflow: hidden;
-  padding: 6px;
+	overflow: hidden;
+	padding: 6px;
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-  padding: 4px 8px 4px 8px;
-  cursor: pointer;
-  cursor: hand;
-  color: white;
-  font-weight: normal;
-  text-align: center;
-  background: #A8A8A8;
-  -moz-border-radius: 3px 3px 0px 0px;
-  border-radius: 3px 3px 0px 0px;
+	padding: 4px 8px 4px 8px;
+	cursor: pointer;
+	cursor: hand;
+	color: white;
+	font-weight: normal;
+	text-align: center;
+	background: #E5E5E5;
+	border-color: #ccc;
+	border-style: solid;
+	border-width: 1px 1px 0px; 
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
-  cursor: default;
-  background: #FCFCFC;
-  color: #333;
-  font-weight: bold;
+	cursor: default;
+	background: #FFF;
+	color: #333;
+	font-weight: bold;
 }
 
 .gwt-SplitLayoutPanel-HDragger {
-  background: #e7e7e7 url(images/thumb_vertical.png) center center no-repeat;
-  cursor: col-resize;
+	background: #e7e7e7 url(images/thumb_vertical.png) center center no-repeat;
+	cursor: col-resize;
 }
 
 .gwt-TextBox {
@@ -165,7 +172,7 @@ a:active {
 }
 
 .gwt-TextBox-before {
-	color:#EEEEEE;
+	color: #CCC;
 }
 
 .gwt-TextBox-longer {
@@ -205,47 +212,38 @@ a:active {
 
 .searchPanel {
 	width: 100%;
-	background-color:#FCFCFC;
+	background-color: #FFF;
 }
 
 .searchSettingPanel {
-	width: 100%;
 	clear: both;
 }
 
 .hideShowButton-horizontal {
-	width: 20px;
-	height: 20px;
 	top: 0;
 	left: 0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;  
 }
+
 .hideShowButton-vertical {
-	width:20px;
-	height:20px;
 	top: 0;
-	right: 0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;  
-	
+	right: 0;	
 }
+
 .hideShowButton {
+	width: 15px;
+	height: 15px;
 	position: absolute;
 	z-index: 10;	
-	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
+	text-decoration: none;
 	font-size: 1.5em;
-	font-weight:bold;
+	font-weight: bold;
+	background-color: transparent;
 	color: #555;
-	background: transparent;
-	border:none;
 	text-align: center;
-	vertical-align: middle;
-	text-shadow: 1px 1px #a8a8a8;
+	vertical-align: top;
+	border: none;	
 }
 
 .hideShowButton:active {
@@ -257,11 +255,15 @@ a:active {
 }
 
 .tableWrapPanel {
-	background-color:#FCFCFC;
+  background-color: transparent;
+}
+
+.tableWrapPanel-collapsed {
+	margin-bottom: 20px;
 }
 
 .tablePanel {
-	padding: 3px 10px;
+	overflow-y: scroll !important;
 }
 
 .advancedSettingPopup {
@@ -325,7 +327,7 @@ a:active {
 }
 
 .gwt-Button-textButton:hover {
-	color: #00365e;
+	color: #ffc33e;
 }
 
 .gwt-Button-textButton:active {
@@ -334,10 +336,11 @@ a:active {
 
 .facebookPanel {
 	width: 170px;
+	height: 25px;
 	white-space: nowrap;
 	vertical-align: middle;
 	text-align: center;
-	margin: 10px auto;	
+	margin: 0 auto;	
 }
 
 .facebookPanel div {
@@ -350,6 +353,12 @@ a:active {
 } 
 
 .sidePanel {
+	background-color: #FCFCFC;
+	background-color: rgba(252, 252, 252, 0.75);
+	-webkit-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	overflow-y: auto;
 }
 
 .sidePanel-collapsed {
@@ -379,15 +388,18 @@ a:active {
 }
 
 .buttonPanel {
-  font-size: 1em;
-  text-align: center;
-  vertical-align: middle;
-  background: #fcfcfc;
-  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
+	background-color: #CCC;	
+	background-color: rgba(204, 204, 204, 0.25);
+	font-size: 1em;
+	padding: 3px;
+	padding-right: 20px;
+	text-align: right;
+	border: none;
+	-webkit-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);  
+}
+
+.gwt-ListBox {
+	font-size: 1em;
 }
