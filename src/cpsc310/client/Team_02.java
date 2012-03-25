@@ -97,6 +97,7 @@ public class Team_02 implements EntryPoint {
 						Window.alert("Login service could not be loaded.");
 						resetDatabase();
 						buildUI();
+						loadURLSearch();
 					}
 
 					public void onSuccess(LoginInfo result) {
@@ -104,6 +105,7 @@ public class Team_02 implements EntryPoint {
 						isLoginServiceAvailable = true;
 						resetDatabase();
 						buildUI();
+						loadURLSearch();
 					}
 				});
 	}
@@ -1001,4 +1003,56 @@ public class Team_02 implements EntryPoint {
 		houseDataSvc.refreshIDStore(callback);
 	}
 
+	/**
+	 * Method to search for a house based on the URL parameters.
+	 * @pre (Window.Location.getParameter("cn") != null) &&
+	 * 		(Window.Location.getParameter("sn") != null)
+	 * @post if house exists, house is displayed on the application
+	 * 
+	 * Note: Spaces in the URL must be "%20"
+	 */
+	private void loadURLSearch() {
+		//acquire parameters from the URL
+		String civicNumber = Window.Location.getParameter("cn");
+		String streetName = Window.Location.getParameter("sn");
+
+		//only search for house if the street number and address are given
+		if(civicNumber != null && streetName != null) {	
+			
+			//adds white space
+			streetName = streetName.replace("%20", " ");
+			
+			//create String[] to pass to the searchHouses function
+			String[] urlParameters = new String[20];
+			urlParameters[0] = civicNumber;
+			urlParameters[1] = streetName;
+			//fill rest of array with blanks i.e. ""
+			for(int i = 2; i < 20; i++) {
+				urlParameters[i] = "";
+			}
+			
+			//set isSelling to -1 (all) since using URL means that user is looking
+			//for the house regardless of the selling status of the house
+			int isSelling = -1;
+				
+			// Initialize the service proxy
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+	
+			// Set up the callback object
+			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+	
+				public void onSuccess(Void result) {
+					houseTable.refreshTableFromBeginning();
+				}
+			};
+			// Make the call to the house data service to search for the house in the server
+			houseDataSvc.searchHouses(urlParameters, isSelling, callback);
+		}
+	}
 }
+
