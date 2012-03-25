@@ -149,6 +149,37 @@ public class PropertyMap {
 	}
 	
 	/**
+	 * Finds the location and plots it on the map changes the street-view too
+	 * 
+	 * @param location
+	 *            - string representation of the address
+	 * @param placeMarker - true if you want to place a marker on map and update streetview, false otherwise.
+	 * @return returns LatLng point
+	 *      
+	 */
+	public void findLocation(final String house, final boolean placeMarker) {
+		Window.alert("finding location");
+		LatLngCallback callback = new LatLngCallback() {
+			
+			public void onFailure() {
+				Window.alert("Location not found");
+			}
+
+			public void onSuccess(LatLng point) {
+				// add the location onto the map
+				// check if it's on sale, true for third param if so.
+				if(placeMarker){
+					//addSpecialMarker(point, house, house.getIsSelling());
+					addMarker(point, house);
+					refreshStreetView(point);
+				}
+			}
+		};
+		geocoder = new Geocoder();
+		geocoder.getLatLng(house + " VANCOUVER, BC", callback);
+	}
+	
+	/**
 	 * get the lat and long in an array
 	 * 
 	 * @param house houseData object
@@ -282,24 +313,12 @@ public class PropertyMap {
 	private void addSpecialMarker(final LatLng point, final HouseData house,
 			boolean onSale) {
 		// Set the icon
-		Icon icon;
-		// marker is a for sale sign if it's on sale, red otherwise
-		if (onSale) {
-			icon = Icon
-					.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
-			icon
-					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png");
-		} else {
-			icon = Icon.newInstance();
-			icon
-					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
-		}
-		icon.setIconAnchor(Point.newInstance(6, 20));
-		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		Icon icon = getIcon(onSale);
+	
 		MarkerOptions options = MarkerOptions.newInstance();
 		options.setIcon(icon);
-
 		final Marker marker = new Marker(point, options);
+		
 		map.addOverlay(marker);
 		map.setCenter(point);
 
@@ -332,6 +351,26 @@ public class PropertyMap {
 
 		markers.push(marker);
 	}
+	
+	private Icon getIcon(boolean onSale)
+	{
+		Icon icon;
+		
+		// marker is a for sale sign if it's on sale, red otherwise
+		if (onSale) {
+			icon = Icon.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
+			icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png");
+		} else {
+			icon = Icon.newInstance();
+			icon.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+		}
+		
+		icon.setIconAnchor(Point.newInstance(6, 20));
+		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+		
+		return icon;
+	}
+	
 
 	/**
 	 * 
