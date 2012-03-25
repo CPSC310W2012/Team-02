@@ -14,6 +14,7 @@ body {
 	background-color:#FCFCFC !important;
 	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
+	overflow: auto;
 }
 
 hr {
@@ -22,15 +23,17 @@ hr {
 
 #header {
 	background: #00B4FF;
-	padding-top: 30px;
-	padding-bottom: 30px;
+	padding: 30px 0;
 	text-align: center;
+ 	-moz-box-shadow:    0 5px 3px -3px rgba(0,0,0, 0.15)  inset;
+    -webkit-box-shadow: 0 50x 3px -3px rgba(0,0,0, 0.15) inset;
+    box-shadow:         0 5px 3px -3px rgba(0,0,0, 0.15)  inset;
 }
 
 h1 {
-	margin: 0 30px;	
+	margin: 0 auto;
 	color: #FCFCFC;
-	font-size: 25px;
+	font-size: 2em;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 100;
 }
@@ -43,7 +46,7 @@ a {
 }
 
 a:hover {
-	color: #AAA;
+	color: #00365e;
 }
 
 a:active {
@@ -60,9 +63,8 @@ a:active {
 
 #footer span {
 	top: 40%;
-	font-size: 15px;
+	font-size: 1em;
 	color: #515151;
-	font-size:12px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	text-align: center;
@@ -73,12 +75,18 @@ a:active {
 }
 
 .menuPanel {
-	margin-top: 30px;
-	text-align: center;
+  text-align: center;
+  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
+  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
 }
 
 .pagerPanel {
-	font-size:11px;
+	font-size: 1em;
 	margin:0 auto;
 }
 
@@ -93,28 +101,23 @@ a:active {
 }
 
 .searchText {
-	font-size:11px !important;
+	font-size: 1em !important;
 	color: #515151;
 }
 
 .gwt-Label {
-	font-size:11px !important;
+	font-size: 1em !important;
 	color: #515151;
 }
 
 .gwt-RadioButton {
-	font-size:11px !important;
+	font-size: 1em !important;
 	color: #000;
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
 	height: 350px;
 	margin: 10px;
-}
-
-.gwt-DecoratedTabBar {
-  background: #ccc;
-  padding-top: 6px;
 }
 
 .gwt-TabLayoutPanel {
@@ -132,15 +135,13 @@ a:active {
 }
 
 .gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-  border: 1px solid #ccc;
-  border-bottom: 0px;
   padding: 4px 8px 4px 8px;
   cursor: pointer;
   cursor: hand;
   color: white;
   font-weight: normal;
   text-align: center;
-  background: #8E8E8E;
+  background: #A8A8A8;
   -moz-border-radius: 3px 3px 0px 0px;
   border-radius: 3px 3px 0px 0px;
 }
@@ -160,7 +161,7 @@ a:active {
 .gwt-TextBox {
 	width: 80px;
 	height: 20px;
-	font-size: 11px !important;
+	font-size: 1em !important;
 }
 
 .gwt-TextBox-before {
@@ -177,7 +178,7 @@ a:active {
   text-decoration: none;
   cursor: pointer;
   cursor: hand;
-  font-size:11px;
+  font-size: 1em;
   color: #555;
   background: #F8F8F8;
   border:1px solid #bbb;
@@ -216,7 +217,7 @@ a:active {
 	width: 20px;
 	height: 20px;
 	top: 0;
-	right: 0;
+	left: 0;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;  
@@ -237,7 +238,7 @@ a:active {
 	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
-	font-size:20px;
+	font-size: 1.5em;
 	font-weight:bold;
 	color: #555;
 	background: transparent;
@@ -260,7 +261,7 @@ a:active {
 }
 
 .tablePanel {
-	padding: 10px;
+	padding: 3px 10px;
 }
 
 .advancedSettingPopup {
@@ -281,12 +282,21 @@ a:active {
   font-family: Arial Unicode MS, Arial, sans-serif;
   font-weight: bold;
   border-bottom: 1px solid #bbbbbb;
-  border-top: 1px solid #D2D2D2;	
+  border-top: 1px solid #D2D2D2;
+  background: #fcfcfc;
+  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
+  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
+
 }
 
 .editPanel {
 	width: 250px;
-	font-size: 12px;
+	font-size: 1.1em;
 }
 
 .editPanel .gwt-Button {
@@ -294,7 +304,7 @@ a:active {
 }
 
 .editPanel .gwt-Label {
-	font-size: 12px !important;
+	font-size: 1.2em !important;
 }
 
 .gwt-PopupPanelGlass {
@@ -308,14 +318,14 @@ a:active {
 	background-color: transparent;
 	border: none;
 	color: #757575;
-	font-size: 11px;
+	font-size: 1em;
 	font-weight: bold;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 .gwt-Button-textButton:hover {
-	color: #AAA;
+	color: #00365e;
 }
 
 .gwt-Button-textButton:active {
@@ -368,4 +378,16 @@ a:active {
 	margin-bottom: 5px;
 }
 
-
+.buttonPanel {
+  font-size: 1em;
+  text-align: center;
+  vertical-align: middle;
+  background: #fcfcfc;
+  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
+  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
+}
