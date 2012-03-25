@@ -5,6 +5,7 @@
 * {
 	margin: 0;
 	padding: 0;
+	position: relative;
 }
 
 body {
@@ -15,8 +16,12 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
+hr {
+	margin: 10px 0;
+}
+
 #header {
-	background:#00B4FF;
+	background: #00B4FF;
 	padding-top: 30px;
 	padding-bottom: 30px;
 	text-align: center;
@@ -25,7 +30,7 @@ body {
 h1 {
 	margin: 0 30px;	
 	color: #FCFCFC;
-	font-size: 30px;
+	font-size: 25px;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 100;
 }
@@ -35,6 +40,14 @@ a {
 	color: #757575;
 	font-weight: bold;
 	text-decoration: none;
+}
+
+a:hover {
+	color: #AAA;
+}
+
+a:active {
+	top: 1px;
 }
 
 #footer {
@@ -64,7 +77,7 @@ a {
 	text-align: center;
 }
 
-.pager {
+.pagerPanel {
 	font-size:11px;
 	margin:0 auto;
 }
@@ -94,53 +107,54 @@ a {
 	color: #000;
 }
 
-.gwt-TabBar {
+.gwt-TabLayoutPanel-sideTabPanel {
+	height: 350px;
+	margin: 10px;
+}
+
+.gwt-DecoratedTabBar {
   background: #ccc;
   padding-top: 6px;
-  -webkit-border-radius: 10px 10px 0px 0px;
-  -moz-border-radius: 10px 10px 0px 0px;
-  border-radius: 10px 10px 0px 0px;  
 }
-.gwt-TabBar .gwt-TabBarFirst {
-  width: 5px;  /* first tab distance from the left */
+
+.gwt-TabLayoutPanel {
 }
-.gwt-TabBar .gwt-TabBarRest {
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabs {
 }
-.gwt-TabBar .gwt-TabBarItem {
-  margin-left: 4px;
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContentContainer {
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
+  overflow: hidden;
+  padding: 6px;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
+  border: 1px solid #ccc;
+  border-bottom: 0px;
   padding: 4px 8px 4px 8px;
   cursor: pointer;
   cursor: hand;
-  color: #white;
-  font-size:12px;
+  color: white;
   font-weight: normal;
   text-align: center;
   background: #8E8E8E;
-  -moz-border-radius: 5px 5px 0px 0px;
-  -webkit-border-radius: 5px 5px 0px 0px;
-  border-radius: 5px 5px 0px 0px;
-}
-.gwt-TabBar .gwt-TabBarItem-selected {
-  cursor: default;
-  background: white;
-  color: #444;
-  font-weight: bold;
-} 
-.gwt-TabBar .gwt-TabBarItem-disabled {
-  cursor: default;
-  color: #999999;
+  -moz-border-radius: 3px 3px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
 }
 
-.gwt-TabPanelBottom {
-  background:#fff;
-  border-color: #ccc;
-  border-style: solid;
-  border-width: 0px 1px 1px;
-  overflow: hidden;
-  padding: 6px;
-  -moz-border-radius: 0px 0px 10px 10px;
-  -webkit-border-radius: 0px 0px 10px 10px;
-  border-radius: 0px 0px 10px 10px;  
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab-selected {
+  cursor: default;
+  background: #FCFCFC;
+  color: #333;
+  font-weight: bold;
+}
+
+.gwt-SplitLayoutPanel-HDragger {
+  background: #e7e7e7 url(images/thumb_vertical.png) center center no-repeat;
+  cursor: col-resize;
 }
 
 .gwt-TextBox {
@@ -174,6 +188,7 @@ a {
 }
 .gwt-Button:active {
   border: 1px inset #ccc;
+  top: 1px;
 }
 .gwt-Button:hover {
   border-color: #939393;
@@ -192,9 +207,6 @@ a {
 	background-color:#FCFCFC;
 }
 
-.sideTabPanel {
-}
-
 .searchSettingPanel {
 	width: 100%;
 	clear: both;
@@ -204,7 +216,7 @@ a {
 	width: 20px;
 	height: 20px;
 	top: 0;
-	left: 0;
+	right: 0;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;  
@@ -221,31 +233,41 @@ a {
 }
 .hideShowButton {
 	position: absolute;
-	z-index: 1000;	
+	z-index: 10;	
 	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
 	font-size:20px;
 	font-weight:bold;
 	color: #555;
-	background: #FCFCFC;
-	border:none;	
+	background: transparent;
+	border:none;
+	text-align: center;
+	vertical-align: middle;
+	text-shadow: 1px 1px #a8a8a8;
 }
 
 .hideShowButton:active {
-	border:none;
+	top: 1px;
 }
 
 .hideShowButton:hover {
-	border-color: #939393;
+	color: #fff;
 }
+
 .tableWrapPanel {
-	padding-top: 25px;
 	background-color:#FCFCFC;
 }
 
+.tablePanel {
+	padding: 10px;
+}
+
 .advancedSettingPopup {
+	z-index: 1000;
+	padding: 4px 8px 4px 8px;
 	background-color: #FCFCFC;
+	margin: 0;
 }
 
 .editDialog {
@@ -283,7 +305,6 @@ a {
 
 .gwt-Button-textButton {
 	margin: 0;
-	padding: 3px 5px;
 	background-color: transparent;
 	border: none;
 	color: #757575;
@@ -292,3 +313,59 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 }
+
+.gwt-Button-textButton:hover {
+	color: #AAA;
+}
+
+.gwt-Button-textButton:active {
+	top: 1px;
+}
+
+.facebookPanel {
+	width: 170px;
+	white-space: nowrap;
+	vertical-align: middle;
+	text-align: center;
+	margin: 10px auto;	
+}
+
+.facebookPanel div {
+	width: 20px;
+}
+
+.facebookPanel a{ 
+	float: left;
+	margin-right: 4px;
+} 
+
+.sidePanel {
+}
+
+.sidePanel-collapsed {
+	margin-left: 20px;
+}
+
+.gwt-ToggleButton-up,
+.gwt-ToggleButton-up-hovering,
+.gwt-ToggleButton-up-disabled,
+.gwt-ToggleButton-down,
+.gwt-ToggleButton-down-hovering,
+.gwt-ToggleButton-down-disabled {
+  margin: 0 3px;
+  text-decoration: none;
+  float: left;
+  cursor: poitner;
+  cursor: hand;
+}
+
+.polygonSettingPanel {
+	display: inline;
+	white-space: nowrap;
+}
+
+.polygonSettingPanel .gwt-Label {
+	margin-bottom: 5px;
+}
+
+
