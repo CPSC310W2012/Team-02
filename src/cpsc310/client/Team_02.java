@@ -1,7 +1,6 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -22,22 +22,25 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.reveregroup.gwt.facebook4gwt.Facebook;
 import com.reveregroup.gwt.facebook4gwt.LoginButton;
+import com.reveregroup.gwt.facebook4gwt.LoginButton.Background;
+import com.reveregroup.gwt.facebook4gwt.LoginButton.Length;
+import com.reveregroup.gwt.facebook4gwt.LoginButton.Size;
 import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 /**
@@ -51,12 +54,11 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
  *
  */
 public class Team_02 implements EntryPoint {
-	private LayoutPanel mainPanel = new LayoutPanel();
-	private DockLayoutPanel submainPanel = new DockLayoutPanel(Unit.PX);
 	private SplitLayoutPanel mapContainerPanel = new SplitLayoutPanel();
-	private FlowPanel sidePanel = new FlowPanel();
-	private FlowPanel tableWrapPanel = new FlowPanel();
 	private PropertyMap theMap;
+	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);
+	private FlowPanel sidePanel = new FlowPanel();
+	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.PX);
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private HouseTable houseTable = HouseTable.createHouseTable();
@@ -77,6 +79,25 @@ public class Team_02 implements EntryPoint {
 	
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private List<String> addresses = new ArrayList<String>();
+	private Timer streetViewResizeTimer = new Timer() {
+        @Override
+        public void run() {
+        	theMap.getStreetViewMap().checkResize();		
+        }
+    };
+    private Timer mapExpandTimer = new Timer() {
+    	@Override
+    	public void run() {
+    		mapContainerPanel.setWidgetSize(theMap.getMap(), theMap.getMap().getOffsetWidth() + 230);    		
+    	}
+    };
+    private Timer mapShrinkTimer = new Timer() {
+    	@Override
+    	public void run() {
+    		mapContainerPanel.setWidgetSize(theMap.getMap(), theMap.getMap().getOffsetWidth() - 230);    		
+    	}
+    };
+    
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
@@ -118,31 +139,20 @@ public class Team_02 implements EntryPoint {
 		// Initialize selection model for map and table
 		initSelection();
 
-		// Enable edit function only if login service is available AND
-		// the user is logged in.
-		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
-			enableEdit();
-		}
-
 		// Make main panel fill the browser
 		mainPanel.setHeight(Window.getClientHeight() + "px");
-		submainPanel.setHeight(Window.getClientHeight() + "px");
 
 		// Make sidePanel
 		buildSidePanel(sidePanel);
-		submainPanel.addWest(sidePanel, 230);
+		mainPanel.addWest(sidePanel, 230);
 
 		// Make tablePanel
 		buildTablePanel(tableWrapPanel);
-		submainPanel.addSouth(tableWrapPanel, 300);
+		mainPanel.addSouth(tableWrapPanel, 300);
 
 		// Make mapContainerPanel
 		buildMapPanel(mapContainerPanel);
-		submainPanel.add(mapContainerPanel);
-
-		// Add content wrapper to the main panel
-		mainPanel.add(submainPanel);
-		mainPanel.setWidgetLeftWidth(submainPanel, 0, Unit.PCT, 100, Unit.PCT);
+		mainPanel.add(mapContainerPanel);
 
 		// Associate Main panel with the HTML host page
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
@@ -192,12 +202,14 @@ public class Team_02 implements EntryPoint {
 	 *            SplitLayoutPanel to hold the map
 	 */
 	private void buildMapPanel(SplitLayoutPanel mapContainerPanel) {
+		
 		// Open a map centered on Vancouver
 		theMap = new PropertyMap(vancouver);
 
 		// Assemble map panel
-		mapContainerPanel.addWest(theMap.getStreetViewMap(), 500);
-		mapContainerPanel.add(theMap.getMap());
+		mapContainerPanel.addWest(theMap.getMap(), 600);
+		mapContainerPanel.add(theMap.getStreetViewMap());
+		mapContainerPanel.setWidgetMinSize(theMap.getMap(), 600);
 		mapContainerPanel.setStyleName("mapContainerPanel");
 	}
 
@@ -207,20 +219,35 @@ public class Team_02 implements EntryPoint {
 	 * @param tableWrapPanel
 	 *            - flow panel to hold table related elements
 	 */
-	private void buildTablePanel(FlowPanel tableWrapPanel) {
+	private void buildTablePanel(DockLayoutPanel tableWrapPanel) {
+		FlowPanel buttonPanel = new FlowPanel();
+		ScrollPanel tablePanel = new ScrollPanel(houseTable.getHouseTable());
+		FlowPanel pagerPanel = new FlowPanel();
 		Button hideShowTablePanelButton = new Button("-");
 		SimplePager simplePager = new SimplePager();
 
 		buildTablePanelButton(hideShowTablePanelButton);
 
+		buttonPanel.add(hideShowTablePanelButton);
+		
+		// Enable edit function only if login service is available AND
+		// the user is logged in.
+		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
+			enableEdit(buttonPanel);
+		}		
+		
 		// Create Cell Table & attach pager to table
 		simplePager.setDisplay(houseTable.getHouseTable());
-		simplePager.setStylePrimaryName("pager");
+		pagerPanel.add(simplePager);
+		simplePager.setStylePrimaryName("pagerPanel");
 
 		// Assemble table panel
-		tableWrapPanel.add(hideShowTablePanelButton);
-		tableWrapPanel.add(houseTable.getHouseTable());
-		tableWrapPanel.add(simplePager);
+		tablePanel.setStyleName("tablePanel");
+		
+		tableWrapPanel.addNorth(buttonPanel, 40);
+		tableWrapPanel.addSouth(pagerPanel, 30);
+		tableWrapPanel.add(tablePanel);
+		
 		tableWrapPanel.setStyleName("tableWrapPanel");
 
 	}
@@ -235,20 +262,24 @@ public class Team_02 implements EntryPoint {
 	private void buildTablePanelButton(final Button hideShowTablePanelButton) {
 		hideShowTablePanelButton.setStyleName("hideShowButton");
 		hideShowTablePanelButton.addStyleDependentName("horizontal");
+		hideShowTablePanelButton.setTitle("Minimize");
 
 		hideShowTablePanelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (!isTablePanelHidden) {
 					isTablePanelHidden = true;
 					hideShowTablePanelButton.setText("+");
-					submainPanel.setWidgetSize(tableWrapPanel, 20);
-					submainPanel.animate(300);
-					mapContainerPanel.getWidget(0);
+					hideShowTablePanelButton.setTitle("Unminimize");					
+					mainPanel.setWidgetSize(tableWrapPanel, 20);
+					streetViewResizeTimer.schedule(400);					
+					mainPanel.animate(300);									
 				} else {
 					isTablePanelHidden = false;
 					hideShowTablePanelButton.setText("-");
-					submainPanel.setWidgetSize(tableWrapPanel, 300);
-					submainPanel.animate(300);
+					hideShowTablePanelButton.setTitle("Minimize");
+					mainPanel.setWidgetSize(tableWrapPanel, 300);
+					streetViewResizeTimer.schedule(400);					
+					mainPanel.animate(300);
 				}
 			}
 		});
@@ -262,8 +293,10 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSidePanel(FlowPanel sidePanel) {
 		Button hideShowSidePanelButton = new Button("-");
-		TabPanel sidebarTabPanel = new TabPanel();
+		TabLayoutPanel sidebarStackPanel = new TabLayoutPanel(20, Unit.PX);
 		FlowPanel menuPanel = new FlowPanel();
+		
+		sidePanel.setStyleName("sidePanel");
 
 		// Create hide/show ability into the button
 		buildSidePanelButton(hideShowSidePanelButton);
@@ -272,14 +305,14 @@ public class Team_02 implements EntryPoint {
 		buildMenuPanel(menuPanel);
 
 		// Assemble GWT widgets to occupy side panel
-		buildSideTabPanel(sidebarTabPanel);
+		buildSideTabPanel(sidebarStackPanel);
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
-				"<div id ='header'><h1>iVan</br>Homes</br>Prices</h1></div>"));
+				"<div id ='header'><h1>iVan<br/>Homes<br/>Prices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
 		sidePanel.add(menuPanel);
-		sidePanel.add(sidebarTabPanel);
+		sidePanel.add(sidebarStackPanel);
 		sidePanel.add(new HTML(
 				"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
 	}
@@ -293,19 +326,27 @@ public class Team_02 implements EntryPoint {
 	private void buildSidePanelButton(final Button hideShowSidePanelButton) {
 		hideShowSidePanelButton.setStyleName("hideShowButton");
 		hideShowSidePanelButton.addStyleDependentName("vertical");
-
+		hideShowSidePanelButton.setTitle("Minimize");
+		
 		hideShowSidePanelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (!isSidePanelHidden) {
 					isSidePanelHidden = true;
 					hideShowSidePanelButton.setText("+");
-					submainPanel.setWidgetSize(sidePanel, 20);
-					submainPanel.animate(300);
+					hideShowSidePanelButton.setTitle("Unminimize");
+					mainPanel.setWidgetSize(sidePanel, 20);
+					mapExpandTimer.schedule(400);					
+					mainPanel.animate(300);
+					sidePanel.addStyleDependentName("collapsed");
+					
 				} else {
 					isSidePanelHidden = false;
 					hideShowSidePanelButton.setText("-");
-					submainPanel.setWidgetSize(sidePanel, 230);
-					submainPanel.animate(300);
+					hideShowSidePanelButton.setTitle("Minimize");
+					sidePanel.removeStyleDependentName("collapsed");
+					mainPanel.setWidgetSize(sidePanel, 230);
+					mapShrinkTimer.schedule(400);					
+					mainPanel.animate(300);
 				}
 			}
 		});
@@ -316,9 +357,9 @@ public class Team_02 implements EntryPoint {
 	 * included in the sidePanel.
 	 * 
 	 * @param sidebarTabPanel
-	 *            - flow panel to wrap the widgets
+	 *            - tab panel to wrap the widgets
 	 */
-	private void buildSideTabPanel(TabPanel sidebarTabPanel) {
+	private void buildSideTabPanel(TabLayoutPanel sidebarTabPanel) {
 		FlowPanel searchPanel = new FlowPanel();
 						
 		// Assemble search panel
@@ -328,9 +369,8 @@ public class Team_02 implements EntryPoint {
 		sidebarTabPanel.add(searchPanel, "Search");
 		
 		// Set details of tab panel look
-		sidebarTabPanel.selectTab(0);
-		sidebarTabPanel.setAnimationEnabled(true);
-		sidebarTabPanel.addStyleDependentName("sideTabPanel");		
+		sidebarTabPanel.setAnimationDuration(100);
+		sidebarTabPanel.addStyleDependentName("sideTabPanel");
 		
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
@@ -361,14 +401,17 @@ public class Team_02 implements EntryPoint {
 
 		// Richard Added
 		FlowPanel faceBookTemp = new FlowPanel();
+		faceBookTemp.setStyleName("facebookPanel");
 		Facebook.init("257432264338889");
-		LoginButton faceBookBtn = new LoginButton(true);
+		LoginButton faceBookBtn = new LoginButton(true, Size.SMALL, Background.LIGHT, Length.SHORT);
 		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),"Check out this house!!!");
 		faceBookTemp.add(faceBookBtn);
 		faceBookTemp.add(shareBtn);
-		faceBookTemp.add(new HTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>"));
+		faceBookTemp.add(new InlineHTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:90px; height:21px;\" allowTransparency=\"true\"></iframe>"));
 		
+		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		menuPanel.add(helpBtn);
+		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		menuPanel.add(termsBtn);
 		menuPanel.add(faceBookTemp);
 	}
@@ -420,10 +463,11 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSearchPanel(FlowPanel searchPanel) {
 		final FlowPanel searchSettingPanel = new FlowPanel();
+		final FlowPanel polygonSettingPanel = new FlowPanel();
 		FlowPanel advancedSettingPanel = new FlowPanel();
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
 		Button searchBtn = new Button("Search");
-		final Button advancedSearchBtn = new Button ("Advanced Search"); 
+		final Button advancedSearchBtn = new Button ("Advanced Search >>"); 
 		final List<TextBox> searchValues = new ArrayList<TextBox>();
 		final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 		final ListBox addressDropDown = new ListBox(false);
@@ -438,9 +482,10 @@ public class Team_02 implements EntryPoint {
 		searchPanel.setStyleName("searchPanel");
 		searchSettingPanel.setStyleName("searchSettingPanel");
 		advancedSettingPopup.setStyleName("advancedSettingPopup");
+		advancedSearchBtn.setStyleName("gwt-Button-textButton");
 
 		// Build searchSettingPanel
-		searchSettingPanel.add(new HTML("<div class='border'></div>"));
+		searchSettingPanel.add(new HTML("<hr>"));
 		buildSearchFields(searchSettingPanel, basicSearchCriteria, 
 				searchValues, forSale, addressDropDown);
 		buildSearchFields(advancedSettingPanel, advancedSearchCriteria, 
@@ -449,9 +494,10 @@ public class Team_02 implements EntryPoint {
 		advancedSettingPopup.setWidget(advancedSettingPanel);	
 		
 		// Add polygon selection
-		buildPolygonSelection(searchSettingPanel);
+		buildPolygonSelection(polygonSettingPanel);
 
 		// Add searchSettingPanel and searchBtn to the searchPanel
+		searchPanel.add(polygonSettingPanel);
 		searchPanel.add(searchSettingPanel);
 		searchPanel.add(advancedSearchBtn);
 		searchPanel.add(new HTML("<br />"));
@@ -468,6 +514,7 @@ public class Team_02 implements EntryPoint {
 		advancedSearchBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (isAdvSearchPanelHidden == true) {
+					advancedSearchBtn.setText("Advanced Search <<");
 					advancedSettingPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
 						
 						@Override
@@ -481,6 +528,7 @@ public class Team_02 implements EntryPoint {
 					isAdvSearchPanelHidden = false;
 				}
 				else {
+					advancedSearchBtn.setText("Advanced Search >>");
 					advancedSettingPopup.hide();
 					isAdvSearchPanelHidden = true;
 				}
@@ -562,17 +610,21 @@ public class Team_02 implements EntryPoint {
 	/**
 	 * Helper to buildSearchPanel(). Adds polygon selection tools.
 	 * 
-	 * @param searchSettingPanel
+	 * @param polygonSettingPanel
 	 *            - panel to hold selection tool
 	 */
-	private void buildPolygonSelection(FlowPanel searchSettingPanel) {
+	private void buildPolygonSelection(FlowPanel polygonSettingPanel) {
 		final DrawToolButton specifyRegionBtn = new DrawToolButton();
 		final DrawToolButton clearPolygonBtn = new DrawToolButton();
 		final Button editPolygonBtn = new Button();
+		
+		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
 		specifyRegionBtn.setDrawImage();
+		specifyRegionBtn.setWidth("20px");
 		clearPolygonBtn.setEraseImage();
+		clearPolygonBtn.setWidth("20px");
 		editPolygonBtn.setText("Edit specified region");
 		clearPolygonBtn.setEnabled(false);
 		editPolygonBtn.setEnabled(false);
@@ -613,9 +665,11 @@ public class Team_02 implements EntryPoint {
 		});
 
 		// Add to setting panel
-		searchSettingPanel.add(specifyRegionBtn);
-		searchSettingPanel.add(clearPolygonBtn);
-		searchSettingPanel.add(editPolygonBtn);
+		polygonSettingPanel.add(new Label("Draw and select an area on the map"));
+		polygonSettingPanel.add(specifyRegionBtn);
+		polygonSettingPanel.add(clearPolygonBtn);
+		polygonSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
+		polygonSettingPanel.add(editPolygonBtn);
 	}
 
 	/**
@@ -850,15 +904,21 @@ public class Team_02 implements EntryPoint {
 	 * Adds edit button to the table panel,
 	 * builds dialog box where user can specify price and for-sale indicator.
 	 */
-	private void enableEdit() {
+	private void enableEdit(FlowPanel buttonPanel) {
 		final DialogBox editDialog = new DialogBox();
 		Button editBtn = new Button("Edit");
+		Button removeBtn = new Button("Remove");
+		
+		editBtn.setTitle("Edit house information");
+		removeBtn.setTitle("Remove information from selected house");
+		
 		editDialog.setStyleName("editDialog");
 		
 		editBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (checkOnlyOneSelected()) {
+				if (selectedHouses != null && 
+						selectedHouses.size() == 1) {
 					buildEditPanel(editDialog);
 					editDialog.center();
 					editDialog.show();
@@ -867,13 +927,9 @@ public class Team_02 implements EntryPoint {
 					Window.alert("Please select one house");
 			}
 		});
-		tableWrapPanel.add(editBtn);
+		buttonPanel.add(editBtn);
 	}
 	
-	private boolean checkOnlyOneSelected() {
-		return (selectedHouses != null && selectedHouses.size() == 1);
-	}
-
 	/**
 	 * Helper to enableEdit().
 	 * Builds contents of edit dialog.
