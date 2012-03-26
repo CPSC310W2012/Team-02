@@ -1,10 +1,9 @@
 @CHARSET "UTF-8";
 
-/** Add css rules here for your application. */
-
 * {
 	margin: 0;
 	padding: 0;
+	position: relative;
 }
 
 body {
@@ -111,6 +110,11 @@ a:active {
 	color: #515151;
 }
 
+.gwt-Label-error {
+	color: #FF0000;
+	font-weight: bold;
+}
+
 .gwt-RadioButton {
 	font-size: 1em !important;
 	color: #000;
@@ -179,34 +183,38 @@ a:active {
 	width: 170px;
 }
 
+.gwt-TextBox-shorter {
+	width: 80px;
+}
+
 .gwt-Button {
-  margin: 0;
-  padding: 5px 7px;
-  text-decoration: none;
-  cursor: pointer;
-  cursor: hand;
-  font-size: 1em;
-  color: #555;
-  background: #F8F8F8;
-  border:1px solid #bbb;
-  border-bottom: 1px solid #a0a0a0;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px; 
+	margin: 0;
+	padding: 5px 7px;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 1em;
+	color: #555;
+	background: #F8F8F8;
+	border:1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px; 
 }
 .gwt-Button:active {
-  border: 1px inset #ccc;
-  top: 1px;
+	border: 1px inset #ccc;
+	top: 1px;
 }
 .gwt-Button:hover {
-  border-color: #939393;
+	border-color: #939393;
 }
 .gwt-Button[disabled] {
-  cursor: default;
-  color: #888;
+	cursor: default;
+	color: #888;
 }
 .gwt-Button[disabled]:hover {
-  border: 1px outset #ccc;
+	border: 1px outset #ccc;
 }
 
 
@@ -255,7 +263,7 @@ a:active {
 }
 
 .tableWrapPanel {
-  background-color: transparent;
+	background-color: transparent;
 }
 
 .tableWrapPanel-collapsed {
@@ -269,31 +277,33 @@ a:active {
 .advancedSettingPopup {
 	z-index: 1000;
 	padding: 4px 8px 4px 8px;
-	background-color: #FCFCFC;
+	background-color: #FFF;
 	margin: 0;
 }
 
 .editDialog {
 	background-color: #FCFCFC;
-	padding: 20px;
 	border: 3px solid #A8A8A8;
 }
 
 .editDialog .Caption {
-  padding: 4px 8px 4px 4px;
-  font-family: Arial Unicode MS, Arial, sans-serif;
-  font-weight: bold;
-  border-bottom: 1px solid #bbbbbb;
-  border-top: 1px solid #D2D2D2;
-  background: #fcfcfc;
-  background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-  background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
+	padding: 4px 8px 4px 4px;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-weight: bold;
+	border-bottom: 1px solid #bbbbbb;
+	border-top: 1px solid #D2D2D2;
+	background: #fcfcfc;
+	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
+	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
+}
 
+.editDialog .dialogContent {
+	padding: 20px;	
 }
 
 .editPanel {
@@ -310,9 +320,9 @@ a:active {
 }
 
 .gwt-PopupPanelGlass {
-  background-color: #000;
-  opacity: 0.3;
-  filter: alpha(opacity=30);
+	background-color: #000;
+	opacity: 0.3;
+	filter: alpha(opacity=30);
 }
 
 .gwt-Button-textButton {
@@ -363,6 +373,7 @@ a:active {
 
 .sidePanel-collapsed {
 	margin-left: 20px;
+	overflow: visible;
 }
 
 .gwt-ToggleButton-up,
@@ -371,11 +382,11 @@ a:active {
 .gwt-ToggleButton-down,
 .gwt-ToggleButton-down-hovering,
 .gwt-ToggleButton-down-disabled {
-  margin: 0 3px;
-  text-decoration: none;
-  float: left;
-  cursor: pointer;
-  cursor: hand;
+	margin: 0 3px;
+	text-decoration: none;
+	float: left;
+	cursor: pointer;
+	cursor: hand;
 }
 
 .polygonSettingPanel {
@@ -400,6 +411,15 @@ a:active {
 	box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);  
 }
 
+.buttonPanel .gwt-Button-textButton {
+	margin: 0 3px;
+	
+}
+
 .gwt-ListBox {
 	font-size: 1em;
+}
+
+.userInfoPanel {
+	background-color: #FFF;
 }
