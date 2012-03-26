@@ -331,4 +331,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	public void resetHouse(String houseID) {
 		store.resetHouse(houseID);
 	}
+
+	@Override
+	public HouseData retrieveSingleHouse(int civicNumber, String street) {
+		workingIDStore = new ArrayList<String>();
+		workingIDStore.addAll(store.searchByAddress(civicNumber, street));
+		HouseDataPoint currentHDP = store.getHouses(workingIDStore, 0, 1).get(0);
+		return convertToHouseData(currentHDP);
+	}
 }
