@@ -628,6 +628,21 @@ public class Team_02 implements EntryPoint {
 				// Don't bother searching if civic number isn't a number
 			}
 		}
+		refreshStreetView();
 	}
+
+	// Fix for refreshing street view //TODO: documentation
+	private void refreshStreetView()
+	{
+		//acquire parameters from the URL
+		String civicNumber = Window.Location.getParameter("cn");
+		String streetName = Window.Location.getParameter("sn");
+		if(civicNumber != null && streetName != null) {	
+			theMap.refreshStreetView(civicNumber + streetName);
+		}
+	}
+	
+	
+	
 }
 
