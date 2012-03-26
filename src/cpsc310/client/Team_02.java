@@ -1075,7 +1075,8 @@ public class Team_02 implements EntryPoint {
 	 * the parameters cn (civic number) and sn (street name).
 	 * @pre (Window.Location.getParameter("cn") != null) &&
 	 * 		(Window.Location.getParameter("sn") != null)
-	 * @post if house exists, house is displayed on the application
+	 * @post if house exists, house is displayed on the application (Google
+	 * 		 Map and Street View are updated with the house)
 	 * 
 	 * Note: Spaces in the URL must be "+" or "%20"
 	 */
@@ -1086,19 +1087,6 @@ public class Team_02 implements EntryPoint {
 
 		//only search for house if the street number and address are given
 		if(civicNumber != null && streetName != null) {	
-
-			//create String[] to pass to the searchHouses function
-			String[] urlParameters = new String[20];
-			urlParameters[0] = civicNumber;
-			urlParameters[1] = streetName;
-			//fill rest of array with blanks i.e. ""
-			for(int i = 2; i < 20; i++) {
-				urlParameters[i] = "";
-			}
-			
-			//set isSelling to -1 (all) since using URL means that user is looking
-			//for the house regardless of the selling status of the house
-			int isSelling = -1;
 				
 			// Initialize the service proxy
 			if (houseDataSvc == null) {
@@ -1106,17 +1094,26 @@ public class Team_02 implements EntryPoint {
 			}
 	
 			// Set up the callback object
-			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			AsyncCallback<HouseData> callback = new AsyncCallback<HouseData>() {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 				}
-	
-				public void onSuccess(Void result) {
+				public void onSuccess(HouseData result) {
+					//Update the Application UI
 					houseTable.refreshTableFromBeginning();
+					theMap.findLocation(result, true);
 				}
 			};
-			// Make the call to the house data service to search for the house in the server
-			houseDataSvc.searchHouses(urlParameters, isSelling, callback);
+			
+			//convert civic number to integer
+			int civicNumberAsInt;
+			try {
+				civicNumberAsInt = Integer.valueOf(civicNumber);
+				// Make the call to the house data service to search for the house in the server
+				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
+			} catch(NumberFormatException e) {
+				// Don't bother searching if civic number isn't a number
+			}
 		}
 	}
 }
