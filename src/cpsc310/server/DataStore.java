@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.google.gwt.maps.client.overlay.Polygon;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -1129,4 +1130,63 @@ public class DataStore {
 		// re-add to indexes
 		updateIndexes(currentHouse);
 	}
+	/**
+	 * Searches for house in user specified polygon
+	 * @param poly
+	 * @return set house IDs found in polygon
+	 */
+	public Set<String> getHousesInPolygon(Polygon poly)
+	{
+		Set<String> temp = new HashSet<String>();
+		return temp;
+	}
+	
+//	/**
+//	 * 
+//	 * Algorithm that calculates whether or not the point is in the polygon
+//	 * 
+//	 * @param point
+//	 *            the point to check if it is in the polygon
+//	 * 
+//	 */
+//	private boolean isPointInPolygon(Polygon lastPolygon, LatLng point) {
+//
+//		if (lastPolygon == null) {
+//			Window.alert("No region specified");
+//			return false;
+//		}
+//
+//		int j = 0;
+//		boolean oddNodes = false;
+//		double y = point.getLatitude();
+//		double x = point.getLongitude();
+//		int numVertexes = lastPolygon.getVertexCount();
+//
+//		for (int i = 0; i < numVertexes; i++) {
+//			j++;
+//			if (j == numVertexes) {
+//				j = 0;
+//			}
+//			if (((lastPolygon.getVertex(i).getLatitude() < y) && (lastPolygon
+//					.getVertex(j).getLatitude() >= y))
+//					|| ((lastPolygon.getVertex(j).getLatitude() < y) && (lastPolygon
+//							.getVertex(i).getLatitude() >= y))) {
+//				if (lastPolygon.getVertex(i).getLongitude()
+//						+ (y - lastPolygon.getVertex(i).getLatitude())
+//						/ (lastPolygon.getVertex(j).getLatitude() - lastPolygon
+//								.getVertex(i).getLatitude())
+//						* (lastPolygon.getVertex(j).getLongitude() - lastPolygon
+//								.getVertex(i).getLongitude()) < x) {
+//					oddNodes = !oddNodes;
+//				}
+//			}
+//		}
+//
+//		if (oddNodes)
+//			Window.alert("point is in the polygon");
+//		else
+//			Window.alert("point is not in the polygon");
+//		return oddNodes;
+//	}
+
 }

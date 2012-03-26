@@ -19,6 +19,4 @@ public class TestSuite {
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TestSuite.class);
     }
-
-
 }

@@ -1,6 +1,8 @@
 package cpsc310.client;
 
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -147,4 +149,13 @@ public interface HouseDataService extends RemoteService {
 	 * @param houseID
 	 */
 	public void resetHouse(String houseID);
+	
+	/**
+	 * returns a single give an ID.
+	 * This is simply to make some features cleaner. a combination of getHouses and Search can do the same thing.
+	 * @param civicNumber
+	 * @param street
+	 * @return HouseData - a single House object
+	 */
+	public HouseData retriveSingleHouse(int civicNumber, String street);
 }

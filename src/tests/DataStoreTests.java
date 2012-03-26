@@ -9,6 +9,10 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.overlay.Polygon;
+
 import cpsc310.server.DataStore;
 import cpsc310.server.HouseDataPoint;
 
