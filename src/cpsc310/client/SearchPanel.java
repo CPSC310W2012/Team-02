@@ -148,7 +148,6 @@ public class SearchPanel extends FlowPanel {
 	private void buildPolygonSelection(FlowPanel polygonSettingPanel) {
 		final DrawToolButton specifyRegionBtn = new DrawToolButton();
 		final DrawToolButton clearPolygonBtn = new DrawToolButton();
-		final Button editPolygonBtn = new Button();
 		
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
@@ -157,9 +156,7 @@ public class SearchPanel extends FlowPanel {
 		specifyRegionBtn.setWidth("20px");
 		clearPolygonBtn.setEraseImage();
 		clearPolygonBtn.setWidth("20px");
-		editPolygonBtn.setText("Edit specified region");
 		clearPolygonBtn.setEnabled(false);
-		editPolygonBtn.setEnabled(false);
 
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
@@ -167,7 +164,6 @@ public class SearchPanel extends FlowPanel {
 				map.setSpecifyingRegion(true);
 				clearPolygonBtn.setEnabled(true);
 				specifyRegionBtn.setEnabled(false);
-				editPolygonBtn.setEnabled(true);
 				// prompt user to click on a region on the map
 				InfoWindowContent content;
 				HTML htmlWidget = new HTML(
@@ -185,14 +181,6 @@ public class SearchPanel extends FlowPanel {
 				map.clearSpecifiedRegion();
 				specifyRegionBtn.setEnabled(true);
 				clearPolygonBtn.setEnabled(false);
-				editPolygonBtn.setEnabled(false);
-			}
-		});
-
-		// Listen for mouse events on editPolygon Button
-		editPolygonBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				map.editPolygon();
 			}
 		});
 
@@ -201,7 +189,6 @@ public class SearchPanel extends FlowPanel {
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
 		polygonSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
-		polygonSettingPanel.add(editPolygonBtn);
 	}	
 	
 	/**
