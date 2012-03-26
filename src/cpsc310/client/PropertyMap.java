@@ -137,7 +137,7 @@ public class PropertyMap {
 				if(placeMarker){
 					//addSpecialMarker(point, house, house.getIsSelling());
 					addSpecialMarker(point, house, house.getIsSelling());
-					refreshStreetView(point);
+					//refreshStreetView(point);
 				}
 				llWrap.setResponse(point);
 			}
@@ -443,6 +443,41 @@ public class PropertyMap {
 					}
 				});
 	}
+	
+	
+	
+	/**
+	 * Changes streetview location given location coordinates
+	 * 
+	 * @param location
+	 *            latitude and longitude
+	 */
+
+	public void refreshStreetView(String location) {
+	LatLngCallback callback = new LatLngCallback() {
+			
+			public void onFailure() {
+				//Window.alert("Location not found");
+			}
+			public void onSuccess(LatLng point) {
+				// refresh streetview with this location
+				svClient.getNearestPanoramaLatLng(point,
+						new LatLngStreetviewCallback() {
+							@Override
+							public void onFailure() {
+								// streetview is not available
+							}
+							@Override
+							public void onSuccess(LatLng point) {
+								panorama.setLocationAndPov(point, Pov.newInstance());
+							}
+						});
+			}
+		};
+		geocoder = new Geocoder();
+		geocoder.getLatLng(location + " VANCOUVER, BC", callback);
+	}
+	
 
 	/**
 	 * Clears all overlays from the map

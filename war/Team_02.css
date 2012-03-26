@@ -285,11 +285,13 @@ a:active {
 .editDialog {
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
+	font-size: 11px;
 }
 
 .editDialog .Caption {
 	padding: 4px 8px 4px 4px;
 	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size: 1.1 em;
 	font-weight: bold;
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
@@ -304,20 +306,22 @@ a:active {
 }
 
 .editDialog .dialogContent {
-	padding: 20px;	
+	padding: 20px;
+	font-size: 1em;	
 }
 
 .editPanel {
 	width: 250px;
-	font-size: 1.1em;
+	font-size: 11px;
 }
 
 .editPanel .gwt-Button {
 	float: right;
+	font-size: 1em;
 }
 
 .editPanel .gwt-Label {
-	font-size: 1.2em !important;
+	font-size: 1em !important;
 }
 
 .gwt-PopupPanelGlass {
