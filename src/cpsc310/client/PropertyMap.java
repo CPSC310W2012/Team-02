@@ -136,7 +136,7 @@ public class PropertyMap {
 				// check if it's on sale, true for third param if so.
 				if(placeMarker){
 					//addSpecialMarker(point, house, house.getIsSelling());
-					addSpecialMarker(point, house, true);
+					addSpecialMarker(point, house, house.getIsSelling());
 					refreshStreetView(point);
 				}
 				llWrap.setResponse(point);
@@ -283,16 +283,18 @@ public class PropertyMap {
 			boolean onSale) {
 		// Set the icon
 		Icon icon;
+		String onSaleIconImgLink = "http://maps.google.com/mapfiles/ms/micons/realestate.png";
+		String onSaleIconShadowLink = "http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png";
+		String normalIconImgLink = "http://maps.google.com/mapfiles/ms/micons/red-dot.png";
+		String normalIconShadowLink = "http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png";
+		
 		// marker is a for sale sign if it's on sale, red otherwise
 		if (onSale) {
-			icon = Icon
-					.newInstance("http://maps.google.com/mapfiles/ms/micons/realestate.png");
-			icon
-					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png");
+			icon = Icon.newInstance(onSaleIconImgLink);
+			icon.setShadowURL(onSaleIconShadowLink);
 		} else {
-			icon = Icon.newInstance();
-			icon
-					.setShadowURL("http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png");
+			icon = Icon.newInstance(normalIconImgLink);
+			icon.setShadowURL(normalIconShadowLink);
 		}
 		icon.setIconAnchor(Point.newInstance(6, 20));
 		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
@@ -307,11 +309,11 @@ public class PropertyMap {
 		final InfoWindowContent content;
 		VerticalPanel firstTab = getHouseInfoMarkerPanel(house);
 		// Show additional information if the house is being sold
-		// if(house.getIsSelling()){
-		VerticalPanel secondTab = getContactInfoMarkerPanel();
-		content = getInfoWindowTabs(firstTab, secondTab);
-		// }
-		// else content = new InfoWindowContent(firstTab);
+		if(house.getIsSelling()){
+			VerticalPanel secondTab = getContactInfoMarkerPanel(house);
+			content = getInfoWindowTabs(firstTab, secondTab);
+		}
+		else content = new InfoWindowContent(firstTab);
 
 		map.getInfoWindow().open(marker, content);
 
@@ -379,7 +381,7 @@ public class PropertyMap {
 					+ house.getCurrentLandValue() + "</br>"
 					+ "<b>Year built: </b>" + house.getYearBuilt() + "</br>"
 					+ "<b>Selling Price: </b>" + house.getPrice() + "</br>"
-					+ "<b>Owner: </b>" + house.getOwner() + "</p>");
+					+ "</p>");
 		} else {
 			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> "
 					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
@@ -407,11 +409,11 @@ public class PropertyMap {
 	 * 
 	 */
 
-	private VerticalPanel getContactInfoMarkerPanel() {
+	private VerticalPanel getContactInfoMarkerPanel(HouseData house) {
 		VerticalPanel markerInfoWindow = new VerticalPanel();
 		HTML htmlWidget;
 		String realtor = "John Doe";
-		String email = "JohnDoe@gmail.com";
+		String email = house.getOwner();
 		htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
 				+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 				+ email + "</br></p>");
