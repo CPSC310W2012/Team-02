@@ -10,7 +10,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.AsyncHandler;
-import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,6 +23,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
  */
 public class HouseTable {
 	
+	private static int defaultPageSize = 8;
 	private static HouseTable houseTable = null;
 	private CellTable<HouseData> homesCellTable = null;
 	private CellTable.Resources resource = GWT.create(CellTableResources.class);	
@@ -61,7 +61,7 @@ public class HouseTable {
 	 * @return populated CellTable<HouseData> with sorting ability
 	 */
 	private CellTable<HouseData> createCellTable() {
-		homesCellTable = new CellTable<HouseData>(9, resource, HouseData.KEY_PROVIDER);	  	
+		homesCellTable = new CellTable<HouseData>(defaultPageSize, resource, HouseData.KEY_PROVIDER);	  	
 		addColumns();
 		createSort();
 		populateTable();
@@ -491,11 +491,15 @@ public class HouseTable {
 	}
 		
 	/**
-	 * Expand the page size of the table.
+	 * Expand or shrink the page size of the table.
 	 * @param pageSize - size of the page to which the table will expand
+	 * -1 indicates default page size.
 	 */
-	public void expandElement(int pageSize) {
-		this.homesCellTable.setPageSize(pageSize);
+	public void expandShrinkTable(int pageSize) {
+		if (pageSize == -1)
+			this.homesCellTable.setPageSize(defaultPageSize);
+		else
+			this.homesCellTable.setPageSize(pageSize);
 		this.refreshTableCurrentView();
 	}
 	

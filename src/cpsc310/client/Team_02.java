@@ -49,6 +49,7 @@ public class Team_02 implements EntryPoint {
 	private PropertyMap theMap = new PropertyMap(vancouver);
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
+	private boolean isTableExpanded = false;
 	private HouseDataServiceAsync houseDataSvc = GWT
 			.create(HouseDataService.class);
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -59,7 +60,6 @@ public class Team_02 implements EntryPoint {
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);	
 	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
-	private SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.PX);
 	
 	/**
@@ -169,10 +169,10 @@ public class Team_02 implements EntryPoint {
 		FlowPanel pagerPanel = new FlowPanel();
 		Button hideShowTablePanelButton = new Button("-");
 		Button expandShrinkTableBtn = new Button("Expand table");
+		Button resetTableBtn = new Button("Reset table");
 		SimplePager simplePager = new SimplePager();
 
 		// Set styles of edit panel & edit panel's components
-		expandShrinkTableBtn.setStyleName("gwt-Button-textButton");
 		simplePager.setStylePrimaryName("pager");
 		pagerPanel.setStylePrimaryName("pagerPanel");		
 		tablePanel.setStyleName("tablePanel");
@@ -182,9 +182,18 @@ public class Team_02 implements EntryPoint {
 		// Create hide/show button for table panel
 		buildTablePanelButton(hideShowTablePanelButton);
 		
+		// Build expand/shrink table button
+		buildExpandShrinkTableButton(expandShrinkTableBtn);
+		
+		// Build reset table button
+		buildResetTableButton(resetTableBtn);
+		
 		// Assemble button panel 
 		buttonPanel.add(hideShowTablePanelButton);
+		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		buttonPanel.add(expandShrinkTableBtn);
+		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
+		buttonPanel.add(resetTableBtn);
 				
 		// Enable edit function only if login service is available AND
 		// the user is logged in.
@@ -201,7 +210,7 @@ public class Team_02 implements EntryPoint {
 		tableWrapPanel.addSouth(pagerPanel, 30);
 		tableWrapPanel.add(tablePanel);
 	}
-
+	
 	/**
 	 * Helper to buildTablePanel(). Create hide/show behavior to table panel
 	 * button.
@@ -213,7 +222,7 @@ public class Team_02 implements EntryPoint {
 		hideShowTablePanelButton.setStyleName("hideShowButton");
 		hideShowTablePanelButton.addStyleDependentName("horizontal");
 		hideShowTablePanelButton.setTitle("Minimize");
-
+	
 		hideShowTablePanelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (!isTablePanelHidden) {
@@ -233,6 +242,60 @@ public class Team_02 implements EntryPoint {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Helper to buildTablePanel().
+	 * Attaches button behavior that expands and shrinks the table.
+	 * 
+	 * @param expandShrinkTableBtn - button to make table expand/shrink
+	 */
+	private void buildExpandShrinkTableButton(final Button expandShrinkTableBtn) {
+		// Set tool tip text
+		expandShrinkTableBtn.setTitle("Expand table to see 50 houses");
+		
+		// Set button style
+		expandShrinkTableBtn.setStyleName("gwt-Button-textButton");
+		
+		// Attach click handler
+		expandShrinkTableBtn.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (!isTableExpanded) {
+					isTableExpanded = true;
+					expandShrinkTableBtn.setText("Shrink Table");
+					expandShrinkTableBtn.setTitle("Shrink table");
+					houseTable.expandShrinkTable(50);
+				} else {
+					isTableExpanded = false;
+					expandShrinkTableBtn.setText("Expand Table");
+					expandShrinkTableBtn.setTitle("Expand table to see 50 houses");
+					houseTable.expandShrinkTable(-1);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Helper to buildTablePanel().
+	 * Resets the table view to initial view.
+	 * 
+	 * @param resetTableBtn - button that resets the table 
+	 * 
+	 */
+	private void buildResetTableButton(Button resetTableBtn) {
+		// Set tool tip text
+		resetTableBtn.setTitle ("Reset table");
+		
+		// Set button style
+		resetTableBtn.setStyleName("gwt-Button-textButton");
+		
+		// Attach click handler
+		resetTableBtn.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				resetDatabase();
+				houseTable.refreshTableFromBeginning();
+			}
+		});		
 	}
 
 	/**
@@ -379,6 +442,7 @@ public class Team_02 implements EntryPoint {
 	 *            - tab panel to wrap the widgets
 	 */
 	private void buildSideTabPanel(TabLayoutPanel sidebarTabPanel) {
+		SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
 		
 		// Add Widgets to the tab panel
 		sidebarTabPanel.add(searchPanel, "Search");
@@ -407,23 +471,36 @@ public class Team_02 implements EntryPoint {
 	 * Enables editing of a house data.
 	 * Adds edit button to the table panel,
 	 * builds dialog box where user can specify price and for-sale indicator.
+	 * 
 	 * @param buttonPanel - panel that holds edit button
 	 */
 	private void enableEdit(FlowPanel buttonPanel) {
 		Button editBtn = new Button("Edit");
 		Button removeBtn = new Button("Remove");
 		
+		// Build buttons
+		buildEditBtn(editBtn);
+		buildRemoveBtn(removeBtn);
+
+		// Add buttons to the button panel
+		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
+		buttonPanel.add(editBtn);
+		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
+		buttonPanel.add(removeBtn);
+	}
+	
+	/**
+	 * Helper to enableEdit().
+	 * Attaches edit button behavior, which invokes edit dialog when clicked.
+	 * 
+	 * @param editBtn - button to attach edit behavior
+	 */
+	private void buildEditBtn(Button editBtn) {
 		// Set buttton's tooltip contents
 		editBtn.setTitle("Edit house information");
-		removeBtn.setTitle("Remove information from selected house");
 		
 		// Set button styles
 		editBtn.setStyleName("gwt-Button-textButton");
-		removeBtn.setStyleName("gwt-Button-textButton");
-
-		// Add buttons to the button panel
-		buttonPanel.add(editBtn);
-		buttonPanel.add(removeBtn);
 		
 		// Add edit button handler
 		editBtn.addClickHandler(new ClickHandler() {
@@ -433,13 +510,37 @@ public class Team_02 implements EntryPoint {
 				EditPanel editDialog = 
 						new EditPanel(selectedHouse, loginInfo, theMap, houseTable);
 				editDialog.center();
-				editDialog.show();					
+				editDialog.show();			
 			}
-		});
+		});	
 	}
-	
+
 	/**
 	 * Helper to enableEdit().
+	 * Attaches remove button behavoir, which invokes async method to remove
+	 * user information from selected house.
+	 * 
+	 * @param removeBtn - button to attach remove behavior
+	 */
+	private void buildRemoveBtn(Button removeBtn) {
+		// Set buttton's tooltip contents
+		removeBtn.setTitle("Remove information from selected house");
+		
+		// Set button styles
+		removeBtn.setStyleName("gwt-Button-textButton");
+		
+		// Attach click handler
+		removeBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				HouseData selectedHouse = checkAndGetSelectedHouse();
+				resetHouse(selectedHouse);
+			}
+		});		
+	}
+
+	/**
+	 * Helper to buildEditBtn() and buildRemoveBtn().
 	 * Checks if the number of currently selected houses is one.
 	 * If it is one, return that house. If not, warn the user and return null.
 	 *  
@@ -453,6 +554,30 @@ public class Team_02 implements EntryPoint {
 		}
 		Window.alert("Please select one house");
 		return null;
+	}
+	
+	/**
+	 * Sends async call to the server to remove user information from the
+	 * selected house.
+	 * 
+	 * @param selectedHouse - house that user selected
+	 * 
+	 */
+	private void resetHouse(HouseData selectedHouse) {
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+			public void onSuccess(Void result) {
+			}
+		};
+		houseDataSvc.resetHouse(selectedHouse.getHouseID(), callback);
 	}
 	
 	/**
@@ -515,7 +640,7 @@ public class Team_02 implements EntryPoint {
 			try {
 				civicNumberAsInt = Integer.valueOf(civicNumber);
 				// Make the call to the house data service to search for the house in the server
-				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
+				// TODO houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
 			} catch(NumberFormatException e) {
 				// Don't bother searching if civic number isn't a number
 			}

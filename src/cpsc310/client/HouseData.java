@@ -8,6 +8,7 @@ import com.google.gwt.view.client.ProvidesKey;
 /**
  * Class representing a single house in the table.
  * This is a java data transfer object.
+ * Please see server-side HouseDataPoint.java for javadoc description.
  */
 public class HouseData implements Serializable{
 
