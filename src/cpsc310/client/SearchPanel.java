@@ -27,9 +27,8 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * Search Panel with all text boxes for search fields,
- * Search Button to send search.
- * This class fires asynchronous search call to the server.
+ * Search Panel with all text boxes for search fields, Search Button to send
+ * search. This class fires asynchronous search call to the server.
  */
 public class SearchPanel extends FlowPanel {
 	private PropertyMap map;
@@ -41,37 +40,39 @@ public class SearchPanel extends FlowPanel {
 	private final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 	private final ListBox addressDropDown = new ListBox(false);
 	private List<String> addresses = new ArrayList<String>();
-	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
+	private HouseDataServiceAsync houseDataSvc = GWT
+			.create(HouseDataService.class);
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-	final String[] searchCriteria = 
-		{"Street Number", "Address", "Postal Code",
-			"Current Land Value", "Current Improvement Value",
+	final String[] searchCriteria = { "Street Number", "Address",
+			"Postal Code", "Current Land Value", "Current Improvement Value",
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
-			"Price", "Realtor", "For Sale"};	
-	
+			"Price", "Realtor", "For Sale" };
+
 	/**
 	 * Constructor
 	 * 
-	 * @param map - map to specify polygon selection on. This ensures that this class
-	 * modifies the same instance of map as its caller class. 
-	 * @param table - table that appears in caller's class
+	 * @param map
+	 *            - map to specify polygon selection on. This ensures that this
+	 *            class modifies the same instance of map as its caller class.
+	 * @param table
+	 *            - table that appears in caller's class
 	 */
 	public SearchPanel(PropertyMap map, HouseTable table) {
 		final FlowPanel searchSettingPanel = new FlowPanel();
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
 		final FlowPanel advancedSettingPanel = new FlowPanel();
 		final FlowPanel polygonSettingPanel = new FlowPanel();
-		final Button advancedSearchBtn = new Button ("Advanced Search >>"); 
-		final Button searchBtn = new Button("Search");		
-		
+		final Button advancedSearchBtn = new Button("Advanced Search >>");
+		final Button searchBtn = new Button("Search");
+
 		// Attach caller's map and table
 		this.map = map;
 		this.table = table;
-		
+
 		// Set the style name of search panel
 		this.setStyleName("searchPanel");
-				
+
 		// Build search panel components
 		buildErrorPopup();
 		buildBasicSearchPanel(searchSettingPanel);
@@ -80,11 +81,12 @@ public class SearchPanel extends FlowPanel {
 
 		// Build polygon selection
 		buildPolygonSelection(polygonSettingPanel);
-		
+
 		// Build search buttons
-		buildAdvancedSearchBtn(advancedSearchBtn, advancedSettingPopup, searchSettingPanel);
+		buildAdvancedSearchBtn(advancedSearchBtn, advancedSettingPopup,
+				searchSettingPanel);
 		buildSearchBtn(searchBtn);
-		
+
 		// Add searchSettingPanel and searchBtn to the searchPanel
 		this.add(polygonSettingPanel);
 		this.add(searchSettingPanel);
@@ -95,39 +97,43 @@ public class SearchPanel extends FlowPanel {
 	}
 
 	/**
-	 * Build search panel with basic search settings
-	 * defined by basicSerachCriteria.
+	 * Build search panel with basic search settings defined by
+	 * basicSerachCriteria.
 	 * 
-	 * @param searchSettingPanel - flow panel to add all the search boxes and their labels
+	 * @param searchSettingPanel
+	 *            - flow panel to add all the search boxes and their labels
 	 * 
 	 */
-	private void buildBasicSearchPanel(FlowPanel searchSettingPanel) {		
+	private void buildBasicSearchPanel(FlowPanel searchSettingPanel) {
 		// Set the style name
 		searchSettingPanel.setStyleName("searchSettingPanel");
-				
+
 		// Assemble basic search panel
 		searchSettingPanel.add(new HTML("<hr>"));
 	}
-	
+
 	/**
-	 * Build search panel with advanced settings defined by 
-	 * advanced search criteria. Advanced search panel is a popup panel
-	 * which appears when advanced search button is clicked.
+	 * Build search panel with advanced settings defined by advanced search
+	 * criteria. Advanced search panel is a popup panel which appears when
+	 * advanced search button is clicked.
 	 * 
-	 * @param advancedSettingPopup - popup that wraps advanced setting panel
-	 * @param advancedSettingPanel - panel to add all the advanced search settings
+	 * @param advancedSettingPopup
+	 *            - popup that wraps advanced setting panel
+	 * @param advancedSettingPanel
+	 *            - panel to add all the advanced search settings
 	 */
-	private void buildAdvancedSearchPanel(PopupPanel advancedSettingPopup, FlowPanel advancedSettingPanel) {
-	
+	private void buildAdvancedSearchPanel(PopupPanel advancedSettingPopup,
+			FlowPanel advancedSettingPanel) {
+
 		// Set the style name of search panel components
-		advancedSettingPopup.setStyleName("advancedSettingPopup");		
-		
+		advancedSettingPopup.setStyleName("advancedSettingPopup");
+
 		// Assemble search panel
 		advancedSettingPopup.setAnimationEnabled(true);
-		advancedSettingPopup.setWidget(advancedSettingPanel);	
-				
+		advancedSettingPopup.setWidget(advancedSettingPanel);
+
 	}
-	
+
 	/**
 	 * Constructs error popup.
 	 */
@@ -135,10 +141,10 @@ public class SearchPanel extends FlowPanel {
 		// Set error message style
 		errorMsg.addStyleDependentName("error");
 		errorPopup.setStyleName("errorPopup");
-		
+
 		errorPopup.add(errorMsg);
 	}
-	
+
 	/**
 	 * Builds polygon selection tools.
 	 * 
@@ -148,7 +154,7 @@ public class SearchPanel extends FlowPanel {
 	private void buildPolygonSelection(FlowPanel polygonSettingPanel) {
 		final DrawToolButton specifyRegionBtn = new DrawToolButton();
 		final DrawToolButton clearPolygonBtn = new DrawToolButton();
-		
+
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
@@ -185,58 +191,66 @@ public class SearchPanel extends FlowPanel {
 		});
 
 		// Add to setting panel
-		polygonSettingPanel.add(new Label("Draw and select an area on the map"));
+		polygonSettingPanel
+				.add(new Label("Draw and select an area on the map"));
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
 		polygonSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
-	}	
-	
+	}
+
 	/**
 	 * Attach click handler to the advanced search button
 	 * 
-	 * @param advancedSearchBtn - button to attach advanced search button behavior
-	 * @param advancedSettingPopup - popup panel to invoke when button is clicked
-	 * @param basicSearchPanel - basic search panel
+	 * @param advancedSearchBtn
+	 *            - button to attach advanced search button behavior
+	 * @param advancedSettingPopup
+	 *            - popup panel to invoke when button is clicked
+	 * @param basicSearchPanel
+	 *            - basic search panel
 	 */
-	private void buildAdvancedSearchBtn(final Button advancedSearchBtn, 
-			final PopupPanel advancedSettingPopup, final FlowPanel basicSearchPanel) {
+	private void buildAdvancedSearchBtn(final Button advancedSearchBtn,
+			final PopupPanel advancedSettingPopup,
+			final FlowPanel basicSearchPanel) {
 		// Attach style
 		advancedSearchBtn.setStyleName("gwt-Button-textButton");
-		
+
 		// Add click handler
 		advancedSearchBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (isAdvSearchPanelHidden == true) {
 					advancedSearchBtn.setText("Advanced Search <<");
-					advancedSettingPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
-						
-						@Override
-						public void setPosition(int offsetWidth, int offsetHeight) {
-							int left = basicSearchPanel.getAbsoluteLeft()
-									+ basicSearchPanel.getOffsetWidth();
-							int top = basicSearchPanel.getAbsoluteTop();
-							advancedSettingPopup.setPopupPosition(left, top);
-							advancedSettingPopup.show();
-						}
-					});
+					advancedSettingPopup
+							.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+
+								@Override
+								public void setPosition(int offsetWidth,
+										int offsetHeight) {
+									int left = basicSearchPanel
+											.getAbsoluteLeft()
+											+ basicSearchPanel.getOffsetWidth();
+									int top = basicSearchPanel.getAbsoluteTop();
+									advancedSettingPopup.setPopupPosition(left,
+											top);
+									advancedSettingPopup.show();
+								}
+							});
 					isAdvSearchPanelHidden = false;
-				}
-				else {
+				} else {
 					advancedSearchBtn.setText("Advanced Search >>");
 					advancedSettingPopup.hide();
 					isAdvSearchPanelHidden = true;
 				}
 			}
-		});			
+		});
 
-		
 	}
-
 
 	/**
 	 * Attach click handler to the search button
 	 * 
-	 * @param searchBtn - search button to attach searchHouse method to the click event
+	 * @param searchBtn
+	 *            - search button to attach searchHouse method to the click
+	 *            event
 	 */
 	private void buildSearchBtn(Button searchBtn) {
 		// Listen for mouse events on Search Button
@@ -246,17 +260,20 @@ public class SearchPanel extends FlowPanel {
 			}
 		});
 	}
-	
+
 	/**
 	 * Builds search fields to given search setting panels.
-	 * @param basicPanel - basic panel to add basic search criteria
-	 * @param advancedPanel - advanced panel to add advanced search criteria
+	 * 
+	 * @param basicPanel
+	 *            - basic panel to add basic search criteria
+	 * @param advancedPanel
+	 *            - advanced panel to add advanced search criteria
 	 */
 	private void buildSearchFields(FlowPanel basicPanel, FlowPanel advancedPanel) {
 		final String basicSearchCriteria = "Street Number, Address, Current Land Value, Price, Realtor, For Sale";
-		final String advancedSearchCriteria = "Postal Code, Current Improvement Value, Assessment Year, Previous Land Value, Previous Improvement Value,Year Built, Big Improvement Year";		
+		final String advancedSearchCriteria = "Postal Code, Current Improvement Value, Assessment Year, Previous Land Value, Previous Improvement Value,Year Built, Big Improvement Year";
 		FlowPanel settingPanel;
-		
+
 		for (String criterion : searchCriteria) {
 			if (basicSearchCriteria.contains(criterion))
 				settingPanel = basicPanel;
@@ -264,30 +281,28 @@ public class SearchPanel extends FlowPanel {
 				settingPanel = advancedPanel;
 			else
 				throw new NullPointerException();
-				
+
 			settingPanel.add(new Label(criterion));
 
 			if (criterion.endsWith("Value") || criterion.endsWith("Price")
 					|| criterion.endsWith("Year")
 					|| criterion.startsWith("Year")) {
-				buildRangeBoxes(searchValues, settingPanel);
-			} 
-			else if (criterion.equals("For Sale")) {
+				buildRangeBoxes(searchValues, settingPanel, criterion);
+			} else if (criterion.equals("For Sale")) {
 				buildForSale(settingPanel);
-			} 
-			else if (criterion.equals("Address")) {
+			} else if (criterion.equals("Address")) {
 				buildAddressDropMenu(settingPanel);
-			}
-			else {
-				buildRegularBoxes(searchValues, settingPanel);
+			} else {
+				buildRegularBoxes(searchValues, settingPanel, criterion);
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds address drop down menu.
 	 * 
-	 * @param searchSettingPanel - panel to add drop down menu 
+	 * @param searchSettingPanel
+	 *            - panel to add drop down menu
 	 */
 	private void buildAddressDropMenu(FlowPanel searchSettingPanel) {
 		// If address list is empty, fetch from server
@@ -295,19 +310,19 @@ public class SearchPanel extends FlowPanel {
 			if (houseDataSvc == null) {
 				houseDataSvc = GWT.create(HouseDataService.class);
 			}
-			
+
 			// Fetch address list from server
 			AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
 				public void onFailure(Throwable caught) {
 					addresses.add("");
 					Window.alert(caught.getMessage());
 				}
-	
+
 				public void onSuccess(List<String> result) {
 					addresses.add("");
 					addresses.addAll(1, result);
 					for (int i = 0; i < result.size(); i++) {
-					      addressDropDown.addItem(addresses.get(i));				
+						addressDropDown.addItem(addresses.get(i));
 					}
 				}
 			};
@@ -316,24 +331,26 @@ public class SearchPanel extends FlowPanel {
 		// Otherwise, build list from local store of addresses
 		else {
 			for (int i = 0; i < addresses.size(); i++) {
-			      addressDropDown.addItem(addresses.get(i));				
+				addressDropDown.addItem(addresses.get(i));
 			}
 		}
 		searchSettingPanel.add(addressDropDown);
 	}
 
 	/**
-	 * Build and add text boxes that represent a range of numbers. 
-	 * Boxes by default get predefined labels "min" and "max"
-	 * in their field.
+	 * Build and add text boxes that represent a range of numbers. Boxes by
+	 * default get predefined labels "min" and "max" in their field.
 	 * 
 	 * @param searchValues
 	 *            list of text boxes representing search field
 	 * @param searchSettingPanel
 	 *            FlowPanel that holds all the search boxes.
+	 * @param type
+	 *            typeValue so Validation method know what type of validation to
+	 *            do.
 	 */
 	private void buildRangeBoxes(List<TextBox> searchValues,
-			FlowPanel searchSettingPanel) {
+			FlowPanel searchSettingPanel, String type) {
 		TextBox[] rangeBox = { new TextBox(), new TextBox() };
 		String[] labels = { "min", "max" };
 		int i = 0;
@@ -343,9 +360,9 @@ public class SearchPanel extends FlowPanel {
 			box.addStyleDependentName("shorter");
 			searchSettingPanel.add(box);
 			searchValues.add(box);
-			
+
 			// Add blur handler for type checking
-			addBlurHandler(box);
+			addBlurHandler(box, type);
 
 			// add predefined text "min" and "max" colored in gray font color
 			box.setText(labels[i]);
@@ -368,32 +385,35 @@ public class SearchPanel extends FlowPanel {
 	}
 
 	/**
-	 * Create non-range boxes and adds the box to the list of search boxes, 
-	 * and the flow panel that holds all the search fields.
+	 * Create non-range boxes and adds the box to the list of search boxes, and
+	 * the flow panel that holds all the search fields.
 	 * 
 	 * @param searchValues
 	 *            list of text boxes representing search field
 	 * @param searchSettingPanel
 	 *            FlowPanel that holds all the search boxes.
+	 * @param type
+	 *            typeValue so Validation method know what type of validation to
+	 *            do.
 	 */
 	private void buildRegularBoxes(List<TextBox> searchValues,
-			FlowPanel searchSettingPanel) {
+			FlowPanel searchSettingPanel, String type) {
 		TextBox tb = new TextBox();
 		tb.addStyleDependentName("longer");
 		searchValues.add(tb);
 		searchSettingPanel.add(tb);
-		
+
 		// Add blur handler for type checking
-		addBlurHandler(tb);
+		addBlurHandler(tb, type);
 	}
 
 	/**
-	 * Create radio buttons that specify the search criterion "For Sale", 
-	 * and add the radio buttons to forSale list
-	 * so that it will be passed to the search method. "All" criterion is
-	 * selected by default.
+	 * Create radio buttons that specify the search criterion "For Sale", and
+	 * add the radio buttons to forSale list so that it will be passed to the
+	 * search method. "All" criterion is selected by default.
 	 * 
-	 * @param searchSettingPanel - panel to add "For Sale" radio buttons
+	 * @param searchSettingPanel
+	 *            - panel to add "For Sale" radio buttons
 	 */
 	private void buildForSale(FlowPanel searchSettingPanel) {
 		// Labels that go next to the button
@@ -409,41 +429,46 @@ public class SearchPanel extends FlowPanel {
 		// All is selected by default
 		forSale.get(isSelling.length - 1).setValue(true);
 	}
-	
+
 	/**
-	 * Attaches blur handler to given text box
-	 * which fires input validation when text box loses focus.
-	 * Expected to be called by text box creating methods.
+	 * Attaches blur handler to given text box which fires input validation when
+	 * text box loses focus. Expected to be called by text box creating methods.
 	 * 
-	 * @param tb - text box to add blur handler
+	 * @param tb
+	 *            - text box to add blur handler
+	 * @param type
+	 *            -Criterion
 	 */
-	private void addBlurHandler(final TextBox tb) {
+	private void addBlurHandler(final TextBox tb, final String type) {
 		tb.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(BlurEvent event) {
 				String input = tb.getValue().trim();
-				int index = searchValues.indexOf(tb);
-				if (!validateIndivSearchInput(searchCriteria[index], input)) {
-					tb.selectAll();
+				if (!validateIndivSearchInput(type, input)) {
 					errorPopup.showRelativeTo(tb);
+					tb.selectAll();
 				}
 			}
 		});
 	}
 
-	
 	/**
 	 * Gets user input from search tab, validates user input, makes asynchronous
 	 * call to server-side search, stores search result into local store, and
 	 * updates table with the search result.
-	 * @param addressDropDown - address drop-down menu
-	 * @param searchValues  - list of boxes that hold search values
-	 * @param forSale - for sale radio buttons
+	 * 
+	 * @param addressDropDown
+	 *            - address drop-down menu
+	 * @param searchValues
+	 *            - list of boxes that hold search values
+	 * @param forSale
+	 *            - for sale radio buttons
 	 */
-	private void searchHouse(ListBox addressDropDown, List<TextBox> searchValues,
-			List<RadioButton> forSale) {
+	private void searchHouse(ListBox addressDropDown,
+			List<TextBox> searchValues, List<RadioButton> forSale) {
 		// Get user input into search boxes
-		String[] userSearchInput = getUserSearchInput(addressDropDown, searchValues);
+		String[] userSearchInput = getUserSearchInput(addressDropDown,
+				searchValues);
 
 		// Validate user input
 		if (!validateUserSearchForm(userSearchInput))
@@ -475,28 +500,33 @@ public class SearchPanel extends FlowPanel {
 	/**
 	 * Helper to searchHouse(). Grabs the user's input into the search boxes.
 	 * 
-	 * @param addressDropDown - address drop-down list
-	 * @param searchValues - list of search boxes
+	 * @param addressDropDown
+	 *            - address drop-down list
+	 * @param searchValues
+	 *            - list of search boxes
 	 * @return array of user's search input into text boxes
 	 */
-	private String[] getUserSearchInput(ListBox addressDropDown, List<TextBox> searchValues) {
+	private String[] getUserSearchInput(ListBox addressDropDown,
+			List<TextBox> searchValues) {
 		// + 1 for adding address
-		String[] userInput = new String[searchValues.size() + 2];			
-				
-		// Because civic number(street number) is already added, begin adding from index 1
+		String[] userInput = new String[searchValues.size() + 2];
+
+		// Because civic number(street number) is already added, begin adding
+		// from index 1
 		for (int i = 0; i < searchValues.size(); i++) {
-			String temp = searchValues.get(i).getText().trim();			
-			
+			String temp = searchValues.get(i).getText().trim();
+
 			if (i == 0)
 				userInput[i] = temp;
 			if (i == 1) {
 				int selectedAddrIndex = addressDropDown.getSelectedIndex();
 				userInput[i] = addressDropDown.getValue(selectedAddrIndex);
 			}
-			
+
 			else {
 				// if user left min/max labels, then the criterion is empty
-				if (temp.equals("min") || temp.equals("max")) 	temp = "";
+				if (temp.equals("min") || temp.equals("max"))
+					temp = "";
 				userInput[i] = temp;
 			}
 		}
@@ -504,8 +534,8 @@ public class SearchPanel extends FlowPanel {
 	}
 
 	/**
-	 * Helper to searchHouse(). 
-	 * Validates user's input into search boxes. If invalid, notifies the user.
+	 * Helper to searchHouse(). Validates user's input into search boxes. If
+	 * invalid, notifies the user.
 	 * 
 	 * @param userSearchInput
 	 *            list of user's input into search boxes
@@ -516,13 +546,15 @@ public class SearchPanel extends FlowPanel {
 		String numericAlert = "must be numbers only. No decimal is allowed.\n";
 		String postalCodeAlert = "is not a valid postal code.\n";
 		String invalidMsg = "";
-		int i = 0;	
+		int i = 0;
 
 		for (String criterion : searchCriteria) {
-			if (criterion.endsWith("Value") || criterion.endsWith("Price") ||
-					criterion.endsWith("Number")) {
+			if (criterion.endsWith("Value") || criterion.endsWith("Price")
+					|| criterion.endsWith("Number")
+					|| criterion.matches("Year")) {
 				isOK = validateIndivSearchInput(criterion, userSearchInput[i]);
-				isOK = validateIndivSearchInput(criterion, userSearchInput[i + 1]);
+				isOK = validateIndivSearchInput(criterion,
+						userSearchInput[i + 1]);
 				i += 2;
 				if (!isOK)
 					invalidMsg = invalidMsg + criterion + numericAlert;
@@ -539,7 +571,7 @@ public class SearchPanel extends FlowPanel {
 				isOK = true;
 				invalidMsg = "";
 				i++;
-			}			
+			}
 		}
 
 		if (isOK == false) {
@@ -551,36 +583,38 @@ public class SearchPanel extends FlowPanel {
 
 	/**
 	 * For checking individual text boxes
-	 * @param criterion - search criterion of given text box
-	 * @param userInput - single user input
+	 * 
+	 * @param criterion
+	 *            - search criterion of given text box
+	 * @param userInput
+	 *            - single user input
 	 * @return boolean value representing if the inputs were all valid
 	 */
 	private boolean validateIndivSearchInput(String criterion, String userInput) {
-		String numericAlert = "must be numbers only. No decimal is allowed.\n";
-		String postalCodeAlert = "is not a valid postal code.\n";		
+		String numericAlert = " must be numbers only.\n";
+		String postalCodeAlert = " is not a valid postal code.\n";
 		String invalidMsg = "";
 		boolean isOK = false;
-		
-		if (criterion.endsWith("Value") || criterion.endsWith("Price") ||
-				criterion.endsWith("Number")) {
-			if (!userInput.matches("\\d*")) {
-				invalidMsg = invalidMsg + criterion + numericAlert;
-				isOK = false;
-			}
-		}
 
-		else if (criterion.equals("Postal Code")) {
-			if (!userInput.matches("|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]")) {
-				invalidMsg = invalidMsg + criterion + postalCodeAlert;
-				isOK = false;
+		if (criterion.endsWith("Value") || criterion.endsWith("Price")
+				|| criterion.endsWith("Number") || criterion.matches("Year")) {
+			if (userInput.matches("^\\d*$")) {
+				isOK = true;
+			} else {
+				invalidMsg = criterion + numericAlert;
 			}
-		}
-
-		else {
-			invalidMsg = "";
+		} else if (criterion.equals("Postal Code")) {
+			if (userInput.matches("^$|^[A-Z][0-9][A-Z] [0-9][A-Z][0-9]$")) {
+				isOK = true;
+			} else {
+				invalidMsg = criterion + postalCodeAlert;
+			}
+		} else {
 			isOK = true;
 		}
-		errorMsg.setText(invalidMsg);
+		if (!isOK) {
+			errorMsg.setText(invalidMsg);
+		}
 		return isOK;
 	}
 
@@ -598,14 +632,12 @@ public class SearchPanel extends FlowPanel {
 
 		if (forSale.get(0).getValue() == true) {
 			isSelling = 1;
-		} 
-		else if (forSale.get(1).getValue() == true) {
+		} else if (forSale.get(1).getValue() == true) {
 			isSelling = 0;
-		} 
-		else
+		} else
 			isSelling = -1;
 
 		return isSelling;
-	}	
-	
+	}
+
 }
