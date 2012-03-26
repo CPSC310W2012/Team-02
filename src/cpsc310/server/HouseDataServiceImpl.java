@@ -333,7 +333,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public HouseData retriveSingleHouse(int civicNumber, String street) {
+	public HouseData retrieveSingleHouse(int civicNumber, String street) {
 		workingIDStore = new ArrayList<String>();
 		workingIDStore.addAll(store.searchByAddress(civicNumber, street));
 		HouseDataPoint currentHDP = store.getHouses(workingIDStore, 0, 1).get(0);

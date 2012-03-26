@@ -157,5 +157,5 @@ public interface HouseDataService extends RemoteService {
 	 * @param street
 	 * @return HouseData - a single House object
 	 */
-	public HouseData retriveSingleHouse(int civicNumber, String street);
+	public HouseData retrieveSingleHouse(int civicNumber, String street);
 }

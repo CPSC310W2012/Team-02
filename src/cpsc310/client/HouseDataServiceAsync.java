@@ -68,5 +68,5 @@ public interface HouseDataServiceAsync {
 
 	public void resetHouse(String houseID, AsyncCallback<Void> callback);
 	
-	public void retriveSingleHouse(int civicNumber, String streetName, AsyncCallback<HouseData> callback);
+	public void retrieveSingleHouse(int civicNumber, String streetName, AsyncCallback<HouseData> callback);
 }
