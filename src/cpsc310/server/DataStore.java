@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.google.gwt.maps.client.overlay.Polygon;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -1130,17 +1129,18 @@ public class DataStore {
 		// re-add to indexes
 		updateIndexes(currentHouse);
 	}
-	/**
-	 * Searches for house in user specified polygon
-	 * @param poly
-	 * @return set house IDs found in polygon
-	 */
-	public Set<String> getHousesInPolygon(Polygon poly)
-	{
-		Set<String> temp = new HashSet<String>();
-		return temp;
-	}
 	
+//	/**
+//	 * Searches for house in user specified polygon
+//	 * @param poly
+//	 * @return set house IDs found in polygon
+//	 */
+//	public Set<String> getHousesInPolygon(Polygon poly)
+//	{
+//		Set<String> temp = new HashSet<String>();
+//		return temp;
+//	}
+//	
 //	/**
 //	 * 
 //	 * Algorithm that calculates whether or not the point is in the polygon
