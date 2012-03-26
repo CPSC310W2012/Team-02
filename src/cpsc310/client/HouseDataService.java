@@ -1,5 +1,6 @@
 package cpsc310.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -37,8 +38,7 @@ public interface HouseDataService extends RemoteService {
 	 * @param isSelling
 	 *            - integer values, 0 not for sale, 1 for sale, -1 all
 	 */
-	public void searchHouses(String[] userSearchInput,
-			int isSelling);
+	public void searchHouses(String[] userSearchInput, int isSelling);
 
 	/**
 	 * Helper to table drawing to figure out how many rows need to exist.
@@ -135,25 +135,40 @@ public interface HouseDataService extends RemoteService {
 	 * @return list of StreetNames
 	 */
 	public List<String> getStreetNames();
-	
+
 	/**
 	 * Sets ID store to all the keys of the DB
 	 */
 	public void refreshIDStore();
-	
+
 	/**
 	 * resets the house (owner status, for sale) and removes from datastore
 	 * 
 	 * @param houseID
 	 */
 	public void resetHouse(String houseID);
-	
+
 	/**
-	 * returns a single give an ID.
-	 * This is simply to make some features cleaner. a combination of getHouses and Search can do the same thing.
+	 * returns a single house given an ID. This is simply to make some features
+	 * cleaner. a combination of getHouses and Search can do the same thing.
+	 * 
 	 * @param civicNumber
 	 * @param street
 	 * @return HouseData - a single House object
 	 */
 	public HouseData retrieveSingleHouse(int civicNumber, String street);
+
+	/**
+	 * Searchs within the list of for sale houses within a specified polygon
+	 * represented by list of latitude and longitude values
+	 * 
+	 * @precondition latitudes.size() == longitudes.size()
+	 * @param latitudes
+	 *            - the latitudes of the polygon per vertex
+	 * @param longitudes
+	 *            - the longitudes of the polygon per vertex
+	 * @return HouseIDs - list of house IDs in that are for sale in the polygon
+	 */
+	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
+			ArrayList<Double> longitudes);
 }

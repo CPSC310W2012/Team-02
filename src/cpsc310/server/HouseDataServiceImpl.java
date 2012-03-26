@@ -336,7 +336,15 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	public HouseData retrieveSingleHouse(int civicNumber, String street) {
 		workingIDStore = new ArrayList<String>();
 		workingIDStore.addAll(store.searchByAddress(civicNumber, street));
-		HouseDataPoint currentHDP = store.getHouses(workingIDStore, 0, 1).get(0);
+		HouseDataPoint currentHDP = store.getHouses(workingIDStore, 0, 1)
+				.get(0);
 		return convertToHouseData(currentHDP);
+	}
+
+	@Override
+	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
+			ArrayList<Double> longitudes) {
+		workingIDStore = new ArrayList<String>();
+		workingIDStore.addAll(store.searchForSaleInPolygon(latitudes, longitudes));
 	}
 }

@@ -358,7 +358,8 @@ public class DataStore {
 			ObjectifyService.register(HouseDataPoint.class);
 		} catch (IllegalArgumentException e) {
 			// already registered
-			System.out.println("HouseDataPoints already registered in data store");
+			System.out
+					.println("HouseDataPoints already registered in data store");
 		}
 	}
 
@@ -374,7 +375,7 @@ public class DataStore {
 		keys.addAll(store.keySet());
 		return keys;
 	}
-	
+
 	/**
 	 * Gets keys of all of entire datastore as a set
 	 * 
@@ -488,11 +489,12 @@ public class DataStore {
 		}
 		return keys;
 	}
-	
+
 	/**
 	 * Searches for houses via owner
 	 * 
-	 * @param owner - realtor
+	 * @param owner
+	 *            - realtor
 	 * @return houseFound
 	 */
 	public Set<String> searchByOwner(String realtor) {
@@ -839,7 +841,7 @@ public class DataStore {
 		Collections.sort(currentList, comp);
 		return currentList;
 	}
-	
+
 	/**
 	 * Sorts houses by HouseID descending
 	 * 
@@ -918,7 +920,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentImprovementValueDes(List<String> currentList) {
+	public List<String> sortByCurrentImprovementValueDes(
+			List<String> currentList) {
 		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -962,7 +965,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousImprovementValueDes(List<String> currentList) {
+	public List<String> sortByPreviousImprovementValueDes(
+			List<String> currentList) {
 		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -1011,8 +1015,8 @@ public class DataStore {
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
 	}
-	
-	//Other methods
+
+	// Other methods
 	/**
 	 * validates house given restriction criteria
 	 * 
@@ -1020,8 +1024,7 @@ public class DataStore {
 	 * @param userSearchInput
 	 * @return boolean - true if house is valid, false if not valid
 	 */
-	public boolean validateHouseParams(String houseID, String[] userSearchInput)
-	{
+	public boolean validateHouseParams(String houseID, String[] userSearchInput) {
 		// [0]"civicNumber"
 		// [1]"streetName",
 		// Value "Current Land Value" - [2]min, [3]max
@@ -1035,24 +1038,23 @@ public class DataStore {
 		// Year "Year Built" - [16]min, [17]max
 		// Year "Big Improvement Year" - [18]min, [19]max
 		HouseDataPoint currentHouse = store.get(houseID);
-		if(	currentHouse.getCivicNumber() != Integer.parseInt(userSearchInput[0]))
-		{
+		if (currentHouse.getCivicNumber() != Integer
+				.parseInt(userSearchInput[0])) {
 			return false;
 		}
-		if(	!currentHouse.getStreetName().equals(userSearchInput[1]))
-		{
+		if (!currentHouse.getStreetName().equals(userSearchInput[1])) {
 			return false;
 		}
-		if(	currentHouse.getCurrentLandValue() < Integer.parseInt(userSearchInput[2]))
-		{
+		if (currentHouse.getCurrentLandValue() < Integer
+				.parseInt(userSearchInput[2])) {
 			return false;
 		}
-		if(	currentHouse.getCurrentLandValue() > Integer.parseInt(userSearchInput[4]))
-		{
+		if (currentHouse.getCurrentLandValue() > Integer
+				.parseInt(userSearchInput[4])) {
 			return false;
 		}
-		if(	currentHouse.getCurrentLandValue() > Integer.parseInt(userSearchInput[3]))
-		{
+		if (currentHouse.getCurrentLandValue() > Integer
+				.parseInt(userSearchInput[3])) {
 			return false;
 		}
 		return true;
@@ -1105,15 +1107,16 @@ public class DataStore {
 		Objectify ofy = ObjectifyService.begin();
 		ofy.put(currentHouse);
 	}
-	
+
 	/**
 	 * Given a houseID, removes house from datastore and resets owner and price
+	 * 
 	 * @param house
 	 */
 	public void resetHouse(String house) {
 		// create and set object variables
 		HouseDataPoint currentHouse = store.get(house);
-		
+
 		// remove from datastore
 		Objectify ofy = ObjectifyService.begin();
 		ofy.delete(currentHouse);
@@ -1129,64 +1132,51 @@ public class DataStore {
 		// re-add to indexes
 		updateIndexes(currentHouse);
 	}
-	
-//	/**
-//	 * Searches for house in user specified polygon
-//	 * @param poly
-//	 * @return set house IDs found in polygon
-//	 */
-//	public Set<String> getHousesInPolygon(Polygon poly)
-//	{
-//		Set<String> temp = new HashSet<String>();
-//		return temp;
-//	}
-//	
-//	/**
-//	 * 
-//	 * Algorithm that calculates whether or not the point is in the polygon
-//	 * 
-//	 * @param point
-//	 *            the point to check if it is in the polygon
-//	 * 
-//	 */
-//	private boolean isPointInPolygon(Polygon lastPolygon, LatLng point) {
-//
-//		if (lastPolygon == null) {
-//			Window.alert("No region specified");
-//			return false;
-//		}
-//
-//		int j = 0;
-//		boolean oddNodes = false;
-//		double y = point.getLatitude();
-//		double x = point.getLongitude();
-//		int numVertexes = lastPolygon.getVertexCount();
-//
-//		for (int i = 0; i < numVertexes; i++) {
-//			j++;
-//			if (j == numVertexes) {
-//				j = 0;
-//			}
-//			if (((lastPolygon.getVertex(i).getLatitude() < y) && (lastPolygon
-//					.getVertex(j).getLatitude() >= y))
-//					|| ((lastPolygon.getVertex(j).getLatitude() < y) && (lastPolygon
-//							.getVertex(i).getLatitude() >= y))) {
-//				if (lastPolygon.getVertex(i).getLongitude()
-//						+ (y - lastPolygon.getVertex(i).getLatitude())
-//						/ (lastPolygon.getVertex(j).getLatitude() - lastPolygon
-//								.getVertex(i).getLatitude())
-//						* (lastPolygon.getVertex(j).getLongitude() - lastPolygon
-//								.getVertex(i).getLongitude()) < x) {
-//					oddNodes = !oddNodes;
-//				}
-//			}
-//		}
-//
-//		if (oddNodes)
-//			Window.alert("point is in the polygon");
-//		else
-//			Window.alert("point is not in the polygon");
-//		return oddNodes;
-//	}
 
+	/**
+	 * Searchs within the list of for sale houses within a specified polygon
+	 * represented by list of latitude and longitude values
+	 * 
+	 * @precondition latitudes.size() == longitudes.size()
+	 * @param latitudes
+	 *            - the latitudes of the polygon per vertex
+	 * @param longitudes
+	 *            - the longitudes of the polygon per vertex
+	 * @return HouseIDs - list of house IDs in that are for sale in the polygon
+	 */
+	public Set<String> searchForSaleInPolygon(ArrayList<Double> latitudes,
+			ArrayList<Double> longitudes) {
+
+		Iterator<String> tempItr = forSaleHomes.iterator();
+		int numVertexes = latitudes.size();
+		Set<String> keys = new HashSet<String>();
+
+		while (tempItr.hasNext()) {
+			HouseDataPoint currentHouse = store.get(tempItr.next());
+
+			int j = 0;
+			boolean oddNodes = false;
+			double y = currentHouse.getLatitude();
+			double x = currentHouse.getLongitude();
+
+			for (int i = 0; i < numVertexes; i++) {
+				j++;
+				if (j == numVertexes) {
+					j = 0;
+				}
+				if (((latitudes.get(i) < y) && (latitudes.get(j) >= y))
+						|| ((latitudes.get(j) < y) && (latitudes.get(i) >= y))) {
+					if (longitudes.get(i) + (y - longitudes.get(i))
+							/ (longitudes.get(j) - longitudes.get(i))
+							* (longitudes.get(j) - longitudes.get(i)) < x) {
+						oddNodes = !oddNodes;
+					}
+				}
+			}
+			if (oddNodes) {
+				keys.add(currentHouse.getHouseID());
+			}
+		}
+		return keys;
+	}
 }

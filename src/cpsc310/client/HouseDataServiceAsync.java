@@ -1,5 +1,6 @@
 package cpsc310.client;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -67,6 +68,10 @@ public interface HouseDataServiceAsync {
 	public void refreshIDStore(AsyncCallback<Void> callback);
 
 	public void resetHouse(String houseID, AsyncCallback<Void> callback);
-	
-	public void retrieveSingleHouse(int civicNumber, String streetName, AsyncCallback<HouseData> callback);
+
+	public void retrieveSingleHouse(int civicNumber, String streetName,
+			AsyncCallback<HouseData> callback);
+
+	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
+			ArrayList<Double> longitudes, AsyncCallback<Void> callback);
 }

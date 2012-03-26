@@ -1,2 +1,4 @@
 # Module team_02
 # RPC service class, partial path of RPC policy file
+cpsc310.client.LoginService, 2AAA879678809D20D91F3ED729A4456B.gwt.rpc
+cpsc310.client.HouseDataService, C9C73049D717A8195CF4D29E81FD70BC.gwt.rpc
