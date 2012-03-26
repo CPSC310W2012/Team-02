@@ -556,8 +556,8 @@ public class SearchPanel extends FlowPanel {
 	 * @return boolean value representing if the inputs were all valid
 	 */
 	private boolean validateIndivSearchInput(String criterion, String userInput) {
-		String numericAlert = "must be numbers only. No decimal is allowed.\n";
-		String postalCodeAlert = "is not a valid postal code.\n";		
+		String numericAlert = " must be numbers only.\n";
+		String postalCodeAlert = " is not a valid postal code.\n";		
 		String invalidMsg = "";
 		boolean isOK = false;
 		
@@ -570,7 +570,7 @@ public class SearchPanel extends FlowPanel {
 		}
 
 		else if (criterion.equals("Postal Code")) {
-			if (!userInput.matches("|[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]")) {
+			if (!userInput.matches("|^[A-Z][0-9][A-Z] [0-9][A-Z][0-9]$")) {
 				invalidMsg = invalidMsg + criterion + postalCodeAlert;
 				isOK = false;
 			}
