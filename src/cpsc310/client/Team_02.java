@@ -1,43 +1,28 @@
 package cpsc310.client;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.reveregroup.gwt.facebook4gwt.Facebook;
-import com.reveregroup.gwt.facebook4gwt.LoginButton;
-import com.reveregroup.gwt.facebook4gwt.LoginButton.Background;
-import com.reveregroup.gwt.facebook4gwt.LoginButton.Length;
-import com.reveregroup.gwt.facebook4gwt.LoginButton.Size;
 import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 /**
@@ -190,7 +175,6 @@ public class Team_02 implements EntryPoint {
 		
 		// Assemble button panel 
 		buttonPanel.add(hideShowTablePanelButton);
-		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		buttonPanel.add(expandShrinkTableBtn);
 		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		buttonPanel.add(resetTableBtn);
@@ -573,6 +557,7 @@ public class Team_02 implements EntryPoint {
 				Window.alert(caught.getMessage());
 			}
 			public void onSuccess(Void result) {
+				houseTable.refreshTableCurrentView();
 			}
 		};
 		houseDataSvc.resetHouse(selectedHouse.getHouseID(), callback);

@@ -31,6 +31,7 @@ public class EditPanel extends DialogBox {
 	private final RadioButton noSell = new RadioButton("editSell", "No");
 	private Label errorMsg = new Label("");
 	private FlowPanel loadingPanel = new FlowPanel();
+	private boolean isOkToEdit = false;
 	private boolean editDone = false;
 	
 	/**
@@ -43,6 +44,8 @@ public class EditPanel extends DialogBox {
 	public EditPanel (HouseData selectedHouse, LoginInfo loginInfo, 
 			PropertyMap map, HouseTable table) {
 		FlowPanel editPanel = new FlowPanel();	
+		
+		this.setStyleName("editDialog");
 		
 		// Initialize class variables
 		this.selectedHouse = selectedHouse;
@@ -114,10 +117,6 @@ public class EditPanel extends DialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				editHouse();
-				Image loading = new Image("images/loading.png");
-				Label loadingMsg = new Label("Editing...");
-				loadingPanel.add(loading);
-				loadingPanel.add(loadingMsg);
 			}
 		});
 	}
@@ -147,32 +146,26 @@ public class EditPanel extends DialogBox {
 	 * If async call was unsuccessful, it displays a message on the dialog. 
 	 */
 	private void editHouse() {
-		// Assemble edit field
+		// Initialize edit field
 		int housePrice = 0;
-		String owner = loginInfo.getEmailAddress();
+		String owner = "";
 		String houseID ="";
 		String postalCode = "";
-		String price = priceBox.getValue();
 		double latitude = 0;
 		double longitude = 0;
-		boolean yesSelling = yesSell.getValue();
+		boolean yesSelling = false;
 		
-		// Assemble user specified information
-		houseID = selectedHouse.getHouseID();
-		postalCode = selectedHouse.getPostalCode();
+		// Check user specified price
+		if (!checkHousePrice()) 
+			return;
 		
-		//This is an array of latitude and longitude. 
-		// index 0 = latitude, index 1 = longitude 
-		Double[] ll = map.getLL(selectedHouse);
-		if (ll != null) {
-			latitude = ll[0];
-			longitude = ll[1];
-		}
+		// Assemble edit information
+		assembleEditInfo(housePrice, owner, houseID, postalCode, 
+				latitude, longitude, yesSelling);
 		
-		// If user did not specify the price, price is 0.
-		if (!price.isEmpty()) 
-			housePrice = Integer.parseInt(price);
-					
+		// Draw loading panel
+		drawLoading();
+		
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -195,4 +188,66 @@ public class EditPanel extends DialogBox {
 				houseID, latitude, longitude, postalCode, callback);
 	}
 	
+	/**
+	 * Check if user specified price is in non-decimal numbers.
+	 * If not, prompt the user to change the value.
+	 * @return true if price is in non-decimal numbers; false otherwise.
+	 */
+	private boolean checkHousePrice() {
+		String price = priceBox.getValue();
+		
+		if (!price.matches("\\d*")) {
+			errorMsg.setText("Only non-decimal numbers are allowed for price.");
+			priceBox.selectAll();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Draw loading panel to indicate async edit call to the 
+	 * server is in process
+	 */
+	private void drawLoading() {
+		Image loading = new Image("images/loading.png");
+		Label loadingMsg = new Label("Editing...");
+		loadingPanel.add(loading);
+		loadingPanel.add(loadingMsg);
+	}	
+
+	/**
+	 * Assemble user specified information and stores them to the
+	 * given arguments.
+	 * 
+	 * @param housePrice - price of selected house
+	 * @param owner - user info
+	 * @param houseID - unique houseID
+	 * @param postalCode - postal code of the selected house
+	 * @param latitude - latitude of the house
+	 * @param longitude - longitude of the house
+	 * @param yesSelling - if the house is on sale or not
+	 */
+	private void assembleEditInfo(int housePrice, String owner, String houseID,
+			String postalCode, double latitude, double longitude,
+			boolean yesSelling) {		
+		// Assemble user specified information
+		houseID = selectedHouse.getHouseID();
+		postalCode = selectedHouse.getPostalCode();
+		owner = loginInfo.getEmailAddress();
+		yesSelling = yesSell.getValue();
+		
+		//This is an array of latitude and longitude. 
+		// index 0 = latitude, index 1 = longitude 
+		Double[] ll = map.getLL(selectedHouse);
+		if (ll != null) {
+			latitude = ll[0];
+			longitude = ll[1];
+		}
+		
+		// If user did not specify the price, price is 0.
+		String price = priceBox.getValue();
+		if (!price.isEmpty())
+			housePrice = Integer.parseInt(price);
+	}
 }
