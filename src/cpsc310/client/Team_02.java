@@ -640,7 +640,7 @@ public class Team_02 implements EntryPoint {
 			try {
 				civicNumberAsInt = Integer.valueOf(civicNumber);
 				// Make the call to the house data service to search for the house in the server
-				// TODO houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
+				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
 			} catch(NumberFormatException e) {
 				// Don't bother searching if civic number isn't a number
 			}
