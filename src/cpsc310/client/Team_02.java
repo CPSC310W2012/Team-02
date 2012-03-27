@@ -9,13 +9,16 @@ import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -359,6 +362,45 @@ public class Team_02 implements EntryPoint {
 	private void buildMenuPanel(FlowPanel menuPanel) {
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
+	
+		//listeners to the Help button and Terms of Use button
+		helpBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//create dialogbox
+				DialogBox helpWindow = new DialogBox();
+				helpWindow.setText("Help");
+				helpWindow.add(new Label("Help Content"));
+				helpWindow.center();
+				helpWindow.show();
+				helpWindow.setAutoHideEnabled(true);
+				helpWindow.setStyleName("gwt-DialogBox");
+			}
+		});
+		termsBtn.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				//create dialogbox and ok button to close it
+				final DialogBox termsWindow = new DialogBox();
+				termsWindow.setText("Terms of Use");
+				VerticalPanel dialogBoxHolder = new VerticalPanel();
+				Button okBtn = new Button();
+				okBtn.setText("Ok");
+				okBtn.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						termsWindow.hide();
+					}		
+				});
+				dialogBoxHolder.add(new Label("Terms of Use Content"));
+				dialogBoxHolder.add(okBtn);
+				termsWindow.add(dialogBoxHolder);
+				termsWindow.show();
+				termsWindow.center();
+				termsWindow.setStyleName("gwt-DialogBox");
+			}
+		});
 		
 		//Set the styles of elements
 		helpBtn.setStyleName("gwt-Button-textButton");

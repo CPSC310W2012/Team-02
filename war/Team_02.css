@@ -484,3 +484,7 @@ a:active {
 	background-color: #FFF;
 	z-index: 110;
 }
+
+.gwt-DialogBox .dialogContent {
+	background-color: #FFF;
+}
