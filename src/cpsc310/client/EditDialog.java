@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * The assumption is that type checking for selecting only one house
  * is done in the caller's class.
  */
-public class EditPanel extends DialogBox {
+public class EditDialog extends DialogBox {
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);	
 	private HouseData selectedHouse;
 	private LoginInfo loginInfo;
@@ -40,7 +40,7 @@ public class EditPanel extends DialogBox {
 	 * @param map - map in the caller class
 	 * @param table - table in the caller class
 	 */
-	public EditPanel (HouseData selectedHouse, LoginInfo loginInfo, 
+	public EditDialog (HouseData selectedHouse, LoginInfo loginInfo, 
 			PropertyMap map, HouseTable table) {
 		FlowPanel editPanel = new FlowPanel();	
 		

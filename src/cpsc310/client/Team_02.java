@@ -489,8 +489,8 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				if (selectedHouse != null) {
-					EditPanel editDialog = 
-							new EditPanel(selectedHouse, loginInfo, theMap, houseTable);
+					EditDialog editDialog = 
+							new EditDialog(selectedHouse, loginInfo, theMap, houseTable);
 					editDialog.center();
 					editDialog.show();
 				}
