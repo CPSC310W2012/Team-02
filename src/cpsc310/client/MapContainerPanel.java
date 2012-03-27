@@ -8,8 +8,14 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
  * Split panel that contains Google map and street view
  */
 public class MapContainerPanel extends SplitLayoutPanel {
-	private static int defaultMapSize = 550;
+	private static int defaultMapSize = 600;
 	private PropertyMap map = null;
+	private Timer loadMaps = new Timer() {
+		@Override
+		public void run() {
+			loadMapWidgets();	
+		}
+	};	
 	private Timer streetViewResizeTimer = new Timer() {
         @Override
         public void run() {
@@ -32,13 +38,20 @@ public class MapContainerPanel extends SplitLayoutPanel {
 		this.map = map;
 		
 		// Add Google map and street view
-		this.addWest(map.getMap(), defaultMapSize);
-		this.add(map.getStreetViewMap());
+		loadMaps.schedule(600);
 		
 		// Set style name
 		this.setStyleName("mapContainerPanel");
 	}
 	
+	/**
+	 * Load Map widgets
+	 */
+	private void loadMapWidgets() {
+		this.addWest(map.getMap(), defaultMapSize);
+		this.add(map.getStreetViewMap());
+	}
+
 	/**
 	 * Override SplitLayoutPanel's default method to
 	 * ensure that map and the street view gets properly resized
