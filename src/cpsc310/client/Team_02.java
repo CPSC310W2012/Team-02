@@ -308,7 +308,7 @@ public class Team_02 implements EntryPoint {
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
-				"<div id ='header'><h1>iVanHomesPrices</h1></div>"));
+				"<div id ='header'><h1><img src='images/logoStuff/logo2.png'>iVanHomesPrices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
 		sidePanel.add(menuPanel);
 		sidePanel.add(sidebarTabPanel);
@@ -375,7 +375,7 @@ public class Team_02 implements EntryPoint {
 		Facebook.init("257432264338889");
 		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),"Check out this house!!!");
 		faceBookTemp.add(shareBtn);
-		faceBookTemp.add(new InlineHTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:90px; height:21px;\" allowTransparency=\"true\"></iframe>"));
+		faceBookTemp.add(new InlineHTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:100px; height:21px;\" allowTransparency=\"true\"></iframe>"));
 		
 		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		menuPanel.add(helpBtn);
@@ -489,10 +489,12 @@ public class Team_02 implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
-				EditPanel editDialog = 
-						new EditPanel(selectedHouse, loginInfo, theMap, houseTable);
-				editDialog.center();
-				editDialog.show();			
+				if (selectedHouse != null) {
+					EditPanel editDialog = 
+							new EditPanel(selectedHouse, loginInfo, theMap, houseTable);
+					editDialog.center();
+					editDialog.show();
+				}
 			}
 		});	
 	}
@@ -558,6 +560,7 @@ public class Team_02 implements EntryPoint {
 			}
 			public void onSuccess(Void result) {
 				houseTable.refreshTableCurrentView();
+				theMap.getMap().getInfoWindow().close();
 			}
 		};
 		houseDataSvc.resetHouse(selectedHouse.getHouseID(), callback);
@@ -578,6 +581,7 @@ public class Team_02 implements EntryPoint {
 				Window.alert(caught.getMessage());
 			}
 			public void onSuccess(Void result) {
+				houseTable.refreshTableFromBeginning();
 			}
 		};
 		houseDataSvc.refreshIDStore(callback);

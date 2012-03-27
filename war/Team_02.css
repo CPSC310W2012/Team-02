@@ -6,6 +6,10 @@
 	position: relative;
 }
 
+html {
+	overflow: auto;
+}
+
 body {
 	width: 100% !important;	
 	color: #515151;
@@ -17,23 +21,32 @@ body {
 }
 
 hr {
-	margin: 10px 0;
+	margin: 5px 0;
 }
 
 #header {
 	background-color: #00B4FF;
 	background-color: rgba(0, 180, 255, 0.6);
+	background-repeat: no-repeat;
 	padding: 30px 0;
 	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;	
 	-webkit-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 }
 
+#header h1 img {
+	height: 27px;
+	top: 4px;
+	margin-right: 2px;
+}
+
 h1 {
 	margin: 0 auto;
 	color: #FFF;
-	font-size: 2em;
+	font-size: 1.7em;
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 200;
 	text-shadow: #EEE 1px 1px 1px;
@@ -122,7 +135,7 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 370px;
+	height: 380px;
 	margin: 5px 10px;
 }
 
@@ -203,6 +216,7 @@ a:active {
 	-webkit-border-radius: 5px;
 	border-radius: 5px; 
 }
+
 .gwt-Button:active {
 	border: 1px inset #ccc;
 	top: 1px;
@@ -220,8 +234,11 @@ a:active {
 
 
 .searchPanel {
-	width: 100%;
 	background-color: #FFF;
+}
+
+.searchPanel .gwt-Button-textButton-resetSearch {
+	float: right;
 }
 
 .searchSettingPanel {
@@ -235,7 +252,7 @@ a:active {
 
 .hideShowButton-vertical {
 	top: 0;
-	right: 0;	
+	right: 3px;	
 }
 
 .hideShowButton {
@@ -276,7 +293,7 @@ a:active {
 }
 
 .advancedSettingPopup {
-	z-index: 1000;
+	z-index: 100;
 	padding: 4px 8px 4px 8px;
 	background-color: #FFF;
 	margin: 0;
@@ -350,20 +367,14 @@ a:active {
 }
 
 .facebookPanel {
-	width: 170px;
 	height: 25px;
 	white-space: nowrap;
-	vertical-align: middle;
 	text-align: center;
-	margin: 0 auto;	
+	vertical-align: middle;
 }
 
-.facebookPanel div {
-	width: 20px;
-}
-
-.facebookPanel a{ 
-	float: left;
+.facebookPanel a{
+	top: -7px;
 	margin-right: 4px;
 } 
 
@@ -387,20 +398,41 @@ a:active {
 .gwt-ToggleButton-down,
 .gwt-ToggleButton-down-hovering,
 .gwt-ToggleButton-down-disabled {
-	margin: 0 3px;
+	margin: 0;
 	text-decoration: none;
 	float: left;
 	cursor: pointer;
 	cursor: hand;
 }
 
+.gwt-PushButton-up,
+.gwt-PushButton-up-hovering,
+.gwt-PushButton-up-disabled,
+.gwt-PushButton-down,
+.gwt-PushButton-down-hovering,
+.gwt-PushButton-down-disabled {
+  margin: 0;
+  text-decoration: none;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
+}
+
 .polygonSettingPanel {
-	display: inline;
-	white-space: nowrap;
+	margin: 5px auto;
 }
 
 .polygonSettingPanel .gwt-Label {
 	margin-bottom: 5px;
+}
+
+.polygonSettingPanel .gwt-PushButton-polygonBtn,
+.polygonSettingPanel .gwt-ToggleButton-polygonBtn {
+	display: inline;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
 }
 
 .buttonPanel {
@@ -431,4 +463,5 @@ a:active {
 
 .errorPopup {
 	background-color: #FFF;
+	z-index: 110;
 }

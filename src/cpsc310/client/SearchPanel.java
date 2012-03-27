@@ -1,7 +1,6 @@
 package cpsc310.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -17,14 +16,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 /**
  * Search Panel with all text boxes for search fields, Search Button to send
@@ -65,6 +65,7 @@ public class SearchPanel extends FlowPanel {
 		final FlowPanel polygonSettingPanel = new FlowPanel();
 		final Button advancedSearchBtn = new Button("Advanced Search >>");
 		final Button searchBtn = new Button("Search");
+		final Button resetSearchBtn = new Button("Reset");
 
 		// Attach caller's map and table
 		this.map = map;
@@ -85,16 +86,52 @@ public class SearchPanel extends FlowPanel {
 		// Build search buttons
 		buildAdvancedSearchBtn(advancedSearchBtn, advancedSettingPopup,
 				searchSettingPanel);
+		buildResetSearchBtn (resetSearchBtn);
 		buildSearchBtn(searchBtn);
 
 		// Add searchSettingPanel and searchBtn to the searchPanel
 		this.add(polygonSettingPanel);
+		this.add(new HTML("<hr>"));
+		this.add(resetSearchBtn);
 		this.add(searchSettingPanel);
 		this.add(new HTML("<br />"));
 		this.add(advancedSearchBtn);
 		this.add(new HTML("<br />"));
 		this.add(searchBtn);
+
 	}
+
+	/**
+	 * Build reset search button which clears all the text boxes,
+	 * resets address drop down box, and returns
+	 * radio button to default settings
+	 * 
+	 * @param resetSearchBtn - button to add reset behavior
+	 */
+	private void buildResetSearchBtn(Button resetSearchBtn) {
+		// Attach a style name
+		resetSearchBtn.setStyleName("gwt-Button-textButton");
+		resetSearchBtn.addStyleDependentName("resetSearch");
+		
+		resetSearchBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick (ClickEvent event){
+				// Prevent null pointer error
+				if (!searchValues.isEmpty()) {
+					for (TextBox box : searchValues) {
+						box.setText("");
+					}
+				}
+				// Prevent null pointer error
+				if (addressDropDown.getItemCount() > 0)
+					addressDropDown.setSelectedIndex(0);
+				// Prevent null pointer error
+				if (!forSale.isEmpty())
+					forSale.get(forSale.size() - 1).setValue(true);
+			}
+		});
+	}
+	
 
 	/**
 	 * Build search panel with basic search settings defined by
@@ -107,9 +144,6 @@ public class SearchPanel extends FlowPanel {
 	private void buildBasicSearchPanel(FlowPanel searchSettingPanel) {
 		// Set the style name
 		searchSettingPanel.setStyleName("searchSettingPanel");
-
-		// Assemble basic search panel
-		searchSettingPanel.add(new HTML("<hr>"));
 	}
 
 	/**
@@ -152,31 +186,31 @@ public class SearchPanel extends FlowPanel {
 	 *            - panel to hold selection tool
 	 */
 	private void buildPolygonSelection(FlowPanel polygonSettingPanel) {
-		final DrawToolButton specifyRegionBtn = new DrawToolButton();
-		final DrawToolButton clearPolygonBtn = new DrawToolButton();
+		ButtonFactory buttonCreator = new ButtonFactory();
+		final ToggleButton specifyRegionBtn = buttonCreator.createDrawButton();
+		final PushButton clearPolygonBtn = buttonCreator.createEraseButton();
 
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
-		specifyRegionBtn.setDrawImage();
-		specifyRegionBtn.setWidth("20px");
-		clearPolygonBtn.setEraseImage();
-		clearPolygonBtn.setWidth("20px");
-		clearPolygonBtn.setEnabled(false);
+		specifyRegionBtn.addStyleDependentName("polygonBtn");
+		clearPolygonBtn.addStyleDependentName("polygonBtn");
 
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				map.setSpecifyingRegion(true);
-				clearPolygonBtn.setEnabled(true);
-				specifyRegionBtn.setEnabled(false);
-				// prompt user to click on a region on the map
-				InfoWindowContent content;
-				HTML htmlWidget = new HTML(
+				if(specifyRegionBtn.isEnabled())
+				{
+					map.setSpecifyingRegion(true);
+					specifyRegionBtn.setEnabled(false);
+					specifyRegionBtn.setDown(true);
+					// prompt user to click on a region on the map
+					InfoWindowContent content;
+					HTML htmlWidget = new HTML(
 						"<p> Click on the map to specify region.</br> Drag corners to edit</p>");
-				content = new InfoWindowContent(htmlWidget);
-				map.getMap().getInfoWindow().open(vancouver, content);
-
+					content = new InfoWindowContent(htmlWidget);
+					map.getMap().getInfoWindow().open(vancouver, content);
+				}
 			}
 		});
 
@@ -184,9 +218,11 @@ public class SearchPanel extends FlowPanel {
 		clearPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// map.clearMap();
-				map.clearSpecifiedRegion();
-				specifyRegionBtn.setEnabled(true);
-				clearPolygonBtn.setEnabled(false);
+				if(!specifyRegionBtn.isEnabled() && !map.getMap().getInfoWindow().isVisible()) {
+					map.clearSpecifiedRegion();
+					specifyRegionBtn.setEnabled(true);
+					specifyRegionBtn.setValue(false);
+				}
 			}
 		});
 
@@ -195,7 +231,6 @@ public class SearchPanel extends FlowPanel {
 				.add(new Label("Draw and select an area on the map"));
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
-		polygonSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
 	}
 
 	/**
@@ -238,6 +273,10 @@ public class SearchPanel extends FlowPanel {
 				} else {
 					advancedSearchBtn.setText("Advanced Search >>");
 					advancedSettingPopup.hide();
+					if (errorPopup.isVisible()) {
+						errorPopup.clear();
+						errorPopup.hide();
+					}
 					isAdvSearchPanelHidden = true;
 				}
 			}
@@ -370,11 +409,13 @@ public class SearchPanel extends FlowPanel {
 
 			// when user clicks the text goes away and gray font color is
 			// removed
-			box.addClickHandler(new ClickHandler() {
+			box.addFocusHandler(new FocusHandler() {
 				@Override
-				public void onClick(ClickEvent event) {
-					box.setText("");
-					box.removeStyleDependentName("before");
+				public void onFocus(FocusEvent event) {
+					if (box.getStyleName().contains("before")) { 
+						box.setText("");
+						box.removeStyleDependentName("before");
+					}
 				}
 			});
 
@@ -447,6 +488,11 @@ public class SearchPanel extends FlowPanel {
 				if (!validateIndivSearchInput(type, input)) {
 					errorPopup.showRelativeTo(tb);
 					tb.selectAll();
+				}
+				else {
+					if (errorPopup.isVisible()) {
+						errorPopup.hide();
+					}
 				}
 			}
 		});
@@ -543,15 +589,14 @@ public class SearchPanel extends FlowPanel {
 	 */
 	private boolean validateUserSearchForm(String[] userSearchInput) {
 		boolean isOK = false;
-		String numericAlert = "must be numbers only. No decimal is allowed.\n";
-		String postalCodeAlert = "is not a valid postal code.\n";
+		String numericAlert = " must be numbers only. No decimal is allowed.\n";
+		String postalCodeAlert = " is not a valid postal code.\n";
 		String invalidMsg = "";
 		int i = 0;
 
 		for (String criterion : searchCriteria) {
 			if (criterion.endsWith("Value") || criterion.endsWith("Price")
-					|| criterion.endsWith("Number")
-					|| criterion.matches("Year")) {
+					|| criterion.endsWith("Number")	|| criterion.endsWith("Year")) {
 				isOK = validateIndivSearchInput(criterion, userSearchInput[i]);
 				isOK = validateIndivSearchInput(criterion,
 						userSearchInput[i + 1]);
@@ -591,20 +636,20 @@ public class SearchPanel extends FlowPanel {
 	 * @return boolean value representing if the inputs were all valid
 	 */
 	private boolean validateIndivSearchInput(String criterion, String userInput) {
-		String numericAlert = " must be numbers only.\n";
+		String numericAlert = " must be non-decimal numbers only.\n";
 		String postalCodeAlert = " is not a valid postal code.\n";
 		String invalidMsg = "";
 		boolean isOK = false;
 
 		if (criterion.endsWith("Value") || criterion.endsWith("Price")
-				|| criterion.endsWith("Number") || criterion.matches("Year")) {
+				|| criterion.endsWith("Number") || criterion.endsWith("Year")) {
 			if (userInput.matches("^\\d*$")) {
 				isOK = true;
 			} else {
 				invalidMsg = criterion + numericAlert;
 			}
 		} else if (criterion.equals("Postal Code")) {
-			if (userInput.matches("^$|^[A-Z][0-9][A-Z] [0-9][A-Z][0-9]$")) {
+			if (userInput.matches("|^[ABCEGHJKLMNPRSTVXY|abceghjklmnprstvxy]{1}\\d{1}[A-z]{1} *\\d{1}[A-z]{1}\\d{1}$")) {
 				isOK = true;
 			} else {
 				invalidMsg = criterion + postalCodeAlert;
