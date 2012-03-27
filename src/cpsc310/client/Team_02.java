@@ -154,33 +154,17 @@ public class Team_02 implements EntryPoint {
 		FlowPanel buttonPanel = new FlowPanel();
 		ScrollPanel tablePanel = new ScrollPanel(houseTable.getHouseTable());
 		FlowPanel pagerPanel = new FlowPanel();
-		Button hideShowTablePanelButton = new Button("-");
-		Button expandShrinkTableBtn = new Button("Expand table");
-		Button resetTableBtn = new Button("Reset table");
 		SimplePager simplePager = new SimplePager();
 
 		// Set styles of edit panel & edit panel's components
 		simplePager.setStylePrimaryName("pager");
 		pagerPanel.setStylePrimaryName("pagerPanel");		
 		tablePanel.setStyleName("tablePanel");
-		buttonPanel.setStyleName("buttonPanel");
 		tableWrapPanel.setStyleName("tableWrapPanel");
-		
-		// Create hide/show button for table panel
-		buildTablePanelButton(hideShowTablePanelButton);
-		
-		// Build expand/shrink table button
-		buildExpandShrinkTableButton(expandShrinkTableBtn);
-		
-		// Build reset table button
-		buildResetTableButton(resetTableBtn);
-		
-		// Assemble button panel 
-		buttonPanel.add(hideShowTablePanelButton);
-		buttonPanel.add(expandShrinkTableBtn);
-		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
-		buttonPanel.add(resetTableBtn);
 				
+		// Build button panel
+		buildButtonPanel(buttonPanel);
+						
 		// Enable edit function only if login service is available AND
 		// the user is logged in.
 		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
@@ -197,6 +181,34 @@ public class Team_02 implements EntryPoint {
 		tableWrapPanel.add(tablePanel);
 	}
 	
+	/**
+	 * Panel that holds buttons for table operation
+	 * @param buttonPanel - panel to add table related operation buttons
+	 */
+	private void buildButtonPanel(FlowPanel buttonPanel) {
+		Button hideShowTablePanelButton = new Button("-");
+		Button expandShrinkTableBtn = new Button("Expand table");
+		Button resetTableBtn = new Button("Reset table");
+		
+		// Set the style of panel
+		buttonPanel.setStyleName("buttonPanel");
+		
+		// Create hide/show button for table panel
+		buildTablePanelButton(hideShowTablePanelButton);
+		
+		// Build expand/shrink table button
+		buildExpandShrinkTableButton(expandShrinkTableBtn);
+		
+		// Build reset table button
+		buildResetTableButton(resetTableBtn);
+		
+		// Assemble button panel 
+		buttonPanel.add(hideShowTablePanelButton);
+		buttonPanel.add(expandShrinkTableBtn);
+		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
+		buttonPanel.add(resetTableBtn);
+	}
+
 	/**
 	 * Helper to buildTablePanel(). Create hide/show behavior to table panel
 	 * button.
@@ -362,53 +374,16 @@ public class Team_02 implements EntryPoint {
 	private void buildMenuPanel(FlowPanel menuPanel) {
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
-
-		//listeners to the Help button and Terms of Use button
-		helpBtn.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				//create dialogbox
-				DialogBox helpWindow = new DialogBox();
-				helpWindow.setText("Help");
-				helpWindow.add(new Label("Help Content"));
-				helpWindow.center();
-				helpWindow.show();
-				helpWindow.setAutoHideEnabled(true);
-				helpWindow.setStyleName("gwt-DialogBox");
-			}
-		});
-		termsBtn.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				//create dialogbox and ok button to close it
-				final DialogBox termsWindow = new DialogBox();
-				termsWindow.setText("Terms of Use");
-				VerticalPanel dialogBoxHolder = new VerticalPanel();
-				Button okBtn = new Button();
-				okBtn.setText("Ok");
-				okBtn.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						termsWindow.hide();
-					}		
-				});
-				dialogBoxHolder.add(new Label("Terms of Use Content"));
-				dialogBoxHolder.add(okBtn);
-				termsWindow.add(dialogBoxHolder);
-				termsWindow.show();
-				termsWindow.center();
-				termsWindow.setStyleName("gwt-DialogBox");
-			}
-		});		
 		
-		//Set the styles of elements
-		helpBtn.setStyleName("gwt-Button-textButton");
-		termsBtn.setStyleName("gwt-Button-textButton");
+		//Set the style of panel
 		menuPanel.setStyleName("menuPanel");
-		
+
 		// Build and add the login anchors to the menu
 		buildLoginAnchor(menuPanel);
+		
+		// Build components
+		buildHelpBtn(helpBtn);
+		buildTermsBtn(termsBtn);
 	
 		// Richard Added
 		FlowPanel faceBookTemp = new FlowPanel();
@@ -426,6 +401,64 @@ public class Team_02 implements EntryPoint {
 		menuPanel.add(faceBookTemp);
 	}
 
+
+	/**
+	 * Attaches help dialog to the button
+	 * @param helpBtn - button to attach help dialog
+	 */
+	private void buildHelpBtn(Button helpBtn) {
+		helpBtn.setStyleName("gwt-Button-textButton");
+		
+		//listeners to the Help button and Terms of Use button
+		helpBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//create dialogbox
+				DialogBox helpWindow = new DialogBox();
+				helpWindow.setTitle("Help");
+				helpWindow.add(new Label("Help Content"));
+				helpWindow.center();
+				helpWindow.show();
+				helpWindow.setAutoHideEnabled(true);
+				helpWindow.setStyleName("gwt-DialogBox");
+			}
+		});
+		
+	}
+
+	/**
+	 * Attaches terms of use dialog
+	 * @param termsBtn - button to attach terms of use dialog
+	 */
+	private void buildTermsBtn(Button termsBtn) {
+		termsBtn.setStyleName("gwt-Button-textButton");
+		
+		termsBtn.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//create dialogbox and ok button to close it
+				final DialogBox termsWindow = new DialogBox();
+				termsWindow.setTitle("Terms of Use");
+				VerticalPanel dialogBoxHolder = new VerticalPanel();
+				Button okBtn = new Button();
+				okBtn.setText("Ok");
+				okBtn.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						termsWindow.hide();
+					}		
+				});
+				dialogBoxHolder.add(new Label("Terms of Use Content"));
+				dialogBoxHolder.add(okBtn);
+				termsWindow.add(dialogBoxHolder);
+				termsWindow.show();
+				termsWindow.center();
+				termsWindow.setStyleName("gwt-DialogBox");
+			}
+		});	
+		
+	}
+	
 	/**
 	 * Helper to buildMenuPanel(). Adds login/logout links
 	 * 
