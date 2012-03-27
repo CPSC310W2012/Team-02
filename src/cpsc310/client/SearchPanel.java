@@ -218,7 +218,7 @@ public class SearchPanel extends FlowPanel {
 		clearPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// map.clearMap();
-				if(!specifyRegionBtn.isEnabled()) {
+				if(!specifyRegionBtn.isEnabled() && !map.getMap().getInfoWindow().isVisible()) {
 					map.clearSpecifiedRegion();
 					specifyRegionBtn.setEnabled(true);
 					specifyRegionBtn.setValue(false);
