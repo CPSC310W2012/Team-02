@@ -409,7 +409,6 @@ public class Team_02 implements EntryPoint {
 	private void buildHelpBtn(Button helpBtn) {
 		helpBtn.setStyleName("gwt-Button-textButton");
 		
-		//listeners to the Help button and Terms of Use button
 		helpBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -420,7 +419,6 @@ public class Team_02 implements EntryPoint {
 				helpWindow.center();
 				helpWindow.show();
 				helpWindow.setAutoHideEnabled(true);
-				helpWindow.setStyleName("gwt-DialogBox");
 			}
 		});
 		
@@ -453,7 +451,6 @@ public class Team_02 implements EntryPoint {
 				termsWindow.add(dialogBoxHolder);
 				termsWindow.show();
 				termsWindow.center();
-				termsWindow.setStyleName("gwt-DialogBox");
 			}
 		});	
 		
