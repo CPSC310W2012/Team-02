@@ -87,8 +87,7 @@ public class Team_02 implements EntryPoint {
 		// Initialize selection model for map and table
 		initSelection();
 
-		// Make main panel fill the browser
-		mainPanel.setHeight(Window.getClientHeight() + "px");
+
 
 		// Make sidePanel
 		buildSidePanel(sidePanel);

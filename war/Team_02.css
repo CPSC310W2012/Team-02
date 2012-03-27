@@ -21,7 +21,7 @@ body {
 }
 
 hr {
-	margin: 5px 0;
+	margin: 10px 0;
 }
 
 #header {
@@ -108,7 +108,6 @@ a:active {
 
 .mapContainerPanel {
 	width:100%;
-	height:100%;
 	clear: both;
 	padding: 1px;
 }
@@ -237,6 +236,10 @@ a:active {
 	background-color: #FFF;
 }
 
+.searchpanel hr {
+	margin: 5px 0;
+} 
+
 .searchPanel .gwt-Button-textButton-resetSearch {
 	float: right;
 }
@@ -280,6 +283,10 @@ a:active {
 	color: #fff;
 }
 
+.hideShowButton:visited {
+	color: #555;
+}
+
 .tableWrapPanel {
 	background-color: transparent;
 }
@@ -290,6 +297,7 @@ a:active {
 
 .tablePanel {
 	overflow-y: scroll !important;
+	overflow-x: auto;
 }
 
 .advancedSettingPopup {
@@ -385,6 +393,7 @@ a:active {
 	-moz-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
 	overflow-y: auto;
+	overflow-x: auto;
 }
 
 .sidePanel-collapsed {
