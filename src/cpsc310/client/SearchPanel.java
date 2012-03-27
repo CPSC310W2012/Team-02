@@ -43,7 +43,7 @@ public class SearchPanel extends FlowPanel {
 	private HouseDataServiceAsync houseDataSvc = GWT
 			.create(HouseDataService.class);
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-	final String[] searchCriteria = { "Street Number", "Address",
+	final String[] searchCriteria = { "Street Number", "Street Name",
 			"Postal Code", "Current Land Value", "Current Improvement Value",
 			"Assessment Year", "Previous Land Value",
 			"Previous Improvement Value", "Year Built", "Big Improvement Year",
@@ -309,7 +309,7 @@ public class SearchPanel extends FlowPanel {
 	 *            - advanced panel to add advanced search criteria
 	 */
 	private void buildSearchFields(FlowPanel basicPanel, FlowPanel advancedPanel) {
-		final String basicSearchCriteria = "Street Number, Address, Current Land Value, Price, Realtor, For Sale";
+		final String basicSearchCriteria = "Street Number, Street Name, Current Land Value, Price, Realtor, For Sale";
 		final String advancedSearchCriteria = "Postal Code, Current Improvement Value, Assessment Year, Previous Land Value, Previous Improvement Value,Year Built, Big Improvement Year";
 		FlowPanel settingPanel;
 
@@ -329,7 +329,7 @@ public class SearchPanel extends FlowPanel {
 				buildRangeBoxes(searchValues, settingPanel, criterion);
 			} else if (criterion.equals("For Sale")) {
 				buildForSale(settingPanel);
-			} else if (criterion.equals("Address")) {
+			} else if (criterion.equals("Street Name")) {
 				buildAddressDropMenu(settingPanel);
 			} else {
 				buildRegularBoxes(searchValues, settingPanel, criterion);
