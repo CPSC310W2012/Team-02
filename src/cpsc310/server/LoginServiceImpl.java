@@ -47,8 +47,13 @@ LoginService {
 	}
 
 	public LoginInfo getUser(String email) {
+		try{
 		Objectify ofy = ObjectifyService.begin();
 		return ofy.get(LoginInfo.class, email);
+		}
+		catch (Exception e){
+		}
+		return null;
 	}
 
 	public void storeUser(LoginInfo info) {
