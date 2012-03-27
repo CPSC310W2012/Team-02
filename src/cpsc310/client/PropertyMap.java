@@ -632,6 +632,58 @@ public class PropertyMap {
 		lastPolygon.setEditingEnabled(PolyEditingOptions.newInstance(5));
 
 	}
+	
+	/**
+	 * 
+	 * Get the longitude values of the specified polygon
+	 * @pre there is a polygon defined on the map
+	 * 
+	 * @return an array of latitude values, null if no polygon was defined
+	 *      
+	 * 
+	 */
+	private Double[] getPolyLat()
+	{
+		if(lastPolygon == null) return null;
+		int numVertexes = lastPolygon.getVertexCount();
+		Double[] polyPoints = new Double[numVertexes];
+		LatLng point;
+		
+		for(int i = 0; i < lastPolygon.getVertexCount(); i++)
+		{
+				point = lastPolygon.getVertex(i);
+				polyPoints[i]= 	point.getLatitude();		
+		}
+	
+		return polyPoints;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * get the longitude values of the specified polygon
+	 * @pre there is a polygon defined on the map
+	 * @return an array of longitude values
+	 *      
+	 * 
+	 */
+	private Double[] getPolyLng()
+	{
+		if(lastPolygon == null) return null;
+		int numVertexes = lastPolygon.getVertexCount();
+		Double[] polyPoints = new Double[numVertexes];
+		LatLng point;
+		
+		for(int i = 0; i < lastPolygon.getVertexCount(); i++)
+		{
+				point = lastPolygon.getVertex(i);
+				polyPoints[i]= point.getLongitude();		
+		}
+		return polyPoints;
+	}
+	
+	
 
 	/**
 	 * 
