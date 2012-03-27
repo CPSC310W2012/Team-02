@@ -2,11 +2,15 @@ package cpsc310.client;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+@Entity
 public class LoginInfo implements Serializable {
 
 	private boolean loggedIn = false;
 	private String loginUrl;
 	private String logoutUrl;
+	@Id
 	private String emailAddress;
 	private String nickname;
 	private int phoneNumber;
