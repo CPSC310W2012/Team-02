@@ -484,3 +484,8 @@ a:active {
 	background-color: #FFF;
 	z-index: 110;
 }
+
+.gwt-TextArea {
+	width: 250px;
+	min-height: 100px;
+}
