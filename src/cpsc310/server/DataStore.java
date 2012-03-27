@@ -1143,11 +1143,11 @@ public class DataStore {
 	 *            - the longitudes of the polygon per vertex
 	 * @return HouseIDs - list of house IDs in that are for sale in the polygon
 	 */
-	public Set<String> searchForSaleInPolygon(ArrayList<Double> latitudes,
-			ArrayList<Double> longitudes) {
+	public Set<String> searchForSaleInPolygon(double[] latitudes,
+			double[] longitudes) {
 
 		Iterator<String> tempItr = forSaleHomes.iterator();
-		int numVertexes = latitudes.size();
+		int numVertexes = latitudes.length;
 		Set<String> keys = new HashSet<String>();
 
 		while (tempItr.hasNext()) {
@@ -1163,11 +1163,11 @@ public class DataStore {
 				if (j == numVertexes) {
 					j = 0;
 				}
-				if (((latitudes.get(i) < y) && (latitudes.get(j) >= y))
-						|| ((latitudes.get(j) < y) && (latitudes.get(i) >= y))) {
-					if (longitudes.get(i) + (y - longitudes.get(i))
-							/ (longitudes.get(j) - longitudes.get(i))
-							* (longitudes.get(j) - longitudes.get(i)) < x) {
+				if (((latitudes[i] < y) && (latitudes[j] >= y))
+						|| ((latitudes[j] < y) && (latitudes[i] >= y))) {
+					if (longitudes[i] + (y - longitudes[i])
+							/ (longitudes[j] - longitudes[i])
+							* (longitudes[j] - longitudes[i]) < x) {
 						oddNodes = !oddNodes;
 					}
 				}

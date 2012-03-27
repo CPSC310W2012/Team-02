@@ -71,8 +71,8 @@ public interface HouseDataServiceAsync {
 	public void retrieveSingleHouse(int civicNumber, String streetName,
 			AsyncCallback<HouseData> callback);
 
-	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
-			ArrayList<Double> longitudes, AsyncCallback<Void> callback);
+	public void searchHousesForSalePolygon(String[] userSearchInput,
+			double[] latitude, double[] longitude, AsyncCallback<Void> callback);
 
 	public void getHomesByUser(String email, AsyncCallback<Void> callback);
 }

@@ -159,21 +159,21 @@ public interface HouseDataService extends RemoteService {
 	public HouseData retrieveSingleHouse(int civicNumber, String street);
 
 	/**
-	 * Searchs within the list of for sale houses within a specified polygon
-	 * represented by list of latitude and longitude values
+	 * Searches just by user. Makes user retrieval easier. Retrieve houses by
+	 * getHouses.
 	 * 
-	 * @precondition latitudes.size() == longitudes.size()
-	 * @param latitudes
-	 *            - the latitudes of the polygon per vertex
-	 * @param longitudes
-	 *            - the longitudes of the polygon per vertex
-	 * @return HouseIDs - list of house IDs in that are for sale in the polygon
-	 */
-	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
-			ArrayList<Double> longitudes);
-	/**
-	 * Searches just by user. Makes user retrieval easier. Retrieve houses by getHouses.
 	 * @param email
 	 */
 	public void getHomesByUser(String email);
+
+	/**
+	 * Searchs within the list of for sale houses within a specified polygon
+	 * represented by list of latitude and longitude values
+	 * 
+	 * @param userSearchInput
+	 * @param latitude
+	 * @param longitude
+	 */
+	public void searchHousesForSalePolygon(String[] userSearchInput,
+			double[] latitude, double[] longitude);
 }
