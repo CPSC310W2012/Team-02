@@ -1,0 +1,2 @@
+serviceClass: cpsc310.client.LoginService
+path: 6322B0C90D5569E083ABC1BFB7803E24.gwt.rpc

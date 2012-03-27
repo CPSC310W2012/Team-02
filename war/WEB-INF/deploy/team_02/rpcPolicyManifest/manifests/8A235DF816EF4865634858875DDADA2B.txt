@@ -1,2 +1,0 @@
-serviceClass: cpsc310.client.LoginService
-path: 2AAA879678809D20D91F3ED729A4456B.gwt.rpc

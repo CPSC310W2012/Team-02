@@ -485,7 +485,12 @@ a:active {
 	z-index: 110;
 }
 
+<<<<<<< HEAD
 .gwt-TextArea {
 	width: 250px;
 	min-height: 100px;
+=======
+.gwt-DialogBox .dialogContent {
+	background-color: #FFF;
+>>>>>>> branch 'master' of git@github.com:CPSC310W2012/Team-02.git
 }
