@@ -46,11 +46,13 @@ LoginService {
 		return loginInfo;
 	}
 
+	@Override
 	public LoginInfo getUser(String email) {
 		Objectify ofy = ObjectifyService.begin();
 		return ofy.get(LoginInfo.class, email);
 	}
-
+	
+	@Override
 	public void storeUser(LoginInfo info) {
 		// Populate memory store with changed entries
 		Objectify ofy = ObjectifyService.begin();
