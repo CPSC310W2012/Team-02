@@ -3,7 +3,6 @@ package cpsc310.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -146,22 +145,32 @@ public class EditPanel extends DialogBox {
 	 * If async call was unsuccessful, it displays a message on the dialog. 
 	 */
 	private void editHouse() {
-		// Initialize edit field
-		int housePrice = 0;
-		String owner = "";
-		String houseID ="";
-		String postalCode = "";
-		double latitude = 0;
-		double longitude = 0;
-		boolean yesSelling = false;
 		
 		// Check user specified price
 		if (!checkHousePrice()) 
 			return;
 		
-		// Assemble edit information
-		assembleEditInfo(housePrice, owner, houseID, postalCode, 
-				latitude, longitude, yesSelling);
+		// Assemble edit field
+		int housePrice = 0;
+		String owner = loginInfo.getEmailAddress();
+		String houseID =selectedHouse.getHouseID();
+		String postalCode = selectedHouse.getPostalCode();
+		double latitude = 0;
+		double longitude = 0;
+		boolean yesSelling = yesSell.getValue();
+		
+		//This is an array of latitude and longitude. 
+		// index 0 = latitude, index 1 = longitude 
+		Double[] ll = map.getLL(selectedHouse);
+		if (ll != null) {
+			latitude = ll[0];
+			longitude = ll[1];
+		}
+		
+		// If user did not specify the price, price is 0.
+		String price = priceBox.getValue();
+		if (!price.isEmpty())
+			housePrice = Integer.parseInt(price);
 		
 		// Draw loading panel
 		drawLoading();
@@ -215,39 +224,4 @@ public class EditPanel extends DialogBox {
 		loadingPanel.add(loading);
 		loadingPanel.add(loadingMsg);
 	}	
-
-	/**
-	 * Assemble user specified information and stores them to the
-	 * given arguments.
-	 * 
-	 * @param housePrice - price of selected house
-	 * @param owner - user info
-	 * @param houseID - unique houseID
-	 * @param postalCode - postal code of the selected house
-	 * @param latitude - latitude of the house
-	 * @param longitude - longitude of the house
-	 * @param yesSelling - if the house is on sale or not
-	 */
-	private void assembleEditInfo(int housePrice, String owner, String houseID,
-			String postalCode, double latitude, double longitude,
-			boolean yesSelling) {		
-		// Assemble user specified information
-		houseID = selectedHouse.getHouseID();
-		postalCode = selectedHouse.getPostalCode();
-		owner = loginInfo.getEmailAddress();
-		yesSelling = yesSell.getValue();
-		
-		//This is an array of latitude and longitude. 
-		// index 0 = latitude, index 1 = longitude 
-		Double[] ll = map.getLL(selectedHouse);
-		if (ll != null) {
-			latitude = ll[0];
-			longitude = ll[1];
-		}
-		
-		// If user did not specify the price, price is 0.
-		String price = priceBox.getValue();
-		if (!price.isEmpty())
-			housePrice = Integer.parseInt(price);
-	}
 }
