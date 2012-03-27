@@ -193,8 +193,8 @@ public class SearchPanel extends FlowPanel {
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
-		specifyRegionBtn.setWidth("20px");
-		clearPolygonBtn.setWidth("20px");
+		specifyRegionBtn.addStyleDependentName("polygonBtn");
+		clearPolygonBtn.addStyleDependentName("polygonBtn");
 
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
@@ -231,7 +231,6 @@ public class SearchPanel extends FlowPanel {
 				.add(new Label("Draw and select an area on the map"));
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
-		polygonSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
 	}
 
 	/**

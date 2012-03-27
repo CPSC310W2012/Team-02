@@ -6,6 +6,10 @@
 	position: relative;
 }
 
+html {
+	overflow: auto;
+}
+
 body {
 	width: 100% !important;	
 	color: #515151;
@@ -17,7 +21,7 @@ body {
 }
 
 hr {
-	margin: 10px 0;
+	margin: 5px 0;
 }
 
 #header {
@@ -131,7 +135,7 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 370px;
+	height: 380px;
 	margin: 5px 10px;
 }
 
@@ -212,6 +216,7 @@ a:active {
 	-webkit-border-radius: 5px;
 	border-radius: 5px; 
 }
+
 .gwt-Button:active {
 	border: 1px inset #ccc;
 	top: 1px;
@@ -232,6 +237,10 @@ a:active {
 	background-color: #FFF;
 }
 
+.searchPanel .gwt-Button-textButton-resetSearch {
+	float: right;
+}
+
 .searchSettingPanel {
 	clear: both;
 }
@@ -243,7 +252,7 @@ a:active {
 
 .hideShowButton-vertical {
 	top: 0;
-	right: 0;	
+	right: 3px;	
 }
 
 .hideShowButton {
@@ -357,10 +366,6 @@ a:active {
 	top: 1px;
 }
 
-.gwt-Button-textButton-resetSearch {
-	float: right;
-}
-
 .facebookPanel {
 	height: 25px;
 	white-space: nowrap;
@@ -393,20 +398,41 @@ a:active {
 .gwt-ToggleButton-down,
 .gwt-ToggleButton-down-hovering,
 .gwt-ToggleButton-down-disabled {
-	margin: 0 3px;
+	margin: 0;
 	text-decoration: none;
 	float: left;
 	cursor: pointer;
 	cursor: hand;
 }
 
+.gwt-PushButton-up,
+.gwt-PushButton-up-hovering,
+.gwt-PushButton-up-disabled,
+.gwt-PushButton-down,
+.gwt-PushButton-down-hovering,
+.gwt-PushButton-down-disabled {
+  margin: 0;
+  text-decoration: none;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
+}
+
 .polygonSettingPanel {
-	display: inline;
-	white-space: nowrap;
+	margin: 5px auto;
 }
 
 .polygonSettingPanel .gwt-Label {
 	margin-bottom: 5px;
+}
+
+.polygonSettingPanel .gwt-PushButton-polygonBtn,
+.polygonSettingPanel .gwt-ToggleButton-polygonBtn {
+	display: inline;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
 }
 
 .buttonPanel {
