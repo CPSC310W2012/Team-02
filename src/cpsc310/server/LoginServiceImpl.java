@@ -71,6 +71,7 @@ LoginService {
 		ofy.delete(user);
 		
 		user = new LoginInfo();
+		user.setEmailAddress(email);
 		user.setDescription(description);
 		user.setNickname(nickname);
 		user.setPhoneNumber(phoneNumber);
