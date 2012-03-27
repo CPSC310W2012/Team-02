@@ -44,11 +44,11 @@ public class Team_02 implements EntryPoint {
 	private LoginInfo loginInfo = null;
 	private boolean isLoginServiceAvailable = false;
 	private Set<HouseData> selectedHouses = null;
-
-	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);
+    
+	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
 	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
-	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.PX);
+	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
@@ -127,11 +127,11 @@ public class Team_02 implements EntryPoint {
 
 		// Make sidePanel
 		buildSidePanel(sidePanel);
-		mainPanel.addWest(sidePanel, 230);
+		mainPanel.addWest(sidePanel, 22);
 
 		// Make tablePanel
 		buildTablePanel(tableWrapPanel);
-		mainPanel.addSouth(tableWrapPanel, 300);
+		mainPanel.addSouth(tableWrapPanel, 27);
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
@@ -209,8 +209,8 @@ public class Team_02 implements EntryPoint {
 		pagerPanel.add(simplePager);
 
 		// Assemble table panel
-		tableWrapPanel.addNorth(buttonPanel, 20);
-		tableWrapPanel.addSouth(pagerPanel, 30);
+		tableWrapPanel.addNorth(buttonPanel, 2);
+		tableWrapPanel.addSouth(pagerPanel, 3);
 		tableWrapPanel.add(tablePanel);
 	}
 
@@ -260,16 +260,19 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (!isTablePanelHidden) {
 					isTablePanelHidden = true;
+					hideShowTablePanelButton.addStyleDependentName("horizontal-collapsed");					
 					hideShowTablePanelButton.setText("+");
 					hideShowTablePanelButton.setTitle("Unminimize");
 					tableWrapPanel.addStyleDependentName("collapsed");
-					mainPanel.setWidgetSize(tableWrapPanel, 20);
-					mainPanel.animate(300);
+					mainPanel.setWidgetSize(tableWrapPanel, 2);
+					mainPanel.animate(300);							
+
 				} else {
 					isTablePanelHidden = false;
+					hideShowTablePanelButton.removeStyleDependentName("horizontal-collapsed");
 					hideShowTablePanelButton.setText("-");
 					hideShowTablePanelButton.setTitle("Minimize");
-					mainPanel.setWidgetSize(tableWrapPanel, 300);
+					mainPanel.setWidgetSize(tableWrapPanel, 27);			
 					mainPanel.animate(300);
 					tableWrapPanel.removeStyleDependentName("collapsed");
 				}
@@ -383,18 +386,20 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (!isSidePanelHidden) {
 					isSidePanelHidden = true;
+					hideShowSidePanelButton.addStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("+");
 					hideShowSidePanelButton.setTitle("Unminimize");
-					mainPanel.setWidgetSize(sidePanel, 20);
+					mainPanel.setWidgetSize(sidePanel, 2);
 					mainPanel.animate(300);
 					sidePanel.addStyleDependentName("collapsed");
 
 				} else {
 					isSidePanelHidden = false;
+					hideShowSidePanelButton.removeStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("-");
 					hideShowSidePanelButton.setTitle("Minimize");
 					sidePanel.removeStyleDependentName("collapsed");
-					mainPanel.setWidgetSize(sidePanel, 230);
+					mainPanel.setWidgetSize(sidePanel, 22);		
 					mainPanel.animate(300);
 				}
 			}
