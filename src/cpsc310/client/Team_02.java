@@ -461,7 +461,7 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// create dialogbox
 				DialogBox helpWindow = new DialogBox();
-				helpWindow.setTitle("Help");
+				helpWindow.setText("Help");
 				helpWindow.add(new Label("Help Content"));
 				helpWindow.center();
 				helpWindow.show();
@@ -485,7 +485,8 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// create dialogbox and ok button to close it
 				final DialogBox termsWindow = new DialogBox();
-				termsWindow.setTitle("Terms of Use");
+				termsWindow.setText("Terms of Use");
+				termsWindow.setGlassEnabled(true);
 				VerticalPanel dialogBoxHolder = new VerticalPanel();
 				Button okBtn = new Button();
 				okBtn.setText("Ok");

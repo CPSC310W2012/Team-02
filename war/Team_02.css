@@ -315,12 +315,13 @@ a:active {
 
 .gwt-DialogBox {
 	background-color: #FCFCFC;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .gwt-DialogBox .Caption {
 	padding: 4px 8px 4px 4px;
-	font-family: Arial Unicode MS, Arial, sans-serif;
-	font-size: 1.1 em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
 	font-weight: bold;
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
@@ -336,19 +337,27 @@ a:active {
 
 .gwt-DialogBox .dialogContent {
 	padding: 20px;
-	font-size: 1em;	
+	font-size: 12px !important;	
+}
+
+.gwt-DialogBox .dialogContent .gwt-Label {
+	font-size:12px !important;
+}
+
+.gwt-DialogBox .dialogContent .gwt-Button {
+	font-size:12px !important;
 }
 
 .editDialog {
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
-	font-size: 70%;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .editDialog .Caption {
-	padding: 4px 8px 4px 4px;
-	font-family: Arial Unicode MS, Arial, sans-serif;
-	font-size: 1.1 em;
+	padding: 0.3em 0.8em 0.3em 0.4em;
+	font-family: Arial, Helvetica, sans-serif;;
+	font-size: 14px;
 	font-weight: bold;
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
@@ -363,14 +372,14 @@ a:active {
 }
 
 .editPanel .dialogContent {
-	padding: 20px;
-	font-size: 1em;	
+	padding: 2em;
+	font-size: 12px !important;
 }
 
 
 .editPanel {
-	width: 250px;
-	font-size: 1em;
+	padding: 2em;
+	font-size: 12px;
 }
 
 .editPanel .gwt-Button {
