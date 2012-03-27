@@ -228,7 +228,7 @@ public class SearchPanel extends FlowPanel {
 
 		// Add to setting panel
 		polygonSettingPanel
-				.add(new Label("Draw and select an area on the map"));
+				.add(new Label("Draw an area on the map to select a search region"));
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
 	}

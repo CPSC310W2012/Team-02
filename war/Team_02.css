@@ -118,7 +118,6 @@ a:active {
 }
 
 .gwt-Label {
-	height: 1.2em;
 	font-size: 1em !important;
 	color: #515151;
 }
@@ -134,7 +133,7 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 380px;
+	height: 400px;
 	margin: 5px 10px;
 }
 
@@ -296,6 +295,7 @@ a:active {
 }
 
 .tablePanel {
+	background-color: #FFF;
 	overflow-y: scroll !important;
 	overflow-x: auto;
 }
@@ -310,7 +310,7 @@ a:active {
 .editDialog {
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .editDialog .Caption {
@@ -337,7 +337,7 @@ a:active {
 
 .editPanel {
 	width: 250px;
-	font-size: 11px;
+	font-size: 1em;
 }
 
 .editPanel .gwt-Button {
@@ -434,6 +434,7 @@ a:active {
 
 .polygonSettingPanel .gwt-Label {
 	margin-bottom: 5px;
+	font-size: 0.9em !important;
 }
 
 .polygonSettingPanel .gwt-PushButton-polygonBtn,
@@ -468,6 +469,15 @@ a:active {
 
 .userInfoPanel {
 	background-color: #FFF;
+	font-size: 1em;
+}
+
+.userInfoPanel .gwt-Label {
+	margin: 5px 0;
+}
+
+.userInfoPanel .gwt-Button {
+	margin: 5px auto;
 }
 
 .errorPopup {

@@ -307,7 +307,7 @@ public class Team_02 implements EntryPoint {
 
 		// Assemble side panel
 		sidePanel.add(new HTML(
-				"<div id ='header'><h1><img src='images/logoStuff/logo2.png'>iVanHomesPrices</h1></div>"));
+				"<div id ='header'><h1><img src='images/LogoStuff/logo2.png'>iVanHomesPrices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
 		sidePanel.add(menuPanel);
 		sidePanel.add(sidebarTabPanel);
