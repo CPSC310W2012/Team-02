@@ -76,21 +76,9 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		Set<String> results = store.getAllKeysSet();
 
 		// First pass checks in order of reduction factors
-		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
-			results = store.searchByAddress(
-					Integer.parseInt(userSearchInput[0]), userSearchInput[1]);
-		} else if (!userSearchInput[1].equals("")) {
-			results = store.searchByStreet(userSearchInput[1]);
-		} else if (!userSearchInput[0].equals("")) {
-			results = store.searchByCivicNumber(Integer
-					.parseInt(userSearchInput[0]));
-		}
-		if (!userSearchInput[7].equals("")) {
-			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
-		}
-		if (!userSearchInput[6].equals("")) {
-			results.retainAll(store.searchByOwner(userSearchInput[6]));
-		}
+
+		results = firstPassSearch(userSearchInput, results);
+
 		if (isSelling == 1) {
 			results.retainAll(store.getForSaleHomes());
 		} else if (isSelling == 0) {
@@ -99,31 +87,9 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// TODO: Start performing single value evaluation increase speed?
 
 		// Second Pass, requires tree traversal
-		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
-			results.retainAll(store.searchByPrice(
-					Integer.parseInt(userSearchInput[4]),
-					Integer.parseInt(userSearchInput[5])));
-		}
-		if (!userSearchInput[2].equals("") && !userSearchInput[3].equals("")) {
-			results.retainAll(store.searchByCurrentLandValue(
-					Integer.parseInt(userSearchInput[2]),
-					Integer.parseInt(userSearchInput[3])));
-		}
-		if (!userSearchInput[8].equals("") && !userSearchInput[9].equals("")) {
-			results.retainAll(store.searchByCurrentImprovementValue(
-					Integer.parseInt(userSearchInput[8]),
-					Integer.parseInt(userSearchInput[9])));
-		}
-		if (!userSearchInput[12].equals("") && !userSearchInput[13].equals("")) {
-			results.retainAll(store.searchByPreviousLandValue(
-					Integer.parseInt(userSearchInput[12]),
-					Integer.parseInt(userSearchInput[13])));
-		}
-		if (!userSearchInput[14].equals("") && !userSearchInput[15].equals("")) {
-			results.retainAll(store.searchByPreviousImprovementValue(
-					Integer.parseInt(userSearchInput[14]),
-					Integer.parseInt(userSearchInput[15])));
-		}
+		results = secondPassSearch(userSearchInput, results);
+
+		// convert results
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
 		workingIDStore = convertedResults;
@@ -342,9 +308,77 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
-			ArrayList<Double> longitudes) {
-		workingIDStore = new ArrayList<String>();
-		workingIDStore.addAll(store.searchForSaleInPolygon(latitudes, longitudes));
+	public void searchHousesForSalePolygon(String[] userSearchInput,
+			double[] latitude, double[] longitude) {
+		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
+		firstPassSearch(userSearchInput, results);
+		secondPassSearch(userSearchInput, results);
+
+		// convert to array
+		ArrayList<String> convertedResults = new ArrayList<String>();
+		convertedResults.addAll(results);
+		workingIDStore = convertedResults;
+	}
+
+	/**
+	 * Intermediate search using all O(1) search functions
+	 * 
+	 * @param results
+	 * @return results - pruned partial results
+	 */
+	private Set<String> firstPassSearch(String[] userSearchInput,
+			Set<String> results) {
+		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
+			results = store.searchByAddress(
+					Integer.parseInt(userSearchInput[0]), userSearchInput[1]);
+		} else if (!userSearchInput[1].equals("")) {
+			results = store.searchByStreet(userSearchInput[1]);
+		} else if (!userSearchInput[0].equals("")) {
+			results = store.searchByCivicNumber(Integer
+					.parseInt(userSearchInput[0]));
+		}
+		if (!userSearchInput[7].equals("")) {
+			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
+		}
+		if (!userSearchInput[6].equals("")) {
+			results.retainAll(store.searchByOwner(userSearchInput[6]));
+		}
+		return results;
+	}
+
+	/**
+	 * Intermediate search using all O(log(n)) search functions
+	 * 
+	 * @param results
+	 * @return results - pruned partial results
+	 */
+	private Set<String> secondPassSearch(String[] userSearchInput,
+			Set<String> results) {
+		if (!userSearchInput[4].equals("") && !userSearchInput[5].equals("")) {
+			results.retainAll(store.searchByPrice(
+					Integer.parseInt(userSearchInput[4]),
+					Integer.parseInt(userSearchInput[5])));
+		}
+		if (!userSearchInput[2].equals("") && !userSearchInput[3].equals("")) {
+			results.retainAll(store.searchByCurrentLandValue(
+					Integer.parseInt(userSearchInput[2]),
+					Integer.parseInt(userSearchInput[3])));
+		}
+		if (!userSearchInput[8].equals("") && !userSearchInput[9].equals("")) {
+			results.retainAll(store.searchByCurrentImprovementValue(
+					Integer.parseInt(userSearchInput[8]),
+					Integer.parseInt(userSearchInput[9])));
+		}
+		if (!userSearchInput[12].equals("") && !userSearchInput[13].equals("")) {
+			results.retainAll(store.searchByPreviousLandValue(
+					Integer.parseInt(userSearchInput[12]),
+					Integer.parseInt(userSearchInput[13])));
+		}
+		if (!userSearchInput[14].equals("") && !userSearchInput[15].equals("")) {
+			results.retainAll(store.searchByPreviousImprovementValue(
+					Integer.parseInt(userSearchInput[14]),
+					Integer.parseInt(userSearchInput[15])));
+		}
+		return results;
 	}
 }

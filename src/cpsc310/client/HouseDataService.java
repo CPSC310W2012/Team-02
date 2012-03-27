@@ -169,6 +169,6 @@ public interface HouseDataService extends RemoteService {
 	 *            - the longitudes of the polygon per vertex
 	 * @return HouseIDs - list of house IDs in that are for sale in the polygon
 	 */
-	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
-			ArrayList<Double> longitudes);
+	public void searchHousesForSalePolygon(String[] userSearchInput,
+			double[] latitude, double[] longitude);
 }
