@@ -116,6 +116,7 @@ public class Team_02 implements EntryPoint {
 			loginService.getUser(result.getEmailAddress(), userCallback);
 		}
 	}
+	
 
 	/**
 	 * Builds application's main UI
@@ -556,7 +557,12 @@ public class Team_02 implements EntryPoint {
 
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
-			UserInfoPanel userInfoPanel = new UserInfoPanel(loginInfo);
+			LoginInfo liFromDB = theMap.getUser(loginInfo.getEmailAddress());
+			UserInfoPanel userInfoPanel;
+			if(liFromDB!=null){
+				userInfoPanel = new UserInfoPanel(liFromDB);
+			}
+			else userInfoPanel = new UserInfoPanel(loginInfo);
 
 			if (loginInfo.isLoggedIn()) {
 				sidebarTabPanel.add(userInfoPanel, "My Account");

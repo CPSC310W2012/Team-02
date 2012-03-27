@@ -1,9 +1,12 @@
 package cpsc310.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -21,6 +24,11 @@ public class EditUserInfoDialog extends DialogBox{
 	private int MAXKEYCOUNT = 200;
 	private Label errorMsg = new Label("");
 	private int keyCount = 0;
+	private LoginServiceAsync loginService = GWT.create(LoginService.class);
+	TextBox phoneNumberBox; 
+	TextBox websiteBox;
+	TextArea descArea;
+	LoginInfo loginInfo;
 	
 	/**
 	 * Constructor
@@ -28,7 +36,7 @@ public class EditUserInfoDialog extends DialogBox{
 	 */
 	public EditUserInfoDialog(LoginInfo loginInfo) {
 		FlowPanel contentWrap = new FlowPanel();
-		
+		this.loginInfo = loginInfo;
 		this.setStyleName("editDialog");
 		
 		// Build dialog content
@@ -46,9 +54,9 @@ public class EditUserInfoDialog extends DialogBox{
 	 * @param contentWrap - panel that wraps the contents of dialog
 	 */
 	private void buildContent(FlowPanel contentWrap) {
-		TextBox phoneNumberBox = new TextBox(); 
-		TextBox websiteBox = new TextBox();
-		TextArea descArea = new TextArea();
+		phoneNumberBox = new TextBox(); 
+		websiteBox = new TextBox();
+		descArea = new TextArea();
 		Button okBtn = new Button("OK");
 		Button cancelBtn = new Button("Cancel");
 		
@@ -89,8 +97,8 @@ public class EditUserInfoDialog extends DialogBox{
 			@Override
 			public void onBlur(BlurEvent event) {
 				String phoneNum = phoneNumberBox.getText().trim();
-				if (!phoneNum.matches("|\\d{7}")) {
-					errorMsg.setText("Phone number must be a 7-digit number only.");
+				if (!phoneNum.matches("|\\d{10}")) {
+					errorMsg.setText("Phone number must be a 10-digit number only.");
 					phoneNumberBox.selectAll();
 				}
 				else {
@@ -145,8 +153,28 @@ public class EditUserInfoDialog extends DialogBox{
 	 */
 	private void editUserInfo() {
 		// TODO add asycn call when implemented. make sure dialog is closed.
+		// add the user to db
+		AsyncCallback<Void> editUserCallback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+
+			public void onSuccess(Void result) {
+				Window.alert("edited user");
+				clear();
+				hide();
+				
+				//TODO:UPDATE THE UI
+			}
+		};
+		loginService.editUser(loginInfo.getEmailAddress(), loginInfo.getNickname(), Integer.parseInt(phoneNumberBox.getText()), websiteBox.getText(), descArea.getText(), editUserCallback);
+	}
+	
+	private void updateUI()
+	{
 		
 	}
+	
 
 	/**
 	 * Attaches Cancel button behavior.

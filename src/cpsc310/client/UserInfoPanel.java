@@ -13,7 +13,10 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class UserInfoPanel extends FlowPanel {
 	private LoginInfo loginInfo = null;
-	private Label errorMsg = new Label("");
+	private Label errorMsg;
+	private Label userPhoneNumber;		
+	private Label userWebsite;
+	private Label userDescription;
 	
 	/**
 	 * Constructor
@@ -42,9 +45,9 @@ public class UserInfoPanel extends FlowPanel {
 	private void addUserInfo() {
 		Label userName = new Label("");
 		Label userEmail = new Label("");
-		Label userPhoneNumber = new Label("");		
-		Label userWebsite = new Label("");
-		Label userDescription = new Label("");
+		userPhoneNumber = new Label("");		
+		userWebsite = new Label("");
+		userDescription = new Label("");
 		
 		// Get info from login info
 		userName.setText("Hello, " + loginInfo.getNickname());
@@ -109,4 +112,6 @@ public class UserInfoPanel extends FlowPanel {
 		// TODO Make Async call once async call is implemented
 		
 	}
+	
+	
 }

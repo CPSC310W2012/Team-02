@@ -452,7 +452,7 @@ public class PropertyMap {
 		return markerInfoWindow;
 	}
 
-	private LoginInfo getUser(String userEmail) {
+	public LoginInfo getUser(String userEmail) {
 		final LoginWrapper loginWrap = new LoginWrapper();
 		// add the user if not already in db
 		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {

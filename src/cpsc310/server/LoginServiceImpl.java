@@ -5,6 +5,8 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import cpsc310.client.LoginInfo;
 import cpsc310.client.LoginService;
+
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
@@ -65,17 +67,20 @@ LoginService {
 			int phoneNumber, String website, String description){
 		// remove from datastore
 		LoginInfo user = getUser(email);
-		Objectify ofy = ObjectifyService.begin();
-		ofy.delete(user);
-		
-		user = new LoginInfo();
+		if(user == null){
+			Window.alert("user was not found, cannot edit user");
+			return;
+		}
+		else{
 		user.setEmailAddress(email);
 		user.setDescription(description);
 		user.setNickname(nickname);
 		user.setPhoneNumber(phoneNumber);
 		user.setWebsite(website);
-		
 		storeUser(user);
+		}
+		
+		
 	}
 	
 }
