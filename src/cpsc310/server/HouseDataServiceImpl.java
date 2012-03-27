@@ -347,4 +347,10 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		workingIDStore = new ArrayList<String>();
 		workingIDStore.addAll(store.searchForSaleInPolygon(latitudes, longitudes));
 	}
+	
+	@Override
+	public void getHomesByUser(String email) {
+		workingIDStore = new ArrayList<String>();
+		workingIDStore.addAll(store.searchByOwner(email));
+	}
 }

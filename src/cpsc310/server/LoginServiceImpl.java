@@ -1,15 +1,11 @@
 package cpsc310.server;
 
-import java.util.HashMap;
-import java.util.Iterator;
- 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import cpsc310.client.LoginInfo;
 import cpsc310.client.LoginService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 

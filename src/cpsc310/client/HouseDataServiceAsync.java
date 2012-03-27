@@ -74,4 +74,6 @@ public interface HouseDataServiceAsync {
 
 	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
 			ArrayList<Double> longitudes, AsyncCallback<Void> callback);
+
+	public void getHomesByUser(String email, AsyncCallback<Void> callback);
 }

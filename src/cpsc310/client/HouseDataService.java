@@ -171,4 +171,9 @@ public interface HouseDataService extends RemoteService {
 	 */
 	public void searchForSaleInPolygon(ArrayList<Double> latitudes,
 			ArrayList<Double> longitudes);
+	/**
+	 * Searches just by user. Makes user retrieval easier. Retrieve houses by getHouses.
+	 * @param email
+	 */
+	public void getHomesByUser(String email);
 }
