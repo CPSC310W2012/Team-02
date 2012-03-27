@@ -66,7 +66,6 @@ public class DataStore {
 	private TreeMap<Integer, List<String>> price;
 
 	public DataStore() {
-		initilizeDataStorage();
 		store = populateMemoryStore();
 		initalizeLookups(store);
 	}

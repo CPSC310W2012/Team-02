@@ -8,5 +8,21 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("login")
 public interface LoginService extends RemoteService {
-  public LoginInfo login(String requestUri);
+	public LoginInfo login(String requestUri);
+
+	/**
+	 * Stores a user given a LoginInfo Object
+	 * @param info
+	 */
+	public void storeUser(LoginInfo info);
+
+	/**
+	 * retrieve a LoginInfo for a specific User given its email. Will return
+	 * null if nothing found so you can use it to check if a user is already
+	 * added.
+	 * 
+	 * @param email
+	 * @return LoginInfo object
+	 */
+	public LoginInfo getUser(String email);
 }
