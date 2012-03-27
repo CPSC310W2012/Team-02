@@ -48,8 +48,13 @@ LoginService {
 
 	@Override
 	public LoginInfo getUser(String email) {
+		try{
 		Objectify ofy = ObjectifyService.begin();
 		return ofy.get(LoginInfo.class, email);
+		}
+		catch (Exception e){
+		}
+		return null;
 	}
 	
 	@Override
@@ -58,4 +63,22 @@ LoginService {
 		Objectify ofy = ObjectifyService.begin();
 		ofy.put(info);
 	}
+	
+	//TODO:
+	public void editUser(String email, String nickname, 
+			int phoneNumber, String website, String description){
+		// remove from datastore
+		LoginInfo user = getUser(email);
+		Objectify ofy = ObjectifyService.begin();
+		ofy.delete(user);
+		
+		user = new LoginInfo();
+		user.setDescription(description);
+		user.setNickname(nickname);
+		user.setPhoneNumber(phoneNumber);
+		user.setWebsite(website);
+		
+		storeUser(user);
+	}
+	
 }

@@ -17,33 +17,32 @@ body {
 	width: 100% !important;	
 	color: #515151;
 	background-color:#FCFCFC;
-	font-size: 11px;
+	font-size: 70%;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background-image: url(images/bg.png);
 }
 
 hr {
-	margin: 10px 0;
+	margin: 1em 0;
 }
 
 #header {
 	background-color: #00B4FF;
 	background-color: rgba(0, 180, 255, 0.6);
 	background-repeat: no-repeat;
-	padding: 30px 0;
+	padding: 2.5em 0;
 	text-align: center;
 	white-space: nowrap;
-	vertical-align: middle;	
 	-webkit-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 	box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
 }
 
 #header h1 img {
-	height: 27px;
-	top: 4px;
-	margin-right: 2px;
+	height: 32px;
+	top: 0.5em;
+	margin-right: 0.2em;
 }
 
 h1 {
@@ -53,6 +52,8 @@ h1 {
 	font-family: 'Glegoo', Georgia, Times New Roman, serif;
 	font-weight: 200;
 	text-shadow: #EEE 1px 1px 1px;
+	line-height: 1.7em;
+	vertical-align: middle;
 }
 
 
@@ -74,7 +75,7 @@ a:active {
 	width: 100%;
 	clear: both;
 	text-align:center;
-	height: 50px;
+	height: 4.8em;
 	vertical-align:middle;
 }
 
@@ -92,7 +93,7 @@ a:active {
 }
 
 .menuPanel {
-	padding: 10px 0;
+	padding: 1em 0;
 	text-align: center;
 	vertical-align: middle;
 	background-color: #FCFCFC;
@@ -136,8 +137,8 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 400px;
-	margin: 5px 10px;
+	height: 37em;
+	margin: 0.5em 0.9em;
 }
 
 .gwt-TabLayoutPanel {
@@ -239,7 +240,7 @@ a:active {
 }
 
 .searchpanel hr {
-	margin: 5px 0;
+	margin: 0.5em 0;
 } 
 
 .searchPanel .gwt-Button-textButton-resetSearch {
@@ -257,12 +258,12 @@ a:active {
 
 .hideShowButton-vertical {
 	top: 0;
-	right: 3px;	
+	right: 0.1em;	
 }
 
 .hideShowButton {
-	width: 15px;
-	height: 15px;
+	width: 1.4em;
+	height: 1.4em;
 	position: absolute;
 	z-index: 10;	
 	cursor: pointer;
@@ -278,7 +279,7 @@ a:active {
 }
 
 .hideShowButton:active {
-	top: 1px;
+	top: 0.1em;
 }
 
 .hideShowButton:hover {
@@ -294,7 +295,8 @@ a:active {
 }
 
 .tableWrapPanel-collapsed {
-	margin-bottom: 20px;
+	margin-bottom: 2em;
+	overflow: visible;
 }
 
 .tablePanel {
@@ -340,7 +342,7 @@ a:active {
 .editDialog {
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
-	font-size: 11px;
+	font-size: 70%;
 }
 
 .editDialog .Caption {
@@ -402,19 +404,19 @@ a:active {
 }
 
 .gwt-Button-textButton:active {
-	top: 1px;
+	top: 0.1em;
 }
 
 .facebookPanel {
-	height: 25px;
+	height: 2.3em;
 	white-space: nowrap;
 	text-align: center;
 	vertical-align: middle;
 }
 
 .facebookPanel a{
-	top: -7px;
-	margin-right: 4px;
+	top: -0.8em;
+	margin-right: 0.4em;
 } 
 
 .sidePanel {
@@ -428,7 +430,7 @@ a:active {
 }
 
 .sidePanel-collapsed {
-	margin-left: 20px;
+	margin-left: 2em;
 	overflow: visible;
 }
 
@@ -460,28 +462,28 @@ a:active {
 }
 
 .polygonSettingPanel {
-	margin: 5px auto;
+	margin: 0.5em auto;
 }
 
 .polygonSettingPanel .gwt-Label {
-	margin-bottom: 5px;
+	margin-bottom: 0.5em;
 	font-size: 0.9em !important;
 }
 
 .polygonSettingPanel .gwt-PushButton-polygonBtn,
 .polygonSettingPanel .gwt-ToggleButton-polygonBtn {
 	display: inline;
-	width: 20px;
-	height: 20px;
-	margin-right: 10px;
+	width: 2em;
+	height: 2em;
+	margin-right: 0.9em;
 }
 
 .buttonPanel {
 	background-color: #CCC;	
 	background-color: rgba(204, 204, 204, 0.25);
 	font-size: 1em;
-	padding: 3px;
-	padding-right: 20px;
+	padding: 0.3em;
+	padding-right: 2em;
 	text-align: right;
 	border: none;
 	-webkit-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
@@ -490,7 +492,7 @@ a:active {
 }
 
 .buttonPanel .gwt-Button-textButton {
-	margin: 0 3px;
+	margin: 0 0.3em;
 	
 }
 
@@ -504,11 +506,11 @@ a:active {
 }
 
 .userInfoPanel .gwt-Label {
-	margin: 5px 0;
+	margin: 0.5em 0;
 }
 
 .userInfoPanel .gwt-Button {
-	margin: 5px auto;
+	margin: 0.5em auto;
 }
 
 .errorPopup {
@@ -518,6 +520,6 @@ a:active {
 
 
 .gwt-TextArea {
-	width: 250px;
-	min-height: 100px;
+	width: 25em;
+	min-height: 15em;
 }

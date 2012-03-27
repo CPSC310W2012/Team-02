@@ -1,5 +1,6 @@
 package cpsc310.client;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -25,4 +26,20 @@ public interface LoginService extends RemoteService {
 	 * @return LoginInfo object
 	 */
 	public LoginInfo getUser(String email);
+	
+/**
+ * 
+ * Edit account information
+ * 
+ * @param email
+ * @param nickname
+ * @param phoneNumber
+ * @param website
+ * @param description
+ * 
+ */
+	public void editUser(String email, String nickname, 
+			int phoneNumber, String website, String description);
+	
+	
 }

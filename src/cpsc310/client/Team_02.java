@@ -32,7 +32,7 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
  * Main EntryPoint class. UI is built, client-side request is handled.
  */
 public class Team_02 implements EntryPoint {
-	private HouseTable houseTable = HouseTable.createHouseTable();	
+	private HouseTable houseTable = HouseTable.createHouseTable();
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private PropertyMap theMap = new PropertyMap(vancouver);
 	private boolean isSidePanelHidden = false;
@@ -45,11 +45,11 @@ public class Team_02 implements EntryPoint {
 	private boolean isLoginServiceAvailable = false;
 	private Set<HouseData> selectedHouses = null;
     
-	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.PX);	
+	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
 	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
-	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.PX);
-	
+	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
+
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
 	 * asynchronous request to login service, UI is built.
@@ -59,7 +59,7 @@ public class Team_02 implements EntryPoint {
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
 		}
-		
+
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
 		loginService.login(GWT.getHostPageBaseURL()
@@ -78,8 +78,43 @@ public class Team_02 implements EntryPoint {
 						resetDatabase();
 						buildUI();
 						loadURLSearch();
+						addUser(result);
 					}
 				});
+	}
+
+	/**
+	 * 
+	 * Adds a logged in user to our DB if not already in the DB
+	 * 
+	 * @param LoginInfo 
+	 */
+	private void addUser(LoginInfo result) {
+		// add the user if not already in db
+		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+
+			public void onSuccess(LoginInfo user) {
+				if (user == null) {
+					// add the user to db
+					AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught) {
+							Window.alert(caught.getMessage());
+						}
+
+						public void onSuccess(Void result) {
+							// Window.alert("stored user");
+						}
+					};
+					loginService.storeUser(loginInfo, storeUserCallback);
+				}
+			}
+		};
+		if (result.getEmailAddress() != null) {
+			loginService.getUser(result.getEmailAddress(), userCallback);
+		}
 	}
 
 	/**
@@ -90,15 +125,13 @@ public class Team_02 implements EntryPoint {
 		// Initialize selection model for map and table
 		initSelection();
 
-
-
 		// Make sidePanel
 		buildSidePanel(sidePanel);
-		mainPanel.addWest(sidePanel, 230);
+		mainPanel.addWest(sidePanel, 22);
 
 		// Make tablePanel
 		buildTablePanel(tableWrapPanel);
-		mainPanel.addSouth(tableWrapPanel, 300);
+		mainPanel.addSouth(tableWrapPanel, 27);
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
@@ -118,7 +151,7 @@ public class Team_02 implements EntryPoint {
 		// Create selection model
 		final MultiSelectionModel<HouseData> selectionModel = new MultiSelectionModel<HouseData>(
 				HouseData.KEY_PROVIDER);
-		
+
 		// Handle selection event. Upon selection selected houses get displayed
 		// on map.
 		selectionModel
@@ -126,7 +159,7 @@ public class Team_02 implements EntryPoint {
 					@Override
 					public void onSelectionChange(SelectionChangeEvent event) {
 						selectedHouses = selectionModel.getSelectedSet();
-						
+
 						if (selectedHouses.isEmpty()) {
 							theMap.clearMarkers();
 							return;
@@ -158,51 +191,53 @@ public class Team_02 implements EntryPoint {
 
 		// Set styles of edit panel & edit panel's components
 		simplePager.setStylePrimaryName("pager");
-		pagerPanel.setStylePrimaryName("pagerPanel");		
+		pagerPanel.setStylePrimaryName("pagerPanel");
 		tablePanel.setStyleName("tablePanel");
 		tableWrapPanel.setStyleName("tableWrapPanel");
-				
+
 		// Build button panel
 		buildButtonPanel(buttonPanel);
-						
+
 		// Enable edit function only if login service is available AND
 		// the user is logged in.
 		if (isLoginServiceAvailable == true && loginInfo.isLoggedIn()) {
 			enableEdit(buttonPanel);
-		}		
-		
+		}
+
 		// Attach pager to table
 		simplePager.setDisplay(houseTable.getHouseTable());
 		pagerPanel.add(simplePager);
-				
+
 		// Assemble table panel
-		tableWrapPanel.addNorth(buttonPanel, 20);
-		tableWrapPanel.addSouth(pagerPanel, 30);
+		tableWrapPanel.addNorth(buttonPanel, 2);
+		tableWrapPanel.addSouth(pagerPanel, 3);
 		tableWrapPanel.add(tablePanel);
 	}
-	
+
 	/**
 	 * Panel that holds buttons for table operation
-	 * @param buttonPanel - panel to add table related operation buttons
+	 * 
+	 * @param buttonPanel
+	 *            - panel to add table related operation buttons
 	 */
 	private void buildButtonPanel(FlowPanel buttonPanel) {
 		Button hideShowTablePanelButton = new Button("-");
 		Button expandShrinkTableBtn = new Button("Expand table");
 		Button resetTableBtn = new Button("Reset table");
-		
+
 		// Set the style of panel
 		buttonPanel.setStyleName("buttonPanel");
-		
+
 		// Create hide/show button for table panel
 		buildTablePanelButton(hideShowTablePanelButton);
-		
+
 		// Build expand/shrink table button
 		buildExpandShrinkTableButton(expandShrinkTableBtn);
-		
+
 		// Build reset table button
 		buildResetTableButton(resetTableBtn);
-		
-		// Assemble button panel 
+
+		// Assemble button panel
 		buttonPanel.add(hideShowTablePanelButton);
 		buttonPanel.add(expandShrinkTableBtn);
 		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
@@ -220,41 +255,45 @@ public class Team_02 implements EntryPoint {
 		hideShowTablePanelButton.setStyleName("hideShowButton");
 		hideShowTablePanelButton.addStyleDependentName("horizontal");
 		hideShowTablePanelButton.setTitle("Minimize");
-	
+
 		hideShowTablePanelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (!isTablePanelHidden) {
 					isTablePanelHidden = true;
+					hideShowTablePanelButton.addStyleDependentName("horizontal-collapsed");					
 					hideShowTablePanelButton.setText("+");
 					hideShowTablePanelButton.setTitle("Unminimize");
 					tableWrapPanel.addStyleDependentName("collapsed");
-					mainPanel.setWidgetSize(tableWrapPanel, 20);
+					mainPanel.setWidgetSize(tableWrapPanel, 2);
 					mainPanel.animate(300);							
+
 				} else {
 					isTablePanelHidden = false;
+					hideShowTablePanelButton.removeStyleDependentName("horizontal-collapsed");
 					hideShowTablePanelButton.setText("-");
 					hideShowTablePanelButton.setTitle("Minimize");
-					mainPanel.setWidgetSize(tableWrapPanel, 300);			
+					mainPanel.setWidgetSize(tableWrapPanel, 27);			
 					mainPanel.animate(300);
-					tableWrapPanel.removeStyleDependentName("collapsed");					
+					tableWrapPanel.removeStyleDependentName("collapsed");
 				}
 			}
 		});
 	}
 
 	/**
-	 * Helper to buildTablePanel().
-	 * Attaches button behavior that expands and shrinks the table.
+	 * Helper to buildTablePanel(). Attaches button behavior that expands and
+	 * shrinks the table.
 	 * 
-	 * @param expandShrinkTableBtn - button to make table expand/shrink
+	 * @param expandShrinkTableBtn
+	 *            - button to make table expand/shrink
 	 */
 	private void buildExpandShrinkTableButton(final Button expandShrinkTableBtn) {
 		// Set tool tip text
 		expandShrinkTableBtn.setTitle("Expand table to see 50 houses");
-		
+
 		// Set button style
 		expandShrinkTableBtn.setStyleName("gwt-Button-textButton");
-		
+
 		// Attach click handler
 		expandShrinkTableBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -266,7 +305,8 @@ public class Team_02 implements EntryPoint {
 				} else {
 					isTableExpanded = false;
 					expandShrinkTableBtn.setText("Expand Table");
-					expandShrinkTableBtn.setTitle("Expand table to see 50 houses");
+					expandShrinkTableBtn
+							.setTitle("Expand table to see 50 houses");
 					houseTable.expandShrinkTable(-1);
 				}
 			}
@@ -274,31 +314,30 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Helper to buildTablePanel().
-	 * Resets the table view to initial view.
+	 * Helper to buildTablePanel(). Resets the table view to initial view.
 	 * 
-	 * @param resetTableBtn - button that resets the table 
+	 * @param resetTableBtn
+	 *            - button that resets the table
 	 * 
 	 */
 	private void buildResetTableButton(Button resetTableBtn) {
 		// Set tool tip text
-		resetTableBtn.setTitle ("Reset table");
-		
+		resetTableBtn.setTitle("Reset table");
+
 		// Set button style
 		resetTableBtn.setStyleName("gwt-Button-textButton");
-		
+
 		// Attach click handler
 		resetTableBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				resetDatabase();
 				houseTable.refreshTableFromBeginning();
 			}
-		});		
+		});
 	}
 
 	/**
-	 * Helper to buildUI(). 
-	 * Assemble side panel which holds header, menu, 
+	 * Helper to buildUI(). Assemble side panel which holds header, menu,
 	 * facebook panel, search panel, footer.
 	 * 
 	 * @param sidePanel
@@ -308,7 +347,7 @@ public class Team_02 implements EntryPoint {
 		Button hideShowSidePanelButton = new Button("-");
 		TabLayoutPanel sidebarTabPanel = new TabLayoutPanel(25, Unit.PX);
 		FlowPanel menuPanel = new FlowPanel();
-		
+
 		sidePanel.setStyleName("sidePanel");
 
 		// Create hide/show ability into the button
@@ -321,13 +360,15 @@ public class Team_02 implements EntryPoint {
 		buildSideTabPanel(sidebarTabPanel);
 
 		// Assemble side panel
-		sidePanel.add(new HTML(
-				"<div id ='header'><h1><img src='images/LogoStuff/logo2.png'>iVanHomesPrices</h1></div>"));
+		sidePanel
+				.add(new HTML(
+						"<div id ='header'><h1><img src='images/LogoStuff/logo2.png'>iVanHomesPrices</h1></div>"));
 		sidePanel.add(hideShowSidePanelButton);
 		sidePanel.add(menuPanel);
 		sidePanel.add(sidebarTabPanel);
-		sidePanel.add(new HTML(
-				"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
+		sidePanel
+				.add(new HTML(
+						"<div id ='footer'><span>iVanHomesPrices.<br/>Created by Team XD. 2012.</span></div>"));
 	}
 
 	/**
@@ -340,23 +381,25 @@ public class Team_02 implements EntryPoint {
 		hideShowSidePanelButton.setStyleName("hideShowButton");
 		hideShowSidePanelButton.addStyleDependentName("vertical");
 		hideShowSidePanelButton.setTitle("Minimize");
-		
+
 		hideShowSidePanelButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if (!isSidePanelHidden) {
 					isSidePanelHidden = true;
+					hideShowSidePanelButton.addStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("+");
 					hideShowSidePanelButton.setTitle("Unminimize");
-					mainPanel.setWidgetSize(sidePanel, 20);
+					mainPanel.setWidgetSize(sidePanel, 2);
 					mainPanel.animate(300);
 					sidePanel.addStyleDependentName("collapsed");
-					
+
 				} else {
 					isSidePanelHidden = false;
+					hideShowSidePanelButton.removeStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("-");
 					hideShowSidePanelButton.setTitle("Minimize");
 					sidePanel.removeStyleDependentName("collapsed");
-					mainPanel.setWidgetSize(sidePanel, 230);		
+					mainPanel.setWidgetSize(sidePanel, 22);		
 					mainPanel.animate(300);
 				}
 			}
@@ -364,35 +407,37 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Helper to buildSidePanel().
-	 * Builds menu which holds login, help, terms of use,
-	 * and facebook.
+	 * Helper to buildSidePanel(). Builds menu which holds login, help, terms of
+	 * use, and facebook.
 	 * 
-	 * @param menuPanel - menu panel to add login, help, terms of use,
-	 * and facebook.
+	 * @param menuPanel
+	 *            - menu panel to add login, help, terms of use, and facebook.
 	 */
 	private void buildMenuPanel(FlowPanel menuPanel) {
 		Button helpBtn = new Button("Help");
 		Button termsBtn = new Button("Terms of Use");
-		
-		//Set the style of panel
+
+		// Set the style of panel
 		menuPanel.setStyleName("menuPanel");
 
 		// Build and add the login anchors to the menu
 		buildLoginAnchor(menuPanel);
-		
+
 		// Build components
 		buildHelpBtn(helpBtn);
 		buildTermsBtn(termsBtn);
-	
+
 		// Richard Added
 		FlowPanel faceBookTemp = new FlowPanel();
 		faceBookTemp.setStyleName("facebookPanel");
 		Facebook.init("257432264338889");
-		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),"Check out this house!!!");
+		ShareButton shareBtn = new ShareButton(GWT.getHostPageBaseURL(),
+				"Check out this house!!!");
 		faceBookTemp.add(shareBtn);
-		faceBookTemp.add(new InlineHTML("<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:100px; height:21px;\" allowTransparency=\"true\"></iframe>"));
-		
+		faceBookTemp
+				.add(new InlineHTML(
+						"<iframe src=\"//www.facebook.com/plugins/like.php?href=http%3A%2F%2Frmar3a01.appspot.com%2F&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;appId=257432264338889\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:100px; height:21px;\" allowTransparency=\"true\"></iframe>"));
+
 		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		menuPanel.add(helpBtn);
 		menuPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
@@ -401,18 +446,19 @@ public class Team_02 implements EntryPoint {
 		menuPanel.add(faceBookTemp);
 	}
 
-
 	/**
 	 * Attaches help dialog to the button
-	 * @param helpBtn - button to attach help dialog
+	 * 
+	 * @param helpBtn
+	 *            - button to attach help dialog
 	 */
 	private void buildHelpBtn(Button helpBtn) {
 		helpBtn.setStyleName("gwt-Button-textButton");
-		
+
 		helpBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//create dialogbox
+				// create dialogbox
 				DialogBox helpWindow = new DialogBox();
 				helpWindow.setTitle("Help");
 				helpWindow.add(new Label("Help Content"));
@@ -421,20 +467,22 @@ public class Team_02 implements EntryPoint {
 				helpWindow.setAutoHideEnabled(true);
 			}
 		});
-		
+
 	}
 
 	/**
 	 * Attaches terms of use dialog
-	 * @param termsBtn - button to attach terms of use dialog
+	 * 
+	 * @param termsBtn
+	 *            - button to attach terms of use dialog
 	 */
 	private void buildTermsBtn(Button termsBtn) {
 		termsBtn.setStyleName("gwt-Button-textButton");
-		
+
 		termsBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//create dialogbox and ok button to close it
+				// create dialogbox and ok button to close it
 				final DialogBox termsWindow = new DialogBox();
 				termsWindow.setTitle("Terms of Use");
 				VerticalPanel dialogBoxHolder = new VerticalPanel();
@@ -444,7 +492,7 @@ public class Team_02 implements EntryPoint {
 					@Override
 					public void onClick(ClickEvent event) {
 						termsWindow.hide();
-					}		
+					}
 				});
 				dialogBoxHolder.add(new Label("Terms of Use Content"));
 				dialogBoxHolder.add(okBtn);
@@ -452,30 +500,32 @@ public class Team_02 implements EntryPoint {
 				termsWindow.show();
 				termsWindow.center();
 			}
-		});	
-		
+		});
+
 	}
-	
+
 	/**
 	 * Helper to buildMenuPanel(). Adds login/logout links
 	 * 
-	 * @param menuPanel - menuPanel to add login/logout links
+	 * @param menuPanel
+	 *            - menuPanel to add login/logout links
 	 */
 	private void buildLoginAnchor(FlowPanel menuPanel) {
-		// Enable login/logout only if the login service is available.				
+		// Enable login/logout only if the login service is available.
 		if (isLoginServiceAvailable == true) {
 			Anchor loginLink = new Anchor("Login");
 			Anchor logoutLink = new Anchor("Logout");
-			
+
 			// Set Login links
 			loginLink.setHref(loginInfo.getLoginUrl());
 			logoutLink.setHref(loginInfo.getLogoutUrl());
-			
+
 			// Add to menu
 			menuPanel.add(loginLink);
 			menuPanel.add(logoutLink);
-	
-			// Enable/disable the login/logout links depending on login/logout status
+
+			// Enable/disable the login/logout links depending on login/logout
+			// status
 			if (loginInfo.isLoggedIn()) {
 				loginLink.setVisible(false);
 				loginLink.setEnabled(false);
@@ -484,7 +534,7 @@ public class Team_02 implements EntryPoint {
 				logoutLink.setVisible(false);
 			}
 		}
-		
+
 	}
 
 	/**
@@ -496,22 +546,21 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildSideTabPanel(TabLayoutPanel sidebarTabPanel) {
 		SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
-		
+
 		// Add Widgets to the tab panel
 		sidebarTabPanel.add(searchPanel, "Search");
-		
+
 		// Set details of tab panel look
 		sidebarTabPanel.setAnimationDuration(100);
 		sidebarTabPanel.addStyleDependentName("sideTabPanel");
-		
+
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
 			UserInfoPanel userInfoPanel = new UserInfoPanel(loginInfo);
-			
+
 			if (loginInfo.isLoggedIn()) {
 				sidebarTabPanel.add(userInfoPanel, "My Account");
-			}
-			else {
+			} else {
 				if (sidebarTabPanel.getWidgetCount() > 1) {
 					userInfoPanel.clear();
 					sidebarTabPanel.remove(1);
@@ -519,18 +568,18 @@ public class Team_02 implements EntryPoint {
 			}
 		}
 	}
-	
+
 	/**
-	 * Enables editing of a house data.
-	 * Adds edit button to the table panel,
+	 * Enables editing of a house data. Adds edit button to the table panel,
 	 * builds dialog box where user can specify price and for-sale indicator.
 	 * 
-	 * @param buttonPanel - panel that holds edit button
+	 * @param buttonPanel
+	 *            - panel that holds edit button
 	 */
 	private void enableEdit(FlowPanel buttonPanel) {
 		Button editBtn = new Button("Edit");
 		Button removeBtn = new Button("Remove");
-		
+
 		// Build buttons
 		buildEditBtn(editBtn);
 		buildRemoveBtn(removeBtn);
@@ -541,49 +590,50 @@ public class Team_02 implements EntryPoint {
 		buttonPanel.add(new InlineHTML("&nbsp;&nbsp;|&nbsp;&nbsp;"));
 		buttonPanel.add(removeBtn);
 	}
-	
+
 	/**
-	 * Helper to enableEdit().
-	 * Attaches edit button behavior, which invokes edit dialog when clicked.
+	 * Helper to enableEdit(). Attaches edit button behavior, which invokes edit
+	 * dialog when clicked.
 	 * 
-	 * @param editBtn - button to attach edit behavior
+	 * @param editBtn
+	 *            - button to attach edit behavior
 	 */
 	private void buildEditBtn(Button editBtn) {
 		// Set buttton's tooltip contents
 		editBtn.setTitle("Edit house information");
-		
+
 		// Set button styles
 		editBtn.setStyleName("gwt-Button-textButton");
-		
+
 		// Add edit button handler
 		editBtn.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				if (selectedHouse != null) {
-					EditDialog editDialog = 
-							new EditDialog(selectedHouse, loginInfo, theMap, houseTable);
+					EditDialog editDialog = new EditDialog(selectedHouse,
+							loginInfo, theMap, houseTable);
 					editDialog.center();
 					editDialog.show();
 				}
 			}
-		});	
+		});
 	}
 
 	/**
-	 * Helper to enableEdit().
-	 * Attaches remove button behavoir, which invokes async method to remove
-	 * user information from selected house.
+	 * Helper to enableEdit(). Attaches remove button behavoir, which invokes
+	 * async method to remove user information from selected house.
 	 * 
-	 * @param removeBtn - button to attach remove behavior
+	 * @param removeBtn
+	 *            - button to attach remove behavior
 	 */
 	private void buildRemoveBtn(Button removeBtn) {
 		// Set buttton's tooltip contents
 		removeBtn.setTitle("Remove information from selected house");
-		
+
 		// Set button styles
 		removeBtn.setStyleName("gwt-Button-textButton");
-		
+
 		// Attach click handler
 		removeBtn.addClickHandler(new ClickHandler() {
 			@Override
@@ -591,31 +641,31 @@ public class Team_02 implements EntryPoint {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				resetHouse(selectedHouse);
 			}
-		});		
+		});
 	}
 
 	/**
-	 * Helper to buildEditBtn() and buildRemoveBtn().
-	 * Checks if the number of currently selected houses is one.
-	 * If it is one, return that house. If not, warn the user and return null.
-	 *  
+	 * Helper to buildEditBtn() and buildRemoveBtn(). Checks if the number of
+	 * currently selected houses is one. If it is one, return that house. If
+	 * not, warn the user and return null.
+	 * 
 	 * @return HouseData object that is currently selected by the user
 	 */
 	private HouseData checkAndGetSelectedHouse() {
-		if (selectedHouses != null && 
-				selectedHouses.size() == 1) {
+		if (selectedHouses != null && selectedHouses.size() == 1) {
 			for (HouseData house : selectedHouses)
 				return house;
 		}
 		Window.alert("Please select one house");
 		return null;
 	}
-	
+
 	/**
 	 * Sends async call to the server to remove user information from the
 	 * selected house.
 	 * 
-	 * @param selectedHouse - house that user selected
+	 * @param selectedHouse
+	 *            - house that user selected
 	 * 
 	 */
 	private void resetHouse(HouseData selectedHouse) {
@@ -629,6 +679,7 @@ public class Team_02 implements EntryPoint {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
+
 			public void onSuccess(Void result) {
 				houseTable.refreshTableCurrentView();
 				theMap.getMap().getInfoWindow().close();
@@ -636,7 +687,7 @@ public class Team_02 implements EntryPoint {
 		};
 		houseDataSvc.resetHouse(selectedHouse.getHouseID(), callback);
 	}
-	
+
 	/**
 	 * Resets database to the initial view.
 	 */
@@ -651,6 +702,7 @@ public class Team_02 implements EntryPoint {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
+
 			public void onSuccess(Void result) {
 				houseTable.refreshTableFromBeginning();
 			}
@@ -659,47 +711,51 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Method to search for a house based on the URL parameters.  Searches for
+	 * Method to search for a house based on the URL parameters. Searches for
 	 * the parameters cn (civic number) and sn (street name).
-	 * @pre (Window.Location.getParameter("cn") != null) &&
-	 * 		(Window.Location.getParameter("sn") != null)
-	 * @post if house exists, house is displayed on the application (Google
-	 * 		 Map and Street View are updated with the house)
 	 * 
-	 * Note: Spaces in the URL must be "+" or "%20"
+	 * @pre (Window.Location.getParameter("cn") != null) &&
+	 *      (Window.Location.getParameter("sn") != null)
+	 * @post if house exists, house is displayed on the application (Google Map
+	 *       and Street View are updated with the house)
+	 * 
+	 *       Note: Spaces in the URL must be "+" or "%20"
 	 */
 	private void loadURLSearch() {
-		//acquire parameters from the URL
+		// acquire parameters from the URL
 		String civicNumber = Window.Location.getParameter("cn");
 		String streetName = Window.Location.getParameter("sn");
 
-		//only search for house if the street number and address are given
-		if(civicNumber != null && streetName != null) {	
-				
+		// only search for house if the street number and address are given
+		if (civicNumber != null && streetName != null) {
+
 			// Initialize the service proxy
 			if (houseDataSvc == null) {
 				houseDataSvc = GWT.create(HouseDataService.class);
 			}
-	
+
 			// Set up the callback object
 			AsyncCallback<HouseData> callback = new AsyncCallback<HouseData>() {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 				}
+
 				public void onSuccess(HouseData result) {
-					//Update the Application UI
+					// Update the Application UI
 					houseTable.refreshTableFromBeginning();
 					theMap.findLocation(result, true);
 				}
 			};
-			
-			//convert civic number to integer
+
+			// convert civic number to integer
 			int civicNumberAsInt;
 			try {
 				civicNumberAsInt = Integer.valueOf(civicNumber);
-				// Make the call to the house data service to search for the house in the server
-				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
-			} catch(NumberFormatException e) {
+				// Make the call to the house data service to search for the
+				// house in the server
+				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName,
+						callback);
+			} catch (NumberFormatException e) {
 				// Don't bother searching if civic number isn't a number
 			}
 		}
@@ -707,17 +763,13 @@ public class Team_02 implements EntryPoint {
 	}
 
 	// Fix for refreshing street view //TODO: documentation
-	private void refreshStreetView()
-	{
-		//acquire parameters from the URL
+	private void refreshStreetView() {
+		// acquire parameters from the URL
 		String civicNumber = Window.Location.getParameter("cn");
 		String streetName = Window.Location.getParameter("sn");
-		if(civicNumber != null && streetName != null) {	
+		if (civicNumber != null && streetName != null) {
 			theMap.refreshStreetView(civicNumber + streetName);
 		}
 	}
-	
-	
-	
-}
 
+}
