@@ -21,8 +21,10 @@ import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 /**
  * Search Panel with all text boxes for search fields, Search Button to send
@@ -184,31 +186,31 @@ public class SearchPanel extends FlowPanel {
 	 *            - panel to hold selection tool
 	 */
 	private void buildPolygonSelection(FlowPanel polygonSettingPanel) {
-		final DrawToolButton specifyRegionBtn = new DrawToolButton();
-		final DrawToolButton clearPolygonBtn = new DrawToolButton();
+		ButtonFactory buttonCreator = new ButtonFactory();
+		final ToggleButton specifyRegionBtn = buttonCreator.createDrawButton();
+		final PushButton clearPolygonBtn = buttonCreator.createEraseButton();
 
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
-		specifyRegionBtn.setDrawImage();
 		specifyRegionBtn.setWidth("20px");
-		clearPolygonBtn.setEraseImage();
 		clearPolygonBtn.setWidth("20px");
-		clearPolygonBtn.setEnabled(false);
 
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				map.setSpecifyingRegion(true);
-				clearPolygonBtn.setEnabled(true);
-				specifyRegionBtn.setEnabled(false);
-				// prompt user to click on a region on the map
-				InfoWindowContent content;
-				HTML htmlWidget = new HTML(
+				if(specifyRegionBtn.isEnabled())
+				{
+					map.setSpecifyingRegion(true);
+					specifyRegionBtn.setEnabled(false);
+					specifyRegionBtn.setDown(true);
+					// prompt user to click on a region on the map
+					InfoWindowContent content;
+					HTML htmlWidget = new HTML(
 						"<p> Click on the map to specify region.</br> Drag corners to edit</p>");
-				content = new InfoWindowContent(htmlWidget);
-				map.getMap().getInfoWindow().open(vancouver, content);
-
+					content = new InfoWindowContent(htmlWidget);
+					map.getMap().getInfoWindow().open(vancouver, content);
+				}
 			}
 		});
 
@@ -216,9 +218,11 @@ public class SearchPanel extends FlowPanel {
 		clearPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// map.clearMap();
-				map.clearSpecifiedRegion();
-				specifyRegionBtn.setEnabled(true);
-				clearPolygonBtn.setEnabled(false);
+				if(!specifyRegionBtn.isEnabled()) {
+					map.clearSpecifiedRegion();
+					specifyRegionBtn.setEnabled(true);
+					specifyRegionBtn.setValue(false);
+				}
 			}
 		});
 
