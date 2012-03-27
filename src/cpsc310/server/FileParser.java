@@ -1,16 +1,11 @@
 package cpsc310.server;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeMap;
 
 import au.com.bytecode.opencsv.CSVParser;
 import java.util.HashMap;
-import java.util.regex.*;
-
 /**
  * Parses CSV files to houseDataPoints
  * @author Justin
