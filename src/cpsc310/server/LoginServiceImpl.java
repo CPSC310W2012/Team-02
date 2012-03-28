@@ -51,8 +51,11 @@ LoginService {
 		return ofy.get(LoginInfo.class, email);
 		}
 		catch (Exception e){
+			Window.alert("exception in getUser method");
 		}
+		Window.alert("user returned from DB is null");
 		return null;
+		
 	}
 	
 	@Override
