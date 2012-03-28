@@ -43,11 +43,12 @@ public class SearchPanel extends FlowPanel {
 	private HouseDataServiceAsync houseDataSvc = GWT
 			.create(HouseDataService.class);
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-	final String[] searchCriteria = { "Street Number", "Street Name",
-			"Postal Code", "Current Land Value", "Current Improvement Value",
-			"Assessment Year", "Previous Land Value",
-			"Previous Improvement Value", "Year Built", "Big Improvement Year",
-			"Price", "Realtor", "For Sale" };
+	// ORDER OF THESE VALUES MATTER! BECAREFUL!
+	private String[] searchCriteria = { "Street Number", "Street Name",
+			"Current Land Value", "Price", "Realtor", "For Sale",
+			"Postal Code", "Current Improvement Value", "Assessment Year",
+			"Previous Land Value", "Previous Improvement Value,Year Built",
+			"Big Improvement Year" };
 
 	/**
 	 * Constructor
@@ -555,25 +556,21 @@ public class SearchPanel extends FlowPanel {
 		// + 1 for adding address
 		String[] userInput = new String[searchValues.size() + 1];
 
-		// Because civic number(street number) is already added, begin adding
-		// from index 1
-		for (int i = 0; i < searchValues.size(); i++) {
-			String temp = searchValues.get(i).getText().trim();
+		String temp = searchValues.get(0).getText().trim();
 
-			if (i == 0)
-				userInput[i] = temp;
-			if (i == 1) {
-				int selectedAddrIndex = addressDropDown.getSelectedIndex();
-				userInput[i] = addressDropDown.getValue(selectedAddrIndex);
-			}
+		userInput[0] = temp;
+		int selectedAddrIndex = addressDropDown.getSelectedIndex();
+		userInput[1] = addressDropDown.getValue(selectedAddrIndex);
 
-			else {
-				// if user left min/max labels, then the criterion is empty
-				if (temp.equals("min") || temp.equals("max")) {
-					temp = "";
-				}
-				userInput[i] = temp;
+		// adjust for added street Name
+		for (int i = 2; i < searchValues.size() + 1; i++) {
+			temp = searchValues.get(i - 1).getText().trim();
+
+			// if user left min/max labels, then the criterion is empty
+			if (temp.equals("min") || temp.equals("max")) {
+				temp = "";
 			}
+			userInput[i] = temp;
 		}
 		return userInput;
 	}
@@ -587,34 +584,34 @@ public class SearchPanel extends FlowPanel {
 	 * @return boolean value representing if the inputs were all valid
 	 */
 	private boolean validateUserSearchForm(String[] userSearchInput) {
-		boolean isOK = false;
-		String numericAlert = " must be numbers only. No decimal is allowed.\n";
-		String postalCodeAlert = " is not a valid postal code.\n";
+		boolean isOK = true;
+		String greaterThanError = " the minimum value must be less than the maximum";
+		String invalidDualInputError = " both values should be specifed or not at all";
 		String invalidMsg = "";
 		int i = 0;
 
 		for (String criterion : searchCriteria) {
-			if (criterion.endsWith("Value") || criterion.endsWith("Price")
-					|| criterion.endsWith("Number")
-					|| criterion.endsWith("Year")) {
-				isOK = validateIndivSearchInput(criterion, userSearchInput[i]);
-				isOK = validateIndivSearchInput(criterion,
-						userSearchInput[i + 1]);
-				i += 2;
-				if (!isOK)
-					invalidMsg = invalidMsg + criterion + numericAlert;
-			}
-
-			else if (criterion.equals("Postal Code")) {
-				isOK = validateIndivSearchInput(criterion, userSearchInput[i]);
+			if (criterion.endsWith("For Sale")) {
+			} else if (criterion.endsWith("Number")) {
 				i++;
-				if (!isOK)
-					invalidMsg = invalidMsg + criterion + postalCodeAlert;
-			}
-
-			else {
-				isOK = true;
-				invalidMsg = "";
+			} else if (criterion.endsWith("Value")
+					|| criterion.endsWith("Price")
+					|| criterion.endsWith("Year")) {
+				if ((userSearchInput[i].equals("") && !userSearchInput[i + 1]
+						.equals(""))
+						|| (!userSearchInput[i].equals("") && userSearchInput[i + 1]
+								.equals(""))) {
+					invalidMsg = invalidMsg + criterion + invalidDualInputError;
+					isOK = false;
+				} else if (userSearchInput[i].equals("")
+						|| userSearchInput[i + 1].equals("")) {
+				} else if (Integer.parseInt(userSearchInput[i]) > Integer
+						.parseInt(userSearchInput[i + 1])) {
+					invalidMsg = invalidMsg + criterion + greaterThanError;
+					isOK = false;
+				}
+				i += 2;
+			} else {
 				i++;
 			}
 		}
