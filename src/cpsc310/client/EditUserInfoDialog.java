@@ -97,7 +97,7 @@ public class EditUserInfoDialog extends DialogBox{
 			@Override
 			public void onBlur(BlurEvent event) {
 				String phoneNum = phoneNumberBox.getText().trim();
-				if (!phoneNum.matches("|\\d{10}")) {
+				if (!phoneNum.matches("^$|^\\d{10}$")) {
 					errorMsg.setText("Phone number must be a 10-digit number only.");
 					phoneNumberBox.selectAll();
 				}

@@ -458,9 +458,10 @@ public class PropertyMap {
 		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
+				Window.alert("could not find user in DB - getUser method in property maps");
 			}
-
 			public void onSuccess(LoginInfo user) {
+				Window.alert("found user: " + user.getEmailAddress());
 				loginWrap.setLogin(user);
 			}
 		};
@@ -817,6 +818,7 @@ public class PropertyMap {
 		}
 
 		LoginInfo getLogin() {
+			if(theLogin == null)Window.alert("returning null user from getLogin wrapper");
 			return theLogin;
 		}
 	}
