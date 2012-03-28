@@ -48,6 +48,10 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 				range);
 
 		// Convert HouseDataPoint into HouseData
+		if(tempList == null)
+		{
+			tempList = new ArrayList<HouseDataPoint>();
+		}
 		List<HouseData> grab = convertToListHouseData(tempList);
 
 		// Change below to return grab

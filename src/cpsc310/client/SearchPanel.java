@@ -86,7 +86,7 @@ public class SearchPanel extends FlowPanel {
 		// Build search buttons
 		buildAdvancedSearchBtn(advancedSearchBtn, advancedSettingPopup,
 				searchSettingPanel);
-		buildResetSearchBtn (resetSearchBtn);
+		buildResetSearchBtn(resetSearchBtn);
 		buildSearchBtn(searchBtn);
 
 		// Add searchSettingPanel and searchBtn to the searchPanel
@@ -102,20 +102,20 @@ public class SearchPanel extends FlowPanel {
 	}
 
 	/**
-	 * Build reset search button which clears all the text boxes,
-	 * resets address drop down box, and returns
-	 * radio button to default settings
+	 * Build reset search button which clears all the text boxes, resets address
+	 * drop down box, and returns radio button to default settings
 	 * 
-	 * @param resetSearchBtn - button to add reset behavior
+	 * @param resetSearchBtn
+	 *            - button to add reset behavior
 	 */
 	private void buildResetSearchBtn(Button resetSearchBtn) {
 		// Attach a style name
 		resetSearchBtn.setStyleName("gwt-Button-textButton");
 		resetSearchBtn.addStyleDependentName("resetSearch");
-		
+
 		resetSearchBtn.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick (ClickEvent event){
+			public void onClick(ClickEvent event) {
 				// Prevent null pointer error
 				if (!searchValues.isEmpty()) {
 					for (TextBox box : searchValues) {
@@ -131,7 +131,6 @@ public class SearchPanel extends FlowPanel {
 			}
 		});
 	}
-	
 
 	/**
 	 * Build search panel with basic search settings defined by
@@ -199,15 +198,14 @@ public class SearchPanel extends FlowPanel {
 		// Listen for mouse events on specify region Button
 		specifyRegionBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(specifyRegionBtn.isEnabled())
-				{
+				if (specifyRegionBtn.isEnabled()) {
 					map.setSpecifyingRegion(true);
 					specifyRegionBtn.setEnabled(false);
 					specifyRegionBtn.setDown(true);
 					// prompt user to click on a region on the map
 					InfoWindowContent content;
 					HTML htmlWidget = new HTML(
-						"<p> Click on the map to specify region.</br> Drag corners to edit</p>");
+							"<p> Click on the map to specify region.</br> Drag corners to edit</p>");
 					content = new InfoWindowContent(htmlWidget);
 					map.getMap().getInfoWindow().open(vancouver, content);
 				}
@@ -218,7 +216,8 @@ public class SearchPanel extends FlowPanel {
 		clearPolygonBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// map.clearMap();
-				if(!specifyRegionBtn.isEnabled() && !map.getMap().getInfoWindow().isVisible()) {
+				if (!specifyRegionBtn.isEnabled()
+						&& !map.getMap().getInfoWindow().isVisible()) {
 					map.clearSpecifiedRegion();
 					specifyRegionBtn.setEnabled(true);
 					specifyRegionBtn.setValue(false);
@@ -227,8 +226,8 @@ public class SearchPanel extends FlowPanel {
 		});
 
 		// Add to setting panel
-		polygonSettingPanel
-				.add(new Label("Draw an area on the map to select a search region"));
+		polygonSettingPanel.add(new Label(
+				"Draw an area on the map to select a search region"));
 		polygonSettingPanel.add(specifyRegionBtn);
 		polygonSettingPanel.add(clearPolygonBtn);
 	}
@@ -412,7 +411,7 @@ public class SearchPanel extends FlowPanel {
 			box.addFocusHandler(new FocusHandler() {
 				@Override
 				public void onFocus(FocusEvent event) {
-					if (box.getStyleName().contains("before")) { 
+					if (box.getStyleName().contains("before")) {
 						box.setText("");
 						box.removeStyleDependentName("before");
 					}
@@ -488,8 +487,7 @@ public class SearchPanel extends FlowPanel {
 				if (!validateIndivSearchInput(type, input)) {
 					errorPopup.showRelativeTo(tb);
 					tb.selectAll();
-				}
-				else {
+				} else {
 					if (errorPopup.isVisible()) {
 						errorPopup.hide();
 					}
@@ -555,7 +553,7 @@ public class SearchPanel extends FlowPanel {
 	private String[] getUserSearchInput(ListBox addressDropDown,
 			List<TextBox> searchValues) {
 		// + 1 for adding address
-		String[] userInput = new String[searchValues.size() + 2];
+		String[] userInput = new String[searchValues.size() + 1];
 
 		// Because civic number(street number) is already added, begin adding
 		// from index 1
@@ -571,8 +569,9 @@ public class SearchPanel extends FlowPanel {
 
 			else {
 				// if user left min/max labels, then the criterion is empty
-				if (temp.equals("min") || temp.equals("max"))
+				if (temp.equals("min") || temp.equals("max")) {
 					temp = "";
+				}
 				userInput[i] = temp;
 			}
 		}
@@ -596,7 +595,8 @@ public class SearchPanel extends FlowPanel {
 
 		for (String criterion : searchCriteria) {
 			if (criterion.endsWith("Value") || criterion.endsWith("Price")
-					|| criterion.endsWith("Number")	|| criterion.endsWith("Year")) {
+					|| criterion.endsWith("Number")
+					|| criterion.endsWith("Year")) {
 				isOK = validateIndivSearchInput(criterion, userSearchInput[i]);
 				isOK = validateIndivSearchInput(criterion,
 						userSearchInput[i + 1]);
@@ -649,7 +649,8 @@ public class SearchPanel extends FlowPanel {
 				invalidMsg = criterion + numericAlert;
 			}
 		} else if (criterion.equals("Postal Code")) {
-			if (userInput.matches("|^[ABCEGHJKLMNPRSTVXY|abceghjklmnprstvxy]{1}\\d{1}[A-z]{1} *\\d{1}[A-z]{1}\\d{1}$")) {
+			if (userInput
+					.matches("|^[ABCEGHJKLMNPRSTVXY]{1}\\d{1}[A-Z]{1} \\d{1}[A-Z]{1}\\d{1}$")) {
 				isOK = true;
 			} else {
 				invalidMsg = criterion + postalCodeAlert;

@@ -381,7 +381,9 @@ public class DataStore {
 	 * @return keys
 	 */
 	public Set<String> getAllKeysSet() {
-		return store.keySet();
+		Set<String> keys = new HashSet<String>();
+		keys.addAll(store.keySet());
+		return keys;
 	}
 
 	/**
