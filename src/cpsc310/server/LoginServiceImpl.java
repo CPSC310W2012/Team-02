@@ -53,7 +53,7 @@ LoginService {
 		catch (Exception e){
 			Window.alert("exception in getUser method");
 		}
-		Window.alert("user returned from DB is null");
+		//Window.alert("user returned from DB is null");
 		return null;
 		
 	}
@@ -71,7 +71,7 @@ LoginService {
 		// remove from datastore
 		LoginInfo user = getUser(email);
 		if(user == null){
-			Window.alert("user was not found, cannot edit user");
+			//Window.alert("user was not found, cannot edit user");
 			return;
 		}
 		else{

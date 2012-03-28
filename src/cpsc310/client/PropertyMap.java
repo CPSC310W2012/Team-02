@@ -141,8 +141,9 @@ public class PropertyMap {
 				// check if it's on sale, true for third param if so.
 				if (placeMarker) {
 					// addSpecialMarker(point, house, house.getIsSelling());
-					addSpecialMarker(point, house);
+					//addSpecialMarker(point, house);
 					// refreshStreetView(point);
+					compileMarker(point, house);
 				}
 				llWrap.setResponse(point);
 			}
@@ -310,6 +311,21 @@ public class PropertyMap {
 
 		return iw;
 	}
+	
+	
+	private InfoWindowContent buildInfoWindow(LoginInfo user, HouseData house) {
+		InfoWindowContent iw;
+		VerticalPanel firstTab = getHouseInfoMarkerPanel(house);
+		// Show additional information if the house is being sold
+		if (house.getIsSelling()) {
+			VerticalPanel secondTab = getContactInfoMarkerPanel(user);
+			iw = getInfoWindowTabs(firstTab, secondTab);
+		} else
+			iw = new InfoWindowContent(firstTab);
+
+		return iw;
+	}
+	
 
 	/**
 	 * if a property is on sale, the icon is set to real estate icon otherwise
@@ -418,40 +434,92 @@ public class PropertyMap {
 
 	private VerticalPanel getContactInfoMarkerPanel(HouseData house) {
 		VerticalPanel markerInfoWindow = new VerticalPanel();
-		HTML htmlWidget;
-		String email = house.getOwner();
-		LoginInfo user = getUser(email);
-		if (user != null) {
-			String realtor = user.getNickname();
-			int phoneNumber = user.getphoneNumber();
-			String website = user.getWebsite();
-			String description = user.getDescription();
+		final HTML htmlWidget;
+		final String email = house.getOwner();
+	 
+		//fail
+		LoginInfo user = new LoginInfo();
+		
+				//Window.alert("found user: " + user.getEmailAddress());
+				if (user != null) {
+					String realtor = user.getNickname();
+					int phoneNumber = user.getphoneNumber();
+					String website = user.getWebsite();
+					String description = user.getDescription();
 
-			htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
-					+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-					+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
-					+ "</br>" + "<b>Website: </b>" + website + "</br>"
-					+ "<b>About: </b>" + description + "</br>" + "</p>");
-		} else {
-			String realtor = "Temporary Name";
-			String phoneNumber = "6042534432";
-			String website = "www.google.com";
-			String description = "Hello, please contact me for real estates" +
-					"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
+					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
+							+ "</br>" + "<b>Website: </b>" + website + "</br>"
+							+ "<b>About: </b>" + description + "</br>" + "</p>");
+				} else {
+					String realtor = "Temporary Name";
+					String phoneNumber = "6042534432";
+					String website = "www.google.com";
+					String description = "Hello, please contact me for real estates" +
+							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
+					
+
+					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
+							+ "</br>" + "<b>Website: </b>" + website + "</br>"
+							+ "<b>About: </b>" + description + "</br>" + "</p>");
+				}
 			
-
-			htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
-					+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-					+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
-					+ "</br>" + "<b>Website: </b>" + website + "</br>"
-					+ "<b>About: </b>" + description + "</br>" + "</p>");
-		}
 
 		markerInfoWindow.add(htmlWidget);
 		markerInfoWindow.setWidth("150px");
 		return markerInfoWindow;
 	}
 
+	
+	private VerticalPanel getContactInfoMarkerPanel(LoginInfo theUser) {
+		VerticalPanel markerInfoWindow = new VerticalPanel();
+		final HTML htmlWidget;
+	 
+		//fail
+		LoginInfo user = theUser;
+		
+				//Window.alert("found user: " + user.getEmailAddress());
+				if (user != null) {
+					String email = user.getEmailAddress();
+					String realtor = user.getNickname();
+					int phoneNumber = user.getphoneNumber();
+					String website = user.getWebsite();
+					String description = user.getDescription();
+
+					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
+							+ "</br>" + "<b>Website: </b>" + website + "</br>"
+							+ "<b>About: </b>" + description + "</br>" + "</p>");
+				} else {
+					String email = "temp@email.com";
+					String realtor = "Temporary Name";
+					String phoneNumber = "6042534432";
+					String website = "www.google.com";
+					String description = "Hello, please contact me for real estates" +
+							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
+					
+
+					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
+							+ "</br>" + "<b>Website: </b>" + website + "</br>"
+							+ "<b>About: </b>" + description + "</br>" + "</p>");
+				}
+			
+
+		markerInfoWindow.add(htmlWidget);
+		markerInfoWindow.setWidth("150px");
+		return markerInfoWindow;
+	}
+	
+	
+	
+	
+	
 	public LoginInfo getUser(String userEmail) {
 		final LoginWrapper loginWrap = new LoginWrapper();
 		// add the user if not already in db
@@ -818,8 +886,86 @@ public class PropertyMap {
 		}
 
 		LoginInfo getLogin() {
-			if(theLogin == null)Window.alert("returning null user from getLogin wrapper");
+			//if(theLogin == null)Window.alert("returning null user from getLogin wrapper");
 			return theLogin;
 		}
+	}
+	
+	
+	
+	
+	private void compileMarker(final LatLng point, final HouseData house) {
+
+
+		if(house.getIsSelling()){
+		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
+			public void onFailure(Throwable caught) {
+				Window.alert("error trying to get user: propertyMap.java");
+			}
+			public void onSuccess(LoginInfo user) {
+				//Window.alert("found user: " + user.getEmailAddress());
+				// Set up the marker and Icon
+				Icon icon = setIcon(house.getIsSelling());
+				MarkerOptions options = MarkerOptions.newInstance();
+				options.setIcon(icon);
+				final Marker marker = new Marker(point, options);
+				map.addOverlay(marker);
+				map.setCenter(point);
+
+				// Assemble the info window
+				final InfoWindowContent content = buildInfoWindow(user, house);
+				map.getInfoWindow().open(marker, content);
+
+				refreshStreetView(point);
+
+				// Click handler for each marker
+				marker.addMarkerClickHandler(new MarkerClickHandler() {
+					public void onClick(MarkerClickEvent event) {
+						try {
+							map.getInfoWindow().open(marker, content);
+							refreshStreetView(point);
+						} catch (Exception e) {
+							Window.alert(e.getMessage());
+						}
+
+					}
+				});
+				markers.push(marker);
+			}
+		};
+		//Window.alert("getting user from db: " + house.getOwner());
+		loginService.getUser(house.getOwner(), userCallback);	
+	
+	}
+	else // house is not being sold
+	{	
+		// Set up the marker and Icon
+		Icon icon = setIcon(house.getIsSelling());
+		MarkerOptions options = MarkerOptions.newInstance();
+		options.setIcon(icon);
+		final Marker marker = new Marker(point, options);
+		map.addOverlay(marker);
+		map.setCenter(point);
+
+		// Assemble the info window
+		final InfoWindowContent content = buildInfoWindow(null, house);
+		map.getInfoWindow().open(marker, content);
+
+		refreshStreetView(point);
+
+		// Click handler for each marker
+		marker.addMarkerClickHandler(new MarkerClickHandler() {
+			public void onClick(MarkerClickEvent event) {
+				try {
+					map.getInfoWindow().open(marker, content);
+					refreshStreetView(point);
+				} catch (Exception e) {
+					Window.alert(e.getMessage());
+				}
+
+			}
+		});
+		markers.push(marker);
+	}
 	}
 }

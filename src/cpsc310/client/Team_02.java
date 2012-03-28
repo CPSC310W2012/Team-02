@@ -49,6 +49,8 @@ public class Team_02 implements EntryPoint {
 	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
+	
+	private UserInfoPanel userInfoPanel;
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
@@ -546,7 +548,7 @@ public class Team_02 implements EntryPoint {
 	 * @param sidebarTabPanel
 	 *            - tab panel to wrap the widgets
 	 */
-	private void buildSideTabPanel(TabLayoutPanel sidebarTabPanel) {
+	private void buildSideTabPanel(final TabLayoutPanel sidebarTabPanel) {
 		SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
 
 		// Add Widgets to the tab panel
@@ -558,15 +560,22 @@ public class Team_02 implements EntryPoint {
 
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
-			LoginInfo liFromDB = theMap.getUser(loginInfo.getEmailAddress());
-			UserInfoPanel userInfoPanel;
-			if(liFromDB!=null){
-				userInfoPanel = new UserInfoPanel(liFromDB);
-			}
-			else userInfoPanel = new UserInfoPanel(loginInfo);
-
 			if (loginInfo.isLoggedIn()) {
-				sidebarTabPanel.add(userInfoPanel, "My Account");
+				
+				AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
+					public void onFailure(Throwable caught) {
+						Window.alert(caught.getMessage());
+						Window.alert("could not find user in DB - getUser method in property maps");
+					}
+					public void onSuccess(LoginInfo user) {
+						//Window.alert("found user: " + user.getEmailAddress());
+						userInfoPanel = new UserInfoPanel(user);
+						sidebarTabPanel.add(userInfoPanel, "My Account");
+					}
+				};
+				loginService.getUser(loginInfo.getEmailAddress(), userCallback);
+				
+				
 			} else {
 				if (sidebarTabPanel.getWidgetCount() > 1) {
 					userInfoPanel.clear();
