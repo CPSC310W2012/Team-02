@@ -462,12 +462,25 @@ public class Team_02 implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				// create dialogbox
-				DialogBox helpWindow = new DialogBox();
-				helpWindow.setText("Help");
-				helpWindow.add(new Label("Help Content"));
+				final DialogBox helpWindow = new DialogBox();
+				ScrollPanel scrollPanel = new ScrollPanel();
+				FlowPanel dialogBoxHolder = new FlowPanel();
+				scrollPanel.setSize("300", "500");
+				helpWindow.setText("iVanHomePrices Help Guide");
+				Button closeBtn = new Button("X");
+				closeBtn.addClickHandler(new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+						helpWindow.hide();
+					}
+				});
+				dialogBoxHolder.add(new DocumentFactory().createHelpDocument());
+				dialogBoxHolder.add(closeBtn);
+				scrollPanel.add(dialogBoxHolder);
+				helpWindow.add(scrollPanel);
 				helpWindow.center();
 				helpWindow.show();
-				helpWindow.setAutoHideEnabled(true);
 			}
 		});
 
@@ -487,20 +500,23 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// create dialogbox and ok button to close it
 				final DialogBox termsWindow = new DialogBox();
+				ScrollPanel scrollPanel = new ScrollPanel();
+				scrollPanel.setSize("500", "200");
 				termsWindow.setText("Terms of Use");
 				termsWindow.setGlassEnabled(true);
-				VerticalPanel dialogBoxHolder = new VerticalPanel();
+				FlowPanel dialogBoxHolder = new FlowPanel();
 				Button okBtn = new Button();
-				okBtn.setText("Ok");
+				okBtn.setText("OK");
 				okBtn.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
 						termsWindow.hide();
 					}
 				});
-				dialogBoxHolder.add(new Label("Terms of Use Content"));
+				dialogBoxHolder.add(new DocumentFactory().createTermsDoc());
 				dialogBoxHolder.add(okBtn);
-				termsWindow.add(dialogBoxHolder);
+				scrollPanel.add(dialogBoxHolder);
+				termsWindow.add(scrollPanel);
 				termsWindow.show();
 				termsWindow.center();
 			}
