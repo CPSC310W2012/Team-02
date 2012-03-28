@@ -597,7 +597,7 @@ public class Team_02 implements EntryPoint {
 				AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable caught) {
 						Window.alert(caught.getMessage());
-						Window.alert("could not find user in DB - getUser method in property maps");
+						Window.alert("could not find user in DB");
 					}
 					public void onSuccess(LoginInfo user) {
 						//Window.alert("found user: " + user.getEmailAddress());
