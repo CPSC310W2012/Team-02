@@ -4,10 +4,6 @@ import java.util.Stack;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.MetaElement;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapWidget;
@@ -39,7 +35,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.reveregroup.gwt.facebook4gwt.Facebook;
 import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 public class PropertyMap {
@@ -48,7 +43,7 @@ public class PropertyMap {
 	private StreetviewPanoramaWidget panorama;
 	private StreetviewClient svClient;
 	// keep a stack of all the markers
-	private Stack<Marker> markers = new Stack();
+	private Stack<Marker> markers = new Stack<Marker>();
 	private Geocoder geocoder;
 
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
@@ -338,10 +333,10 @@ public class PropertyMap {
 	private Icon setIcon(boolean onSale) {
 		// Set the icon
 		Icon icon;
-		String onSaleIconImgLink = "http://maps.google.com/mapfiles/ms/micons/realestate.png";
-		String onSaleIconShadowLink = "http://maps.google.com/mapfiles/ms/micons/realestate.shadow.png";
-		String normalIconImgLink = "http://maps.google.com/mapfiles/ms/micons/red-dot.png";
-		String normalIconShadowLink = "http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png";
+		String onSaleIconImgLink = "images/MapStuff/realestate.png";
+		String onSaleIconShadowLink = "images/MapStuff/realestate.shadow.png";
+		String normalIconImgLink = "images/MapStuff/red-dot.png";
+		String normalIconShadowLink = "images/MapStuff/msmarker.shadow.png";
 
 		// marker is a for sale sign if it's on sale, red otherwise
 		if (onSale) {
