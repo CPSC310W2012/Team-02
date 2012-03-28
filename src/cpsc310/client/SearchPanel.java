@@ -50,6 +50,8 @@ public class SearchPanel extends FlowPanel {
 			"Previous Land Value", "Previous Improvement Value,Year Built",
 			"Big Improvement Year" };
 
+	private RadioButton rdBtn;
+
 	/**
 	 * Constructor
 	 * 
@@ -126,9 +128,10 @@ public class SearchPanel extends FlowPanel {
 				// Prevent null pointer error
 				if (addressDropDown.getItemCount() > 0)
 					addressDropDown.setSelectedIndex(0);
-				// Prevent null pointer error
-				if (!forSale.isEmpty())
-					forSale.get(forSale.size() - 1).setValue(true);
+				// TODO: Handle Properly?
+				// Cannot change due to map drawing conflict
+				// if (!forSale.isEmpty())
+				// forSale.get(forSale.size() - 1).setValue(true);
 			}
 		});
 	}
@@ -203,6 +206,13 @@ public class SearchPanel extends FlowPanel {
 					map.setSpecifyingRegion(true);
 					specifyRegionBtn.setEnabled(false);
 					specifyRegionBtn.setDown(true);
+
+					// set value to only for sale houses
+					forSale.get(0).setValue(true);
+					forSale.get(0).setEnabled(false);
+					forSale.get(1).setEnabled(false);
+					forSale.get(2).setEnabled(false);
+
 					// prompt user to click on a region on the map
 					InfoWindowContent content;
 					HTML htmlWidget = new HTML(
@@ -222,6 +232,11 @@ public class SearchPanel extends FlowPanel {
 					map.clearSpecifiedRegion();
 					specifyRegionBtn.setEnabled(true);
 					specifyRegionBtn.setValue(false);
+
+					// set value to only for sale houses
+					forSale.get(0).setEnabled(true);
+					forSale.get(1).setEnabled(true);
+					forSale.get(2).setEnabled(true);
 				}
 			}
 		});
@@ -462,7 +477,7 @@ public class SearchPanel extends FlowPanel {
 
 		// Build the buttons
 		for (String value : isSelling) {
-			RadioButton rdBtn = new RadioButton("isSelling", value);
+			rdBtn = new RadioButton("isSelling", value);
 			searchSettingPanel.add(rdBtn);
 			searchSettingPanel.add(new InlineHTML("&nbsp;&nbsp;"));
 			forSale.add(rdBtn);
