@@ -6,6 +6,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -83,6 +84,21 @@ public class Team_02 implements EntryPoint {
 						addUser(result);
 					}
 				});
+		
+		//timer to refresh the database daily if a user never refreshes browser
+		int dayInMilliSeconds = 86400000;
+		Timer dailyRefresh = new Timer() {
+			@Override
+			public void run() {
+				// TODO
+				// Justin, just put the daily update code here.	
+			}
+		};
+		//set the code in run() to run once daily
+		//since database has already be loaded, delay code in the run() by 24 hours
+		dailyRefresh.schedule(dayInMilliSeconds);
+		//invoke the run() every 24 hours after the initially delay
+		dailyRefresh.scheduleRepeating(dayInMilliSeconds);
 	}
 
 	/**
