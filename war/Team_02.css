@@ -532,3 +532,18 @@ a:active {
 	width: 25em;
 	min-height: 15em;
 }
+
+.gmnoprint {
+	font-size: 12px !important;
+}
+
+.gmnoprint table{
+	font-size: 12px !important;
+	line-height: 1.5em;
+}
+
+.gmnoprint table a {
+	vertical-align: middle;
+	font-size: 12px !important;
+	margin-top: 10px;
+}
