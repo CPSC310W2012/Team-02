@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -741,25 +742,31 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Resets database to the initial view.
+	 * Resets database to the initial view.  This method will only update
+	 * the database if either or both of the two parameters cn and sn don't exist. 
 	 */
 	private void resetDatabase() {
-		// Initialize the service proxy
-		if (houseDataSvc == null) {
-			houseDataSvc = GWT.create(HouseDataService.class);
+		String civicNumber = Window.Location.getParameter("cn");
+		String streetName = Window.Location.getParameter("sn");
+
+		if(civicNumber == null || streetName == null) {
+			// Initialize the service proxy
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+	
+			// Set up the callback object
+			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+	
+				public void onSuccess(Void result) {
+					houseTable.refreshTableFromBeginning();
+				}
+			};
+			houseDataSvc.refreshIDStore(callback);
 		}
-
-		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-
-			public void onSuccess(Void result) {
-				houseTable.refreshTableFromBeginning();
-			}
-		};
-		houseDataSvc.refreshIDStore(callback);
 	}
 
 	/**
@@ -774,9 +781,8 @@ public class Team_02 implements EntryPoint {
 	 *       Note: Spaces in the URL must be "+" or "%20"
 	 */
 	private void loadURLSearch() {
-		// acquire parameters from the URL
-		String civicNumber = Window.Location.getParameter("cn");
-		String streetName = Window.Location.getParameter("sn");
+		final String civicNumber = Window.Location.getParameter("cn");
+		final String streetName = Window.Location.getParameter("sn");
 
 		// only search for house if the street number and address are given
 		if (civicNumber != null && streetName != null) {
@@ -791,11 +797,40 @@ public class Team_02 implements EntryPoint {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 				}
-
-				public void onSuccess(HouseData result) {
+				Timer streetViewWatcher;
+				public void onSuccess(final HouseData result) {
 					// Update the Application UI
 					houseTable.refreshTableFromBeginning();
-					theMap.findLocation(result, true);
+										
+					//timer to help update street view
+					streetViewWatcher = new Timer() {
+						@Override
+						public void run() {
+							//check to see if Map has loaded, load house and cancel timer
+							int tableRowCount = houseTable.getHouseTable().getVisibleItemCount();
+							if(Maps.isLoaded()) {
+								if(tableRowCount == 1) {
+									//retrieve house information and compare to what's in table
+									String retrievedCN = String.valueOf(result.getCivicNumber());
+									String retrievedSN = result.getStreetName();
+									//if UI has been updated, find the house and select it in the table
+									if(civicNumber.equals(retrievedCN) && streetName.equals(retrievedSN)) {
+										theMap.findLocation(result, true);
+										houseTable.getHouseTable().getSelectionModel().setSelected(result, true);
+										streetViewWatcher.cancel();
+									}
+								}
+								//no results were found so stop timer
+								else if(tableRowCount == 0) {
+									streetViewWatcher.cancel();
+								}
+							}
+						}
+					};
+					//wait 5 seconds before attempting to check if UI has loaded
+					//if it hasn't loaded, try to check again in 1 second
+					streetViewWatcher.schedule(5000);
+					streetViewWatcher.scheduleRepeating(1000);
 				}
 			};
 
@@ -811,7 +846,6 @@ public class Team_02 implements EntryPoint {
 				// Don't bother searching if civic number isn't a number
 			}
 		}
-		refreshStreetView();
 	}
 
 	// Fix for refreshing street view //TODO: documentation
@@ -823,5 +857,4 @@ public class Team_02 implements EntryPoint {
 			theMap.refreshStreetView(civicNumber + streetName);
 		}
 	}
-
 }
