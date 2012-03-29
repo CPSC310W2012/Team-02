@@ -39,6 +39,23 @@ public class HouseData implements Serializable{
 	}
 	
 
+	/**
+	 * Constructor
+	 * 
+	 * @param houseID - unique ID of house which identifies the object in the database 
+	 * @param civicNumber - street number
+	 * @param streetName - name of the street 
+	 * @param postalCode - postal code of the house
+	 * @param currentLandValue - current land value of the house
+	 * @param currentImprovementValue - current improvement of the house
+	 * @param previousLandValue - previous property tax value of the house
+	 * @param previousImprovementValue - previous improvement of the house
+	 * @param yearBuilt - year when this house was built
+	 * @param bigImprovementYear - year when big improvement happened
+	 * @param owner - realtor of the house
+	 * @param price - price of the house
+	 * @param isSelling - indicator whether this house is for sale
+	 */
 	public HouseData(String houseID, int civicNumber, String streetName, 
 			String postalCode,	int currentLandValue, int currentImprovementValue,
 			int previousLandValue, int previousImprovementValue, int yearBuilt,
@@ -60,34 +77,60 @@ public class HouseData implements Serializable{
 	}
 
 	
-	// Key provider for table and map selection
+	/**
+	 * Key provider for table and map selection
+	 */
 	public static final ProvidesKey<HouseData> KEY_PROVIDER = new ProvidesKey<HouseData>() {
 		public Object getKey (HouseData house) {
 			return house == null ? null : house.getHouseID(); 
 		}
 	};
 	
-	// Getters
+
+	/**
+	 * Getter for house id
+	 * @return house id of the house
+	 */
 	public String getHouseID() {
 		return houseID;
 	}
 
+	/**
+	 * Getter for civic number
+	 * @return street number of the house
+	 */
 	public int getCivicNumber() {
 		return civicNumber;
 	}
 
+	/**
+	 * Getter for street name
+	 * @return the street name of the house address
+	 */
 	public String getStreetName() {
 		return streetName;
 	}
 	
+	/**
+	 * Getter for address
+	 * @return a string assembled into a full address
+	 */
 	public String getAddress() {
 		return civicNumber + " " + streetName;
 	}
 
+	/**
+	 * Getter for postal code
+	 * @return postal code of the house
+	 */
 	public String getPostalCode() {
 		return postalCode;
 	}
 
+	/**
+	 * Getter for Current Land Value
+	 * @return current land value of the house
+	 */
 	public int getCurrentLandValue() {
 		return currentLandValue;
 	}
@@ -112,83 +155,159 @@ public class HouseData implements Serializable{
 		return yearBuilt;
 	}
 
+	/**
+	 * Getter for big improvement year
+	 * @return year when big improvement happened
+	 */
 	public int getBigImprovementYear() {
 		return bigImprovementYear;
 	}
 
+	/**
+	 * Getter for owner
+	 * @return name of the owner
+	 */
 	public String getOwner() {
 		return owner;
 	}
 
+	/**
+	 * Getter for isSelling
+	 * @return boolean value indicating whether the house is for sale
+	 */
 	public boolean getIsSelling() {
 		return isSelling;
 	}
 
+	/**
+	 * Getter for price
+	 * @return price of house
+	 */
 	public int getPrice() {
 		return price;
 	}
 
-	// setters
+	/**
+	 * Setter for houseID
+	 * @param id - unique id of the house
+	 */
 	public void setHouseID(String id) {
 		houseID = id;
 	}
 
+	/**
+	 * Setter for civic number
+	 * @param number - street number of the house address
+	 */
 	public void setCivicNumber(int number) {
 		civicNumber = number;
 	}
 
+	/**
+	 * Setter for street name
+	 * @param name - street name of the house address
+	 */
 	public void setStreetName(String name) {
 		streetName = name;
 	}
 
+	/**
+	 * Setter for postal code 
+	 * @param pc - postal code of the house
+	 */
 	public void setPostalCode(String pc) {
 		postalCode = pc;
 	}
 
+	/**
+	 * Setter for current land value
+	 * @param value - current value of the house
+	 */
 	public void setCurrentLandValue(int value) {
 		currentLandValue = value;
 	}
 
+	/**
+	 * Setter for current improvement value
+	 * @param value - value of the current improvement
+	 */
 	public void setCurrentImprovementValue(int value) {
 		currentImprovementValue = value;
 	}
 
+	/**
+	 * Setter for assessment year
+	 * @param year - assessment year of current property value
+	 */
 	public void setAssessmentYear(int year) {
 		assessmentYear = year;
 	}
 
+	/**
+	 * Setter for previous land value
+	 * @param value - value of the land from the last assessment
+	 */
 	public void setPreviousLandValue(int value) {
 		previousLandValue = value;
 	}
 
-	public void setPreviousImporvementValue(int year) {
-		previousImprovementValue = year;
+	/**
+	 * Setter for previous improvement value
+	 * @param value - value of the previous improvement
+	 */
+	public void setPreviousImporvementValue(int value) {
+		previousImprovementValue = value;
 	}
 
+	/**
+	 * Setter for year built
+	 * @param year - year when the house/strata was built
+	 */
 	public void setYearBuilt(int year) {
 		yearBuilt = year;
 	}
 
+	/**
+	 * Setter for Big Improvement Year
+	 * @param year - year when big improvement occured
+	 */
 	public void setBigImprovementYear(int year) {
 		bigImprovementYear = year;
 	}
 	
+	/**
+	 * Setter for realtor 
+	 * @param newOwner - name of the realtor
+	 */
 	public void setOwner(String newOwner) {
 		owner = newOwner;
 	}
 
+	/**
+	 * Setter for isSelling
+	 * @param sell - boolean value whether the house is for sale or not
+	 */
 	public void setIsSelling(boolean sell) {
 		isSelling = sell;
 	}
 
+	/**
+	 * Setter for price
+	 * @param salePrice - price of the house
+	 */
 	public void setPrice(int salePrice) {
 		price = salePrice;
 	}
 	
+	
 	/**
 	 * Comparators for table sorting.
+	 * Commented out since we do not do local sorting of the table
+	 * 
+	 * When re-enabling local sorting of the table,
+	 * make sure you uncomment the sotr handler in HouseTable.java 
 	 */
-	
+	/*
 	//Comparator for PIDs
 	public final static Comparator<HouseData> HouseIDComparator =
 			new Comparator<HouseData>() {
@@ -318,4 +437,5 @@ public class HouseData implements Serializable{
 			return -1;
 		}
 	};
+	*/
 }

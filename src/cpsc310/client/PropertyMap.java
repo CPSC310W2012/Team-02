@@ -31,6 +31,7 @@ import com.google.gwt.maps.client.streetview.StreetviewPanoramaOptions;
 import com.google.gwt.maps.client.streetview.StreetviewPanoramaWidget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -296,10 +297,10 @@ public class PropertyMap {
 
 	private InfoWindowContent buildInfoWindow(HouseData house) {
 		InfoWindowContent iw;
-		VerticalPanel firstTab = getHouseInfoMarkerPanel(house);
+		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
 		// Show additional information if the house is being sold
 		if (house.getIsSelling()) {
-			VerticalPanel secondTab = getContactInfoMarkerPanel(house);
+			FlowPanel secondTab = getContactInfoMarkerPanel(house);
 			iw = getInfoWindowTabs(firstTab, secondTab);
 		} else
 			iw = new InfoWindowContent(firstTab);
@@ -310,10 +311,10 @@ public class PropertyMap {
 	
 	private InfoWindowContent buildInfoWindow(LoginInfo user, HouseData house) {
 		InfoWindowContent iw;
-		VerticalPanel firstTab = getHouseInfoMarkerPanel(house);
+		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
 		// Show additional information if the house is being sold
 		if (house.getIsSelling()) {
-			VerticalPanel secondTab = getContactInfoMarkerPanel(user);
+			FlowPanel secondTab = getContactInfoMarkerPanel(user);
 			iw = getInfoWindowTabs(firstTab, secondTab);
 		} else
 			iw = new InfoWindowContent(firstTab);
@@ -356,20 +357,20 @@ public class PropertyMap {
 	 * 
 	 * Takes in two vertical panels and puts them together
 	 * 
-	 * @param p1
+	 * @param firstTab
 	 *            first tab content
-	 * @param p2
+	 * @param secondTab
 	 *            second tab content
 	 * 
 	 */
 
-	private InfoWindowContent getInfoWindowTabs(VerticalPanel p1,
-			VerticalPanel p2) {
+	private InfoWindowContent getInfoWindowTabs(FlowPanel firstTab,
+			FlowPanel secondTab) {
 
 		InfoWindowTab tabs[] = new InfoWindowTab[2];
 
-		tabs[0] = new InfoWindowTab("Info", p1);
-		tabs[1] = new InfoWindowTab("Contact", p2);
+		tabs[0] = new InfoWindowTab("Info", firstTab);
+		tabs[1] = new InfoWindowTab("Contact", secondTab);
 		final InfoWindowContent content = new InfoWindowContent(tabs, 0);
 		return content;
 	}
@@ -383,8 +384,8 @@ public class PropertyMap {
 	 * 
 	 */
 
-	private VerticalPanel getHouseInfoMarkerPanel(HouseData house) {
-		VerticalPanel markerInfoWindow = new VerticalPanel();
+	private FlowPanel getHouseInfoMarkerPanel(HouseData house) {
+		FlowPanel markerInfoWindow = new FlowPanel();
 		HTML htmlWidget;
 		// If the house is on sale, provide extra field for sale price and
 		// realtor information
@@ -427,8 +428,8 @@ public class PropertyMap {
 	 * 
 	 */
 
-	private VerticalPanel getContactInfoMarkerPanel(HouseData house) {
-		VerticalPanel markerInfoWindow = new VerticalPanel();
+	private FlowPanel getContactInfoMarkerPanel(HouseData house) {
+		FlowPanel markerInfoWindow = new FlowPanel();
 		final HTML htmlWidget;
 		final String email = house.getOwner();
 	 
@@ -469,8 +470,8 @@ public class PropertyMap {
 	}
 
 	
-	private VerticalPanel getContactInfoMarkerPanel(LoginInfo theUser) {
-		VerticalPanel markerInfoWindow = new VerticalPanel();
+	private FlowPanel getContactInfoMarkerPanel(LoginInfo theUser) {
+		FlowPanel markerInfoWindow = new FlowPanel();
 		final HTML htmlWidget;
 	 
 		//fail

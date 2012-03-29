@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -105,7 +106,7 @@ public class SearchPanel extends FlowPanel {
 		this.add(advancedSearchBtn);
 		this.add(new HTML("<br />"));
 		this.add(searchBtn);
-
+		this.add(new HTML("&nbsp;&nbsp;"));
 	}
 
 	/**
@@ -530,7 +531,7 @@ public class SearchPanel extends FlowPanel {
 	 *            - for sale radio buttons
 	 */
 	private void searchHouse(ListBox addressDropDown,
-			List<TextBox> searchValues, List<RadioButton> forSale) {
+			List<TextBox> searchValues, List<RadioButton> forSale) {		
 		// Get user input into search boxes
 		String[] userSearchInput = getUserSearchInput(addressDropDown,
 				searchValues);
@@ -538,7 +539,13 @@ public class SearchPanel extends FlowPanel {
 		// Validate user input
 		if (!validateUserSearchForm(userSearchInput))
 			return;
-
+		
+		// For loading indicator
+		final Image loadingSearch = new Image("images/loading.png");
+		loadingSearch.setSize("15px", "15px");		
+		searchBtn.setEnabled(false);
+		this.add(loadingSearch);
+		
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -548,10 +555,14 @@ public class SearchPanel extends FlowPanel {
 		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
+				loadingSearch.removeFromParent();
+				searchBtn.setEnabled(true);
 			}
 
 			public void onSuccess(Void result) {
 				table.refreshTableFromBeginning();
+				loadingSearch.removeFromParent();
+				searchBtn.setEnabled(true);
 			}
 		};
 
