@@ -15,12 +15,10 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -71,20 +69,20 @@ public class Team_02 implements EntryPoint {
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
+						buildUI();						
 						resetDatabase();
-						buildUI();
 						//Display Disclaimer
-						new DisclaimerGenerator().generateDisclaimer();
+						//new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
 					}
 
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
+						buildUI();						
 						resetDatabase();
-						buildUI();
 						//Display Disclaimer
-						new DisclaimerGenerator().generateDisclaimer();
+						//new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
 						addUser(result);
 					}
@@ -159,7 +157,7 @@ public class Team_02 implements EntryPoint {
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
-
+		
 		// Associate Main panel with the HTML host page
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);

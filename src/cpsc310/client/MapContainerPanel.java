@@ -34,7 +34,7 @@ public class MapContainerPanel extends SplitLayoutPanel {
 		
 		// Add Google map and street view
 		this.addWest(map.getMap(), defaultMapSize);
-		this.add(map.getStreetViewMap());;
+		this.add(map.getStreetViewMap());
 		
 		// Set style name
 		this.setStyleName("mapContainerPanel");

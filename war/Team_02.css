@@ -9,15 +9,12 @@
 	position: relative;
 }
 
-html {
-	overflow: auto;
-}
-
-body {
-	width: 100% !important;	
+html, body {
+	width: 100% !important;
+	height: 100% !important;
 	color: #515151;
 	background-color:#FCFCFC;
-	font-size: 70%;
+	font-size: 11px;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background-image: url(images/bg.png);
