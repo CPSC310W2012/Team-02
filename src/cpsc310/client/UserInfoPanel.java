@@ -26,15 +26,18 @@ public class UserInfoPanel extends FlowPanel {
 	protected Label userWebsite;
 	protected Label userDescription;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
+	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
+	private HouseTable table;
 	
 	/**
 	 * Constructor
 	 * @param loginInfo - current user's information instance
 	 */
-	public UserInfoPanel(LoginInfo loginInfo) {
+	public UserInfoPanel(LoginInfo loginInfo, HouseTable table) {
 		if (loginInfo != null) {
 
 			this.loginInfo = loginInfo;
+			this.table = table;
 			
 			// Set style
 			this.setStyleName("userInfoPanel");
@@ -120,6 +123,24 @@ public class UserInfoPanel extends FlowPanel {
 	 */
 	private void getUserHouse() {
 		// TODO Make Async call once async call is implemented
+
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
+		}
+
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+
+			public void onSuccess(Void result) {
+				table.refreshTableFromBeginning();
+			}
+		};
+		houseDataSvc.getHomesByUser(loginInfo.getEmailAddress(), callback);
+		
 		
 	}
 	
@@ -143,7 +164,6 @@ public class UserInfoPanel extends FlowPanel {
 	public class EditUserInfoDialog2 extends DialogBox{
 		private int MAXKEYCOUNT = 200;
 		private Label errorMsg = new Label("");
-		private int keyCount = 0;
 		private LoginServiceAsync loginService = GWT.create(LoginService.class);
 		TextBox phoneNumberBox; 
 		TextBox websiteBox;

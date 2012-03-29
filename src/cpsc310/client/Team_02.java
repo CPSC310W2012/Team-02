@@ -606,7 +606,7 @@ public class Team_02 implements EntryPoint {
 					}
 					public void onSuccess(LoginInfo user) {
 						//Window.alert("found user: " + user.getEmailAddress());
-						userInfoPanel = new UserInfoPanel(user);
+						userInfoPanel = new UserInfoPanel(user, houseTable);
 						sidebarTabPanel.add(userInfoPanel, "My Account");
 					}
 				};
