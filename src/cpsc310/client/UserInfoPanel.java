@@ -354,7 +354,7 @@ public class UserInfoPanel extends FlowPanel {
 					
 					String description = descArea.getValue();
 					if(description.isEmpty()) description = user.getDescription();
-					loginService.editUser(user.getEmailAddress(), loginInfo.getNickname(), phone, websiteBox.getText(), description, editUserCallback);
+					loginService.editUser(user.getEmailAddress(), loginInfo.getNickname(), phone, website, description, editUserCallback);
 				}
 			};
 			loginService.getUser(loginInfo.getEmailAddress(), userCallback);
