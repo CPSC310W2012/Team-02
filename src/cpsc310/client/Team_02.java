@@ -71,8 +71,6 @@ public class Team_02 implements EntryPoint {
 						Window.alert("Login service could not be loaded.");
 						buildUI();						
 						resetDatabase();
-						//Display Disclaimer
-						//new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
 					}
 
@@ -81,8 +79,6 @@ public class Team_02 implements EntryPoint {
 						isLoginServiceAvailable = true;
 						buildUI();						
 						resetDatabase();
-						//Display Disclaimer
-						//new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
 						addUser(result);
 					}
