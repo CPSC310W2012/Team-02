@@ -62,7 +62,7 @@ public class Team_02 implements EntryPoint {
 
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
-		loginService.login(GWT.getHostPageBaseURL(),
+		loginService.login(GWT.getHostPageBaseURL()+ "Team_02.html?gwt.codesvr=127.0.0.1:9997",
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
@@ -74,7 +74,6 @@ public class Team_02 implements EntryPoint {
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
-						addUser(result);
 						buildUI();						
 						resetDatabase();
 						loadURLSearch();
@@ -97,41 +96,6 @@ public class Team_02 implements EntryPoint {
 		dailyRefresh.scheduleRepeating(dayInMilliSeconds);
 	}
 
-	/**
-	 * 
-	 * Adds a logged in user to our DB if not already in the DB
-	 * 
-	 * @param LoginInfo 
-	 */
-	private void addUser(LoginInfo result) {
-		// add the user if not already in db
-		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-
-			public void onSuccess(LoginInfo user) {
-				if (user == null) {
-					// add the user to db
-					AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
-						public void onFailure(Throwable caught) {
-							Window.alert(caught.getMessage());
-						}
-
-						public void onSuccess(Void result) {
-							// Window.alert("stored user");
-							userInfoPanel.refreshUserInfoPanel();
-						}
-					};
-					loginService.storeUser(loginInfo, storeUserCallback);
-				}
-			}
-		};
-		if (result.getEmailAddress() != null) {
-			loginService.getUser(result.getEmailAddress(), userCallback);
-		}
-	}
-	
 
 	/**
 	 * Builds application's main UI
@@ -592,6 +556,7 @@ public class Team_02 implements EntryPoint {
 		sidebarTabPanel.setAnimationDuration(100);
 		sidebarTabPanel.addStyleDependentName("sideTabPanel");
 
+		
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
 			if (loginInfo.isLoggedIn()) {
@@ -602,9 +567,26 @@ public class Team_02 implements EntryPoint {
 						Window.alert("could not find user in DB");
 					}
 					public void onSuccess(LoginInfo user) {
-						//Window.alert("found user: " + user.getEmailAddress());
+						
+						if(user == null){
+							Window.alert("user returned is null");
+							// add the user to db
+							AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
+								public void onFailure(Throwable caught) {
+									Window.alert("failed to store user");
+								}
+								public void onSuccess(Void result) {
+									Window.alert("added new user to db");
+									userInfoPanel = new UserInfoPanel(loginInfo, houseTable);
+									sidebarTabPanel.add(userInfoPanel, "My Account");
+								}
+							};
+							loginService.storeUser(loginInfo, storeUserCallback);
+						}
+						else{
 						userInfoPanel = new UserInfoPanel(user, houseTable);
 						sidebarTabPanel.add(userInfoPanel, "My Account");
+						}
 					}
 				};
 				loginService.getUser(loginInfo.getEmailAddress(), userCallback);
