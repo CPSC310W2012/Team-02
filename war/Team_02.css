@@ -14,7 +14,7 @@ html, body {
 	height: 100% !important;
 	color: #515151;
 	background-color:#FCFCFC;
-	font-size: 11px;
+	font-size: 82.5%;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background-image: url(images/bg.png);
@@ -108,9 +108,8 @@ a:active {
 }
 
 .mapContainerPanel {
-	width:100%;
-	clear: both;
 	padding: 1px;
+	overflow: auto;
 }
 
 .searchText {
@@ -134,7 +133,7 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 37em;
+	height: 39em;
 	margin: 0.5em 0.9em;
 }
 
@@ -202,7 +201,7 @@ a:active {
 
 .gwt-Button {
 	margin: 0;
-	padding: 5px 7px;
+	padding: 3px 5px;
 	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
@@ -311,6 +310,7 @@ a:active {
 
 
 .gwt-DialogBox {
+	width: 30%;
 	background-color: #FCFCFC;
 	font-family: Arial, Helvetica, sans-serif;
 }

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -34,7 +35,7 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
 public class Team_02 implements EntryPoint {
 	private HouseTable houseTable = HouseTable.createHouseTable();
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-	private PropertyMap theMap = new PropertyMap(vancouver);
+	private PropertyMap theMap;
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private boolean isTableExpanded = false;
@@ -46,7 +47,6 @@ public class Team_02 implements EntryPoint {
 	private Set<HouseData> selectedHouses = null;
     
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
-	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
 	
@@ -139,6 +139,9 @@ public class Team_02 implements EntryPoint {
 	 * Builds application's main UI
 	 */
 	private void buildUI() {
+		// Initialize the map
+		theMap = new PropertyMap(vancouver);
+		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
 
 		// Initialize selection model for map and table
 		initSelection();

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
  * Split panel that contains Google map and street view
  */
 public class MapContainerPanel extends SplitLayoutPanel {
-	private static int defaultMapSize = 600;
+	private static int defaultMapSize = 500;
 	private PropertyMap map = null;
 	
 	private Timer streetViewResizeTimer = new Timer() {

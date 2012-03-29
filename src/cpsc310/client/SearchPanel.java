@@ -47,7 +47,7 @@ public class SearchPanel extends FlowPanel {
 	private String[] searchCriteria = { "Street Number", "Street Name",
 			"Current Land Value", "Price", "Realtor", "For Sale",
 			"Postal Code", "Current Improvement Value", "Assessment Year",
-			"Previous Land Value", "Previous Improvement Value,Year Built",
+			"Previous Land Value", "Previous Improvement Value", "Year Built",
 			"Big Improvement Year" };
 
 	// for local access of radio buttons
