@@ -1,8 +1,15 @@
 package cpsc310.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.maps.client.geocode.Geocoder;
+import com.google.gwt.maps.client.geocode.LatLngCallback;
+import com.google.gwt.maps.client.geocode.LocationCallback;
+import com.google.gwt.maps.client.geocode.Placemark;
+import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -32,6 +39,7 @@ public class EditDialog extends DialogBox {
 	private FlowPanel loadingPanel = new FlowPanel();
 	private boolean isOkToEdit = false;
 	private boolean editDone = false;
+	private Geocoder geocoder;
 
 	/**
 	 * Constructor
@@ -156,38 +164,81 @@ public class EditDialog extends DialogBox {
 			return;
 
 		// Assemble edit field
-		int housePrice = 0;
-		String owner = loginInfo.getEmailAddress();
-		String houseID = selectedHouse.getHouseID();
-		String postalCode = selectedHouse.getPostalCode();
-		double latitude = 0;
-		double longitude = 0;
-		boolean yesSelling = yesSell.getValue();
-
-		if (postalCode.equals("")) {
-			postalCode = map.getPostalCodeInVancouver(selectedHouse
-					.getAddress());
-			if (postalCode == null) {
-				postalCode = "";
-			}
-		}
-
-		// This is an array of latitude and longitude.
-		// index 0 = latitude, index 1 = longitude
-		Double[] ll = map.getLL(selectedHouse);
-		if (ll != null) {
-			latitude = ll[0];
-			longitude = ll[1];
-		}
+		final int housePrice;
+		final String owner = loginInfo.getEmailAddress();
+		final String houseID = selectedHouse.getHouseID();
+		final String postalCode = selectedHouse.getPostalCode();
+		final boolean yesSelling = yesSell.getValue();
 
 		// If user did not specify the price, price is 0.
 		String price = priceBox.getValue();
 		if (!price.isEmpty())
 			housePrice = Integer.parseInt(price);
+		else housePrice = 0;
+		
+		// get Longitude and latitude
+		LatLngCallback callback = new LatLngCallback() {
+			public void onFailure() {
+				//Window.alert("Location not found");
+			}
+			public void onSuccess(LatLng point) {
+				final double latitude = point.getLatitude();
+				final double longitude = point.getLongitude();
+					
+				// get the postal code if it's not there
+				if (postalCode.equals("")) {
+					Window.alert("postalcode is null, searching for postal code");
+					LocationCallback callback = new LocationCallback() {
+						public void onFailure(int statusCode) {
+							Window.alert("Failed to geocode position ");
+						}
+						public void onSuccess(JsArray<Placemark> locations) {
+							if (locations.length() > 1) {
+								// Window.alert("more than one postal code found");
+							}
+							String pc = "";
+							for (int i = 0; i < locations.length(); ++i) {
+								Placemark location = locations.get(i);
+								pc = location.getPostalCode();
+							}
+							if(pc == null) pc = "";
+							else Window.alert("found postal code: " + pc);
+							storeHouse(pc, longitude, latitude, owner, housePrice, yesSelling, houseID);
+						}
+						};
+						geocoder = new Geocoder();
+						geocoder.getLocations(selectedHouse.getAddress() + " VANCOUVER, BC", callback);
+					
+				}
+				else storeHouse(postalCode, longitude, latitude, owner, housePrice, yesSelling, houseID);
+			}
+			};
+		geocoder = new Geocoder();
+		geocoder.getLatLng(selectedHouse.getAddress() + " VANCOUVER, BC", callback);
+	}
 
+	/**
+	 * 
+	 * Helper method to edit the house
+	 * Makes an async call to the server and saves the house in the db 
+	 * 
+	 * @param postalCode
+	 * @param longitude
+	 * @param latitude
+	 * @param owner
+	 * @param housePrice
+	 * @param yesSelling
+	 * @param houseID
+	 */
+	
+	
+	private void storeHouse(String postalCode, double longitude, 
+			double latitude, String owner, int housePrice, 
+			boolean yesSelling, String houseID){
+		
 		// Draw loading panel
 		drawLoading();
-
+		
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -208,8 +259,9 @@ public class EditDialog extends DialogBox {
 		};
 		houseDataSvc.updateHouse(owner, housePrice, yesSelling, houseID,
 				latitude, longitude, postalCode, callback);
+		
 	}
-
+	
 	/**
 	 * Check if user specified price is in non-decimal numbers. If not, prompt
 	 * the user to change the value.
