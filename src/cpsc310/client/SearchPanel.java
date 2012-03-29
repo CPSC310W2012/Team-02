@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
 public class SearchPanel extends FlowPanel {
 	private PropertyMap map;
 	private HouseTable table;
+	private boolean isdrawing = false;
 	private boolean isAdvSearchPanelHidden = true;
 	private PopupPanel errorPopup = new PopupPanel();
 	private Label errorMsg = new Label("");
@@ -236,6 +237,7 @@ public class SearchPanel extends FlowPanel {
 					map.clearSpecifiedRegion();
 					specifyRegionBtn.setEnabled(true);
 					specifyRegionBtn.setValue(false);
+					map.setSpecifyingRegion(false);
 
 					// set value to only for sale houses
 					forSale.get(0).setEnabled(true);
