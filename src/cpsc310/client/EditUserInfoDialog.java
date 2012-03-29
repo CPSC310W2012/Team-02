@@ -160,7 +160,7 @@ public class EditUserInfoDialog extends DialogBox{
 			}
 
 			public void onSuccess(Void result) {
-				Window.alert("edited user");
+				//Window.alert("edited user");
 				clear();
 				hide();
 				
