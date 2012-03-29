@@ -187,10 +187,10 @@ public class EditDialog extends DialogBox {
 					
 				// get the postal code if it's not there
 				if (postalCode.equals("")) {
-					Window.alert("postalcode is null, searching for postal code");
+					//Window.alert("postalcode is null, searching for postal code");
 					LocationCallback callback = new LocationCallback() {
 						public void onFailure(int statusCode) {
-							Window.alert("Failed to geocode position ");
+							//Window.alert("Failed to geocode position ");
 						}
 						public void onSuccess(JsArray<Placemark> locations) {
 							if (locations.length() > 1) {
