@@ -74,10 +74,10 @@ public class Team_02 implements EntryPoint {
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
+						addUser(result);
 						buildUI();						
 						resetDatabase();
 						loadURLSearch();
-						addUser(result);
 					}
 				});
 		
@@ -120,6 +120,7 @@ public class Team_02 implements EntryPoint {
 
 						public void onSuccess(Void result) {
 							// Window.alert("stored user");
+							userInfoPanel.refreshUserInfoPanel();
 						}
 					};
 					loginService.storeUser(loginInfo, storeUserCallback);
