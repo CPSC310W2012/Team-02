@@ -392,19 +392,19 @@ public class PropertyMap {
 			// TODO: isSelling field for a house is not set when realtor edits
 			// on table
 			// need to add event handler and modify houseData point
-			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> "
+			htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Property Information</u></b></br> "
 					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
 					+ "</br>" + "<b>Current Land Value: </b>"
 					+ house.getCurrentLandValue() + "</br>"
 					+ "<b>Year built: </b>" + house.getYearBuilt() + "</br>"
 					+ "<b>Selling Price: </b>" + house.getPrice() + "</br>"
-					+ "</p>");
+					+ "</p></div>");
 		} else {
-			htmlWidget = new HTML("<p><b><u>Property Information</u></b></br> "
+			htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Property Information</u></b></br> "
 					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
 					+ "</br>" + "<b>Current Land Value: </b>"
 					+ house.getCurrentLandValue() + "</br>"
-					+ "<b>Year built: </b>" + house.getYearBuilt() + "</p>");
+					+ "<b>Year built: </b>" + house.getYearBuilt() + "</p></div>");
 		}
 
 		markerInfoWindow.add(htmlWidget);
@@ -442,11 +442,11 @@ public class PropertyMap {
 					String website = user.getWebsite();
 					String description = user.getDescription();
 
-					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+					htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Contact Information</u></b></br> "
 							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
 							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p>");
+							+ "<b>About: </b>" + description + "</br>" + "</p></div>");
 				} else {
 					String realtor = "Temporary Name";
 					String phoneNumber = "6042534432";
@@ -455,11 +455,11 @@ public class PropertyMap {
 							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
 					
 
-					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+					htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Contact Information</u></b></br> "
 							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
 							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p>");
+							+ "<b>About: </b>" + description + "</br>" + "</p></div>");
 				}
 			
 
