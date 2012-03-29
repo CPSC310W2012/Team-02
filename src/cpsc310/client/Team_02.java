@@ -569,14 +569,14 @@ public class Team_02 implements EntryPoint {
 					public void onSuccess(LoginInfo user) {
 						
 						if(user == null){
-							Window.alert("user returned is null");
+							//Window.alert("user returned is null");
 							// add the user to db
 							AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
 								public void onFailure(Throwable caught) {
 									Window.alert("failed to store user");
 								}
 								public void onSuccess(Void result) {
-									Window.alert("added new user to db");
+									//Window.alert("added new user to db");
 									userInfoPanel = new UserInfoPanel(loginInfo, houseTable);
 									sidebarTabPanel.add(userInfoPanel, "My Account");
 								}
