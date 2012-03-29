@@ -1,6 +1,7 @@
 package cpsc310.client;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 
@@ -33,7 +34,7 @@ public class MapContainerPanel extends SplitLayoutPanel {
 		this.map = map;
 		
 		// Add Google map and street view
-		this.addWest(map.getMap(), defaultMapSize);
+		this.addWest(map.getMap(), ((Window.getClientWidth() / 5) * 2));
 		this.add(map.getStreetViewMap());
 		
 		// Set style name

@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -49,7 +48,6 @@ public class Team_02 implements EntryPoint {
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
-	
 	private UserInfoPanel userInfoPanel;
 
 	/**
@@ -64,8 +62,7 @@ public class Team_02 implements EntryPoint {
 
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
-		loginService.login(GWT.getHostPageBaseURL()
-				+ "Team_02.html?gwt.codesvr=127.0.0.1:9997",
+		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
@@ -139,6 +136,8 @@ public class Team_02 implements EntryPoint {
 	 * Builds application's main UI
 	 */
 	private void buildUI() {
+		
+		
 		// Initialize the map
 		theMap = new PropertyMap(vancouver);
 		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
