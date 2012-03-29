@@ -35,7 +35,14 @@ public class DisclaimerGenerator {
 	}
 	
 	/**
-	 * Method to generate the disclaimer dialog box.
+	 * Method to generate the disclaimer dialog box or update the cookie that
+	 * stores the user's choice.  Calls createDisclaimer() or refreshCookie()
+	 * depending on the user's previous history with the application.
+	 * 
+	 * Note: createDisclaimer() is called when either this is the user's first
+	 * time using the application or they didn't select the checkbox from a previous
+	 * session.  Otherwise, refreshCookie() is called.
+	 * 
 	 * @pre true;
 	 * @post true;
 	 * @return the dialog box containing the disclaimer dialogbox.
@@ -110,12 +117,12 @@ public class DisclaimerGenerator {
 	/**
 	 * Method to renew the cookie (for 1 year) for determining if the
 	 * checkbox was selected by the user.  Note: should only be called
-	 * after initial user initially selects the checkbox; i.e. this method
-	 * always sets the cookie value to true.
+	 * after user selects the checkbox from initial use of the application;
+	 * i.e. this method always sets the cookie value to true.
 	 * @pre true;
 	 * @post Cookies.getCookie("iVanHomesPrices").equals("true");
 	 */
-	private void refreshCookie() {
+	public void refreshCookie() {
 		//update the cookie so that it expires in another year
 		Date cookieExpireDate = new Date();
 		CalendarUtil.addMonthsToDate(cookieExpireDate, aYear);
