@@ -50,7 +50,11 @@ public class SearchPanel extends FlowPanel {
 			"Previous Land Value", "Previous Improvement Value,Year Built",
 			"Big Improvement Year" };
 
+	// for local access of radio buttons
 	private RadioButton rdBtn;
+
+	// for local access of search button
+	final Button searchBtn;
 
 	/**
 	 * Constructor
@@ -67,7 +71,7 @@ public class SearchPanel extends FlowPanel {
 		final FlowPanel advancedSettingPanel = new FlowPanel();
 		final FlowPanel polygonSettingPanel = new FlowPanel();
 		final Button advancedSearchBtn = new Button("Advanced Search >>");
-		final Button searchBtn = new Button("Search");
+		searchBtn = new Button("Search");
 		final Button resetSearchBtn = new Button("Reset");
 
 		// Attach caller's map and table
@@ -633,6 +637,11 @@ public class SearchPanel extends FlowPanel {
 
 		if (isOK == false) {
 			errorMsg.setText(invalidMsg);
+			errorPopup.showRelativeTo(searchBtn);
+		} else {
+			if (errorPopup.isVisible()) {
+				errorPopup.hide();
+			}
 		}
 
 		return isOK;
