@@ -336,10 +336,10 @@ public class UserInfoPanel extends FlowPanel {
 				}
 			};
 			
-			int phone;
-			String phoneString = phoneNumberBox.getValue().trim();
+			long phone;
+			String phoneString = phoneNumberBox.getValue();
 			if (!phoneString.isEmpty())
-				phone = Integer.parseInt(phoneString);
+				phone = Long.parseLong(phoneNumberBox.getValue());
 			else phone = loginInfo.getphoneNumber();
 			
 			String website = websiteBox.getValue();
