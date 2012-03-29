@@ -39,7 +39,7 @@ public interface LoginService extends RemoteService {
  * 
  */
 	public void editUser(String email, String nickname, 
-			int phoneNumber, String website, String description);
+			long phoneNumber, String website, String description);
 	
 	
 }

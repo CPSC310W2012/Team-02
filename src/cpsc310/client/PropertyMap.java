@@ -438,7 +438,7 @@ public class PropertyMap {
 				//Window.alert("found user: " + user.getEmailAddress());
 				if (user != null) {
 					String realtor = user.getNickname();
-					int phoneNumber = user.getphoneNumber();
+					long phoneNumber = user.getphoneNumber();
 					String website = user.getWebsite();
 					String description = user.getDescription();
 
@@ -480,7 +480,7 @@ public class PropertyMap {
 				if (user != null) {
 					String email = user.getEmailAddress();
 					String realtor = user.getNickname();
-					int phoneNumber = user.getphoneNumber();
+					long phoneNumber = user.getphoneNumber();
 					String website = user.getWebsite();
 					String description = user.getDescription();
 
