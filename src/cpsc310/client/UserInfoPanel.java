@@ -322,33 +322,43 @@ public class UserInfoPanel extends FlowPanel {
 		private void editUserInfo() {
 			// TODO add asycn call when implemented. make sure dialog is closed.
 			// add the user to db
-			AsyncCallback<Void> editUserCallback = new AsyncCallback<Void>() {
+			
+			AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
+					Window.alert("exception in edit user method - call to getUser");
 				}
+				public void onSuccess(LoginInfo user) {
+					AsyncCallback<Void> editUserCallback = new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught) {
+							Window.alert(caught.getMessage());
+						}
 
-				public void onSuccess(Void result) {
-					//Window.alert("edited user");
-					clear();
-					hide();
-					refreshUserInfoPanel();
-					//TODO:UPDATE THE UI
+						public void onSuccess(Void result) {
+							//Window.alert("edited user");
+							clear();
+							hide();
+							refreshUserInfoPanel();
+							//TODO:UPDATE THE UI
+						}
+					};
+
+					long phone;
+					String phoneString = phoneNumberBox.getValue();
+					if (!phoneString.isEmpty())
+						phone = Long.parseLong(phoneNumberBox.getValue());
+					else phone = user.getphoneNumber();
+					
+					String website = websiteBox.getValue();
+					if(website.isEmpty()) website = user.getWebsite();
+					
+					String description = descArea.getValue();
+					if(description.isEmpty()) description = user.getDescription();
+					loginService.editUser(user.getEmailAddress(), loginInfo.getNickname(), phone, website, description, editUserCallback);
 				}
 			};
+			loginService.getUser(loginInfo.getEmailAddress(), userCallback);
 			
-			long phone;
-			String phoneString = phoneNumberBox.getValue();
-			if (!phoneString.isEmpty())
-				phone = Long.parseLong(phoneNumberBox.getValue());
-			else phone = loginInfo.getphoneNumber();
-			
-			String website = websiteBox.getValue();
-			if(website.isEmpty()) website = loginInfo.getWebsite();
-			
-			String description = descArea.getValue();
-			if(description.isEmpty()) website = loginInfo.getWebsite();
-			
-			loginService.editUser(loginInfo.getEmailAddress(), loginInfo.getNickname(), phone, websiteBox.getText(), description, editUserCallback);
 		}
 		
 		
