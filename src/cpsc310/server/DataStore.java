@@ -1088,6 +1088,16 @@ public class DataStore {
 	 */
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			String house, double longitude, double latitude, String postalCode) {
+		
+		//TODO Remove - Debugging purposes
+		System.out.println("Add New User");
+		System.out.println(Owner);
+		System.out.println(price);
+		System.out.println(isSelling);
+		System.out.println(latitude);
+		System.out.println(longitude);
+		System.out.println(postalCode);
+		
 		// create and set object variables
 		HouseDataPoint currentHouse = store.get(house);
 
@@ -1099,7 +1109,9 @@ public class DataStore {
 		currentHouse.setPrice(price);
 		currentHouse.setIsSelling(isSelling);
 		currentHouse.setLatLng(latitude, longitude);
-		currentHouse.setPostalCode(postalCode);
+		if (postalCode != null) {
+			currentHouse.setPostalCode(postalCode);
+		}
 
 		// re-add to indexes
 		updateIndexes(currentHouse);
@@ -1162,6 +1174,8 @@ public class DataStore {
 				boolean oddNodes = false;
 				double y = currentHouse.getLatitude();
 				double x = currentHouse.getLongitude();
+				
+				System.out.println(y + " " + x);
 
 				for (int i = 0; i < numVertexes; i++) {
 					j++;

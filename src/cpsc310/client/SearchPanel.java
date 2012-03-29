@@ -556,7 +556,7 @@ public class SearchPanel extends FlowPanel {
 
 		// Get radio button (For Sale) response
 		int isSelling = convertRadioBtnSearch(forSale);
-		if (map.isSpecifyingRegion()) {
+		if (map.getPolyLat() != null) {
 			houseDataSvc.searchHousesForSalePolygon(userSearchInput,
 					map.getPolyLat(), map.getPolyLng(), callback);
 		} else {
