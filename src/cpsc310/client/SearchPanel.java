@@ -538,9 +538,6 @@ public class SearchPanel extends FlowPanel {
 		if (!validateUserSearchForm(userSearchInput))
 			return;
 
-		// Get radio button (For Sale) response
-		int isSelling = convertRadioBtnSearch(forSale);
-
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -556,9 +553,17 @@ public class SearchPanel extends FlowPanel {
 				table.refreshTableFromBeginning();
 			}
 		};
-		// Make the call to the house data service to search for data in the
-		// server
-		houseDataSvc.searchHouses(userSearchInput, isSelling, callback);
+
+		// Get radio button (For Sale) response
+		int isSelling = convertRadioBtnSearch(forSale);
+		if (map.isSpecifyingRegion()) {
+			houseDataSvc.searchHousesForSalePolygon(userSearchInput,
+					map.getPolyLat(), map.getPolyLng(), callback);
+		} else {
+			// Make the call to the house data service to search for data in the
+			// server
+			houseDataSvc.searchHouses(userSearchInput, isSelling, callback);
+		}
 	}
 
 	/**

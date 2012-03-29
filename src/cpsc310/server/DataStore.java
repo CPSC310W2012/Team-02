@@ -1148,34 +1148,38 @@ public class DataStore {
 	public Set<String> searchForSaleInPolygon(double[] latitudes,
 			double[] longitudes) {
 
-		Iterator<String> tempItr = forSaleHomes.iterator();
-		int numVertexes = latitudes.length;
 		Set<String> keys = new HashSet<String>();
 
-		while (tempItr.hasNext()) {
-			HouseDataPoint currentHouse = store.get(tempItr.next());
+		if (latitudes != null && longitudes != null) {
 
-			int j = 0;
-			boolean oddNodes = false;
-			double y = currentHouse.getLatitude();
-			double x = currentHouse.getLongitude();
+			Iterator<String> tempItr = forSaleHomes.iterator();
+			int numVertexes = latitudes.length;
 
-			for (int i = 0; i < numVertexes; i++) {
-				j++;
-				if (j == numVertexes) {
-					j = 0;
-				}
-				if (((latitudes[i] < y) && (latitudes[j] >= y))
-						|| ((latitudes[j] < y) && (latitudes[i] >= y))) {
-					if (longitudes[i] + (y - longitudes[i])
-							/ (longitudes[j] - longitudes[i])
-							* (longitudes[j] - longitudes[i]) < x) {
-						oddNodes = !oddNodes;
+			while (tempItr.hasNext()) {
+				HouseDataPoint currentHouse = store.get(tempItr.next());
+
+				int j = 0;
+				boolean oddNodes = false;
+				double y = currentHouse.getLatitude();
+				double x = currentHouse.getLongitude();
+
+				for (int i = 0; i < numVertexes; i++) {
+					j++;
+					if (j == numVertexes) {
+						j = 0;
+					}
+					if (((latitudes[i] < y) && (latitudes[j] >= y))
+							|| ((latitudes[j] < y) && (latitudes[i] >= y))) {
+						if (longitudes[i] + (y - longitudes[i])
+								/ (longitudes[j] - longitudes[i])
+								* (longitudes[j] - longitudes[i]) < x) {
+							oddNodes = !oddNodes;
+						}
 					}
 				}
-			}
-			if (oddNodes) {
-				keys.add(currentHouse.getHouseID());
+				if (oddNodes) {
+					keys.add(currentHouse.getHouseID());
+				}
 			}
 		}
 		return keys;

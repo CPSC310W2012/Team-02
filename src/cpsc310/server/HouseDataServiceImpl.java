@@ -75,6 +75,8 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// reduction factors (avg case) = houseID > Street > Civic Number >
 		// Postal Code > Realtor > Price > Is Selling > Values > Years > Not
 		// Selling
+		
+		System.out.println("Normal Search");
 
 		Set<String> results = store.getAllKeysSet();
 
@@ -313,10 +315,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude) {
+		System.out.println("Polygon Search");
+		
 		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
 		firstPassSearch(userSearchInput, results);
 		secondPassSearch(userSearchInput, results);
-
+		
 		// convert to array
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);

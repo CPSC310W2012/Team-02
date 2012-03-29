@@ -754,11 +754,11 @@ public class PropertyMap {
 	 * 
 	 * 
 	 */
-	private Double[] getPolyLat() {
+	public double[] getPolyLat() {
 		if (lastPolygon == null)
 			return null;
 		int numVertexes = lastPolygon.getVertexCount();
-		Double[] polyPoints = new Double[numVertexes];
+		double[] polyPoints = new double[numVertexes];
 		LatLng point;
 
 		for (int i = 0; i < lastPolygon.getVertexCount(); i++) {
@@ -778,11 +778,11 @@ public class PropertyMap {
 	 * 
 	 * 
 	 */
-	private Double[] getPolyLng() {
+	public double[] getPolyLng() {
 		if (lastPolygon == null)
 			return null;
 		int numVertexes = lastPolygon.getVertexCount();
-		Double[] polyPoints = new Double[numVertexes];
+		double[] polyPoints = new double[numVertexes];
 		LatLng point;
 
 		for (int i = 0; i < lastPolygon.getVertexCount(); i++) {
