@@ -1183,10 +1183,13 @@ public class DataStore {
 						j = 0;
 					}
 					if (((latitudes[i] < y) && (latitudes[j] >= y))
-							|| ((latitudes[j] < y) && (latitudes[i] >= y))) {
-						if (longitudes[i] + (y - longitudes[i])
-								/ (longitudes[j] - longitudes[i])
-								* (longitudes[j] - longitudes[i]) < x) {
+						|| ((latitudes[j] < y) && (latitudes[i] >= y))) 
+					
+					{
+						if (longitudes[i] 
+						  + (y - latitudes[i]) 
+						  / (latitudes[j] - latitudes[i])
+						  * (longitudes[j] - longitudes[i]) < x) {
 							oddNodes = !oddNodes;
 						}
 					}
