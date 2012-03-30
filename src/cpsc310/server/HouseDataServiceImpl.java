@@ -387,6 +387,16 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 					Integer.parseInt(userSearchInput[14]),
 					Integer.parseInt(userSearchInput[15])));
 		}
+		if (!userSearchInput[16].equals("") && !userSearchInput[17].equals("")) {
+			results.retainAll(store.searchByYearBuilt(
+					Integer.parseInt(userSearchInput[16]),
+					Integer.parseInt(userSearchInput[17])));
+		}
+		if (!userSearchInput[18].equals("") && !userSearchInput[19].equals("")) {
+			results.retainAll(store.searchByBigImprovementYear(
+					Integer.parseInt(userSearchInput[18]),
+					Integer.parseInt(userSearchInput[19])));
+		}
 		return results;
 	}
 
