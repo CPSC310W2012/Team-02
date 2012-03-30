@@ -17,7 +17,6 @@ import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Point;
-import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
@@ -33,9 +32,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.reveregroup.gwt.facebook4gwt.ShareButton;
 
 public class PropertyMap {
@@ -393,7 +389,7 @@ public class PropertyMap {
 			// TODO: isSelling field for a house is not set when realtor edits
 			// on table
 			// need to add event handler and modify houseData point
-			htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Property Information</u></b></br> "
+			htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
 					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
 					+ "</br>" + "<b>Current Land Value: </b>"
 					+ house.getCurrentLandValue() + "</br>"
@@ -401,7 +397,7 @@ public class PropertyMap {
 					+ "<b>Selling Price: </b>" + house.getPrice() + "</br>"
 					+ "</p></div>");
 		} else {
-			htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Property Information</u></b></br> "
+			htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
 					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
 					+ "</br>" + "<b>Current Land Value: </b>"
 					+ house.getCurrentLandValue() + "</br>"
@@ -443,7 +439,7 @@ public class PropertyMap {
 					String website = user.getWebsite();
 					String description = user.getDescription();
 
-					htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Contact Information</u></b></br> "
+					htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
 							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
 							+ "</br>" + "<b>Website: </b>" + website + "</br>"
@@ -456,7 +452,7 @@ public class PropertyMap {
 							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
 					
 
-					htmlWidget = new HTML("<div class = \"infoWindow\"><p><b><u>Contact Information</u></b></br> "
+					htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
 							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
 							+ "</br>" + "<b>Website: </b>" + website + "</br>"

@@ -135,22 +135,42 @@ public class HouseData implements Serializable{
 		return currentLandValue;
 	}
 
+	/**
+	 * Getter for current improvement value
+	 * @return current improvement value of the house
+	 */
 	public int getCurrentImprovementValue() {
 		return currentImprovementValue;
 	}
 
+	/**
+	 * Getter for assessment year
+	 * @return year that current land value was assessed
+	 */
 	public int getAssessmentYear() {
 		return assessmentYear;
 	}
 
+	/**
+	 * Getter for previous land value
+	 * @return value of the land from the previous assessment 
+	 */
 	public int getPreviousLandValue() {
 		return previousLandValue;
 	}
 
+	/**
+	 * Getter for previous improvement value
+	 * @return previous improvement value of the house
+	 */
 	public int getPreviousImprovementValue() {
 		return previousImprovementValue;
 	}
 
+	/**
+	 * Getter for year built
+	 * @return year that the house was built
+	 */
 	public int getYearBuilt() {
 		return yearBuilt;
 	}
