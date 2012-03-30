@@ -571,8 +571,8 @@ public class SearchPanel extends FlowPanel {
 		// Get radio button (For Sale) response
 		int isSelling = convertRadioBtnSearch(forSale);
 		if (map.getPolyLat() != null) {
-			houseDataSvc.searchHousesForSalePolygon(userSearchInput,
-					map.getPolyLat(), map.getPolyLng(), callback);
+			houseDataSvc.searchHousesForSalePolygon(userSearchInput, map
+					.getPolyLat(), map.getPolyLng(), callback);
 		} else {
 			// Make the call to the house data service to search for data in the
 			// server
@@ -629,12 +629,16 @@ public class SearchPanel extends FlowPanel {
 		int i = 0;
 
 		for (String criterion : searchCriteria) {
-			if (!criterion.endsWith("For Sale")) {
-				isOK =validateIndivSearchInput(criterion,userSearchInput[i]);
+			if (!criterion.equals("For Sale")) {
+				if (validateIndivSearchInput(criterion, userSearchInput[i]))
+				{
+					isOK = false;
+				}
 			}
-			
-			if (criterion.endsWith("For Sale")) {
-			} else if (criterion.endsWith("Value")
+
+			if (criterion.equals("For Sale")) {
+			} 
+			else if (criterion.endsWith("Value")
 					|| criterion.endsWith("Price")
 					|| criterion.endsWith("Year")
 					|| criterion.startsWith("Year")) {
