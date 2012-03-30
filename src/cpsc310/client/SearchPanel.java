@@ -533,7 +533,7 @@ public class SearchPanel extends FlowPanel {
 	 *            - for sale radio buttons
 	 */
 	private void searchHouse(ListBox addressDropDown,
-			List<TextBox> searchValues, List<RadioButton> forSale) {		
+			List<TextBox> searchValues, List<RadioButton> forSale) {
 		// Get user input into search boxes
 		String[] userSearchInput = getUserSearchInput(addressDropDown,
 				searchValues);
@@ -541,13 +541,13 @@ public class SearchPanel extends FlowPanel {
 		// Validate user input
 		if (!validateUserSearchForm(userSearchInput))
 			return;
-		
+
 		// For loading indicator
 		final Image loadingSearch = new Image("images/loading.png");
-		loadingSearch.setSize("15px", "15px");		
+		loadingSearch.setSize("15px", "15px");
 		searchBtn.setEnabled(false);
 		this.add(loadingSearch);
-		
+
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -634,7 +634,8 @@ public class SearchPanel extends FlowPanel {
 				i++;
 			} else if (criterion.endsWith("Value")
 					|| criterion.endsWith("Price")
-					|| criterion.endsWith("Year")) {
+					|| criterion.endsWith("Year")
+					|| criterion.startsWith("Year")) {
 				if ((userSearchInput[i].equals("") && !userSearchInput[i + 1]
 						.equals(""))
 						|| (!userSearchInput[i].equals("") && userSearchInput[i + 1]
@@ -682,20 +683,26 @@ public class SearchPanel extends FlowPanel {
 		boolean isOK = false;
 
 		if (criterion.endsWith("Value") || criterion.endsWith("Price")
-				|| criterion.endsWith("Number") || criterion.endsWith("Year")) {
+				|| criterion.endsWith("Number") || criterion.endsWith("Year")
+				|| criterion.startsWith("Year")) {
 			if (userInput.matches("^\\d*$")) {
 				isOK = true;
 			} else {
 				invalidMsg = criterion + numericAlert;
 			}
-		} else if (criterion.equals("Postal Code")) {
-			if (userInput
-					.matches("|^[ABCEGHJKLMNPRSTVXY]{1}\\d{1}[A-Z]{1} \\d{1}[A-Z]{1}\\d{1}$")) {
-				isOK = true;
-			} else {
-				invalidMsg = criterion + postalCodeAlert;
-			}
-		} else {
+		}
+
+		// TODO : Bugged
+		// else if (criterion.equals("Postal Code")) {
+		// if (userInput
+		// .matches("|^[ABCEGHJKLMNPRSTVXY]{1}\\d{1}[A-Z]{1} \\d{1}[A-Z]{1}\\d{1}$"))
+		// {
+		// isOK = true;
+		// } else {
+		// invalidMsg = criterion + postalCodeAlert;
+		// }
+		// }
+		else {
 			isOK = true;
 		}
 		if (!isOK) {
