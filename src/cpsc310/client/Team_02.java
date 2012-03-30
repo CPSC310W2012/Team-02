@@ -6,6 +6,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.event.StreetviewInitializedHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -35,6 +36,7 @@ public class Team_02 implements EntryPoint {
 	private HouseTable houseTable = HouseTable.createHouseTable();
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private PropertyMap theMap;
+	private boolean streetLoaded = false;
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private boolean isTableExpanded = false;
@@ -109,6 +111,13 @@ public class Team_02 implements EntryPoint {
 		
 		// Initialize the map
 		theMap = new PropertyMap(vancouver);
+		//add initialized handler to notify when the street view has initialized itself
+		theMap.getStreetViewMap().addInitializedHandler(new StreetviewInitializedHandler() {
+			@Override
+			public void onInitialized(StreetviewInitializedEvent event) {
+				streetLoaded = true;
+			}			
+		});
 		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
 
 		// Initialize selection model for map and table
@@ -809,7 +818,7 @@ public class Team_02 implements EntryPoint {
 						public void run() {
 							//check to see if Map has loaded, load house and cancel timer
 							int tableRowCount = houseTable.getHouseTable().getVisibleItemCount();
-							if(Maps.isLoaded()) {
+							if(Maps.isLoaded() && streetLoaded) {
 								if(tableRowCount == 1) {
 									//retrieve house information and compare to what's in table
 									String retrievedCN = String.valueOf(result.getCivicNumber());
@@ -841,21 +850,12 @@ public class Team_02 implements EntryPoint {
 				civicNumberAsInt = Integer.valueOf(civicNumber);
 				// Make the call to the house data service to search for the
 				// house in the server
-				houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName,
-						callback);
+				if(civicNumberAsInt >= 0) {
+					houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
+				}
 			} catch (NumberFormatException e) {
-				// Don't bother searching if civic number isn't a number
+				// Don't bother searching if civic number isn't a number or is negative
 			}
-		}
-	}
-
-	// Fix for refreshing street view //TODO: documentation
-	private void refreshStreetView() {
-		// acquire parameters from the URL
-		String civicNumber = Window.Location.getParameter("cn");
-		String streetName = Window.Location.getParameter("sn");
-		if (civicNumber != null && streetName != null) {
-			theMap.refreshStreetView(civicNumber + streetName);
 		}
 	}
 }
