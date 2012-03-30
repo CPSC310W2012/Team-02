@@ -531,7 +531,7 @@ public class SearchPanel extends FlowPanel {
 	 *            - for sale radio buttons
 	 */
 	private void searchHouse(ListBox addressDropDown,
-			List<TextBox> searchValues, List<RadioButton> forSale) {		
+			List<TextBox> searchValues, List<RadioButton> forSale) {
 		// Get user input into search boxes
 		String[] userSearchInput = getUserSearchInput(addressDropDown,
 				searchValues);
@@ -539,13 +539,13 @@ public class SearchPanel extends FlowPanel {
 		// Validate user input
 		if (!validateUserSearchForm(userSearchInput))
 			return;
-		
+
 		// For loading indicator
 		final Image loadingSearch = new Image("images/loading.png");
-		loadingSearch.setSize("15px", "15px");		
+		loadingSearch.setSize("15px", "15px");
 		searchBtn.setEnabled(false);
 		this.add(loadingSearch);
-		
+
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -627,8 +627,12 @@ public class SearchPanel extends FlowPanel {
 		int i = 0;
 
 		for (String criterion : searchCriteria) {
+			if (validateIndivSearchInput(criterion, userSearchInput[i]) == false) {
+				isOK = false;			
+			}
 			if (criterion.endsWith("For Sale")) {
 			} else if (criterion.endsWith("Number")) {
+				errorMsg.setText(invalidMsg);
 				i++;
 			} else if (criterion.endsWith("Value")
 					|| criterion.endsWith("Price")
@@ -639,21 +643,25 @@ public class SearchPanel extends FlowPanel {
 								.equals(""))) {
 					invalidMsg = invalidMsg + criterion + invalidDualInputError;
 					isOK = false;
+					errorMsg.setText(invalidMsg);
 				} else if (userSearchInput[i].equals("")
 						|| userSearchInput[i + 1].equals("")) {
+					
 				} else if (Integer.parseInt(userSearchInput[i]) > Integer
 						.parseInt(userSearchInput[i + 1])) {
 					invalidMsg = invalidMsg + criterion + greaterThanError;
 					isOK = false;
+					errorMsg.setText(invalidMsg);
 				}
 				i += 2;
 			} else {
 				i++;
 			}
+			
 		}
-
+		
+			
 		if (isOK == false) {
-			errorMsg.setText(invalidMsg);
 			errorPopup.showRelativeTo(searchBtn);
 		} else {
 			if (errorPopup.isVisible()) {
