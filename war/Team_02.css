@@ -1,9 +1,10 @@
 @CHARSET "UTF-8";
 
-/*Please don't touch css*/
-
+/* For css injection into Team_02.java */
 .mainCss {
 }
+
+/* Default HTML element styles */
 
 * {
 	margin: 0;
@@ -21,6 +22,7 @@ html, body {
 	overflow: auto;
 	background-image: url(images/bg.png);
 }
+
 
 a {
 	color: #757575;
@@ -40,82 +42,80 @@ hr {
 	margin: 1em 0;
 }
 
-#header {
-	background-color: #00B4FF;
-	background-color: rgba(0, 180, 255, 0.6);
-	background-repeat: no-repeat;
-	padding: 2.5em 0;
-	text-align: center;
-	white-space: nowrap;
-	-webkit-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
-	box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
-}
 
-#header h1 img {
-	height: 32px;
-	top: 0.5em;
-	margin-right: 0.2em;
-}
+/* 	Default GWT widget styling. 
+	We do not use default css given by GWT
+	If you wish to add an element not included in this css,
+	copy from Clean.css from google's default GWT file which is
+	provided on google's website.
+	Sorted in alphabetical order. */
 
-h1 {
-	margin: 0 auto;
-	color: #FFF;
-	font-size: 1.7em;
-	font-family: 'Glegoo', Georgia, Times New Roman, serif;
-	font-weight: 200;
-	text-shadow: #EEE 1px 1px 1px;
-	line-height: 1.7em;
-	vertical-align: middle;
-}
-
-#footer {
-	width: 100%;
-	clear: both;
-	text-align:center;
-	height: 4.8em;
-	vertical-align:middle;
-}
-
-#footer span {
-	top: 40%;
+.gwt-Button {
+	margin: 0;
+	padding: 3px 5px;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
 	font-size: 1em;
-	color: #515151;
-	font-family: Helvetica, Arial, sans-serif;
+	color: #555;
+	background: #F8F8F8;
+	border:1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px; 
+}
+
+.gwt-Button:active {
+	border: 1px inset #ccc;
+	top: 1px;
+}
+.gwt-Button:hover {
+	border-color: #939393;
+}
+.gwt-Button[disabled] {
+	cursor: default;
+	color: #888;
+}
+.gwt-Button[disabled]:hover {
+	border: 1px outset #ccc;
+}
+
+.gwt-DialogBox {
+	width: 30%;
+	border: 3px solid #A8A8A8;
+	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-webkit-border-radius: 10px;	
+	background-color: #FCFCFC;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.gwt-DialogBox .Caption {
+	padding: 0.4em 1em 0.4em 0.4em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
 	font-weight: bold;
-	text-align: center;
-	vertical-align:middle;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius: 10px;
+	 border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-right-radius: 10px;		
+	background: #fcfcfc;
+	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
+	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType = 0 );	
 }
 
-.mainPanel {
-}
-
-.menuPanel {
-	padding: 1em 0;
-	text-align: center;
-	vertical-align: middle;
+.gwt-DialogBox .dialogContent {
+	padding: 1.2em;
+	font-size: 12px !important;	
 	background-color: #FCFCFC;
-	background-color: rgba(252, 252, 252, 0.5);
-}
-
-.pager {
-	margin: 0 auto;
-	font-size: 1em;	
-}
-
-.pagerPanel {
-	width: 100%;
-	background-color: #FCFCFC;
-}
-
-.mapContainerPanel {
-	padding: 1px;
-	overflow: auto;
-}
-
-.searchText {
-	font-size: 1em !important;
-	color: #515151;
 }
 
 .gwt-Label {
@@ -123,14 +123,40 @@ h1 {
 	color: #515151;
 }
 
-.gwt-Label-error {
-	color: #FF0000;
-	font-weight: bold;
+.gwt-ListBox {
+	font-size: 1em;
+}
+
+
+.gwt-PopupPanelGlass {
+	background-color: #000;
+	opacity: 0.3;
+	filter: alpha(opacity = 30);
+}
+
+.gwt-PushButton-up,
+.gwt-PushButton-up-hovering,
+.gwt-PushButton-up-disabled,
+.gwt-PushButton-down,
+.gwt-PushButton-down-hovering,
+.gwt-PushButton-down-disabled {
+  margin: 0;
+  text-decoration: none;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  cursor: pointer;
+  cursor: hand;
 }
 
 .gwt-RadioButton {
 	font-size: 1em !important;
 	color: #000;
+}
+
+
+.gwt-SplitLayoutPanel-HDragger {
+	background: #e7e7e7 url(images/thumb_vertical.png) center center no-repeat;
+	cursor: col-resize;
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
@@ -177,9 +203,10 @@ h1 {
 	font-weight: bold;
 }
 
-.gwt-SplitLayoutPanel-HDragger {
-	background: #e7e7e7 url(images/thumb_vertical.png) center center no-repeat;
-	cursor: col-resize;
+
+.gwt-TextArea {
+	width: 25em;
+	min-height: 10em;
 }
 
 .gwt-TextBox {
@@ -188,190 +215,120 @@ h1 {
 	font-size: 1em !important;
 }
 
-.gwt-TextBox-before {
-	color: #CCC;
-}
 
-.gwt-TextBox-longer {
-	width: 170px;
-}
-
-.gwt-TextBox-shorter {
-	width: 80px;
-}
-
-.gwt-Button {
+.gwt-ToggleButton-up,
+.gwt-ToggleButton-up-hovering,
+.gwt-ToggleButton-up-disabled,
+.gwt-ToggleButton-down,
+.gwt-ToggleButton-down-hovering,
+.gwt-ToggleButton-down-disabled {
 	margin: 0;
-	padding: 3px 5px;
 	text-decoration: none;
+	float: left;
 	cursor: pointer;
 	cursor: hand;
+}
+
+
+/*	Custom styles and GWT-Overruling styles begin.
+	Sorted in alphabetical order.
+	Note: IDs takes precedence of classes. */
+
+#header {
+	background-color: #00B4FF;
+	background-color: rgba(0, 180, 255, 0.6);
+	background-repeat: no-repeat;
+	padding: 2.5em 0;
+	text-align: center;
+	white-space: nowrap;
+	-webkit-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px -2px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+#header h1 img {
+	height: 32px;
+	top: 0.5em;
+	margin-right: 0.2em;
+}
+
+#header h1 {
+	margin: 0 auto;
+	color: #FFF;
+	font-size: 1.7em;
+	font-family: 'Glegoo', Georgia, Times New Roman, serif;
+	font-weight: 200;
+	text-shadow: #EEE 1px 1px 1px;
+	line-height: 1.7em;
+	vertical-align: middle;
+}
+
+#footer {
+	width: 100%;
+	clear: both;
+	text-align:center;
+	height: 4.8em;
+	vertical-align:middle;
+}
+
+#footer span {
+	top: 40%;
 	font-size: 1em;
-	color: #555;
-	background: #F8F8F8;
-	border:1px solid #bbb;
-	border-bottom: 1px solid #a0a0a0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px; 
+	color: #515151;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	text-align: center;
+	vertical-align:middle;
 }
 
-.gwt-Button:active {
-	border: 1px inset #ccc;
-	top: 1px;
-}
-.gwt-Button:hover {
-	border-color: #939393;
-}
-.gwt-Button[disabled] {
-	cursor: default;
-	color: #888;
-}
-.gwt-Button[disabled]:hover {
-	border: 1px outset #ccc;
+.buttonPanel {
+	background-color: #CCC;	
+	background-color: rgba(204, 204, 204, 0.25);
+	font-size: 1em;
+	padding: 0.3em;
+	padding-right: 2em;
+	text-align: right;
+	border: none;
+	-webkit-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);  
 }
 
-
-.searchPanel {
-	background-color: #FFF;
+.buttonPanel .gwt-Button-textButton {
+	margin: 0 0.3em;
+	
 }
 
-.searchpanel hr {
-	margin: 0.5em 0;
+.facebookPanel {
+	height: 2.3em;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.facebookPanel a{
+	top: -0.8em;
+	margin-right: 0.4em;
 } 
 
-.searchPanel .gwt-Button-textButton-resetSearch {
-	float: right;
-}
-
-.searchSettingPanel {
-	clear: both;
-}
-
-.hideShowButton-horizontal {
-	top: 0;
-	left: 0;
-}
-
-.hideShowButton-vertical {
-	top: 0;
-	right: 0.1em;	
-}
-
-.hideShowButton {
-	width: 1.4em;
-	height: 1.4em;
-	position: absolute;
-	z-index: 10;	
-	cursor: pointer;
-	cursor: hand;
-	text-decoration: none;
-	font-size: 1.5em;
-	font-weight: bold;
-	background-color: transparent;
-	color: #555;
-	text-align: center;
-	vertical-align: top;
-	border: none;	
-}
-
-.hideShowButton:active {
-	top: 0.1em;
-}
-
-.hideShowButton:hover {
-	color: #fff;
-}
-
-.hideShowButton:visited {
-	color: #555;
-}
-
-.tableWrapPanel {
-	background-color: transparent;
-}
-
-.tableWrapPanel-collapsed {
-	margin-bottom: 2em;
-	overflow: visible;
-}
-
-.tablePanel {
+.errorPopup {
 	background-color: #FFF;
-	overflow-y: scroll !important;
-	overflow-x: auto;
+	z-index: 110;
 }
 
-.advancedSettingPopup {
-	z-index: 100;
-	padding: 4px 8px 4px 8px;
-	background-color: #FFF;
-	margin: 0;
+.googleMapsInfoWindow {
+	width: 18em;
+	font-size: 11px !important;
+	line-height: 1.5em;
+	padding: 0.5em;
 }
 
-
-.gwt-DialogBox {
-	width: 30%;
-	background-color: #FCFCFC;
-	font-family: Arial, Helvetica, sans-serif;
-	overflow: auto;
-	border: 3px solid #A8A8A8;
-	border-radius: 10px;
-  	-moz-border-radius: 10px;
-  	-webkit-border-radius: 10px;
-}
-
-.gwt-DialogBox .Caption {
-	padding: 0.4em 1em 0.4em 0.4em;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
-	font-weight: bold;
-	-moz-border-radius-topleft: 10px;
-	-webkit-border-top-left-radius: 10px;
-	 border-top-left-radius: 10px;
-	-moz-border-radius-topright: 10px;
-	-webkit-border-top-right-radius: 10px;
-	border-top-right-radius: 10px;	
-	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
-}
-
-.gwt-DialogBox .dialogContent {
-	padding: 8em;
-	font-size: 12px !important;		
-	background-color: #FCFCFC;
-}
-
-.gwt-DialogBox .dialogContent .docContents {
-	padding: 20px;
-	height: 280px;
-	overflow: auto;	
-}
-
-.gwt-DialogBox .dialogContent .gwt-Label {
-	font-size:12px !important;
-}
-
-.gwt-DialogBox .dialogContent .gwt-Button {
-	font-size: 12px !important;
-	float: right;
-	margin: 1em 0.5em;	
-}
-
-.gwt-DialogBox table {
-	width: 100%;
-}
-
-.gwt-PopupPanelGlass {
-	background-color: #000;
-	opacity: 0.3;
-	filter: alpha(opacity=30);
+.googleMapsInfoWindow .infoWindowContent {
+   	white-space: pre-wrap;   
+   	white-space: -moz-pre-wrap;    
+   	white-space: -pre-wrap;     
+   	white-space: -o-pre-wrap;    
+   	word-wrap: break-word;
 }
 
 .gwt-Button-textButton {
@@ -393,59 +350,113 @@ h1 {
 	top: 0.1em;
 }
 
-.facebookPanel {
-	height: 2.3em;
-	white-space: nowrap;
-	text-align: center;
-	vertical-align: middle;
+.gwt-DialogBox .dialogContent .docContents {
+	padding: 20px;
+	height: 280px;
+	overflow: auto;	
 }
 
-.facebookPanel a{
-	top: -0.8em;
-	margin-right: 0.4em;
-} 
-
-.sidePanel {
-	background-color: #FCFCFC;
-	background-color: rgba(252, 252, 252, 0.75);
-	-webkit-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
-	box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
-	overflow-y: auto;
-	overflow-x: auto;
+.gwt-DialogBox .dialogContent .gwt-Label {
+	font-size: 12px !important;
 }
 
-.sidePanel-collapsed {
-	margin-left: 2em;
-	overflow: visible;
+.gwt-DialogBox .dialogContent .gwt-Button {
+	font-size: 12px !important;
+	float: right;
+	margin: 0.5em 0.5em;
 }
 
-.gwt-ToggleButton-up,
-.gwt-ToggleButton-up-hovering,
-.gwt-ToggleButton-up-disabled,
-.gwt-ToggleButton-down,
-.gwt-ToggleButton-down-hovering,
-.gwt-ToggleButton-down-disabled {
+.gwt-DialogBox table {
+	width: 100%;
+}
+
+.gwt-Label-error {
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.gwt-TextBox-before {
+	color: #CCC;
+}
+
+.gwt-TextBox-longer {
+	width: 170px;
+}
+
+.gwt-TextBox-shorter {
+	width: 80px;
+}
+
+.advancedSettingPopup {
+	z-index: 100;
+	padding: 4px 8px 4px 8px;
+	background-color: #FFF;
 	margin: 0;
-	text-decoration: none;
-	float: left;
+}
+
+.hideShowButton {
+	width: 1.4em;
+	height: 1.4em;
+	position: absolute;
+	z-index: 10;	
 	cursor: pointer;
 	cursor: hand;
+	text-decoration: none;
+	font-size: 1.5em;
+	font-weight: bold;
+	background-color: transparent;
+	color: #555;
+	text-align: center;
+	vertical-align: top;
+	border: none;	
 }
 
-.gwt-PushButton-up,
-.gwt-PushButton-up-hovering,
-.gwt-PushButton-up-disabled,
-.gwt-PushButton-down,
-.gwt-PushButton-down-hovering,
-.gwt-PushButton-down-disabled {
-  margin: 0;
-  text-decoration: none;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  cursor: pointer;
-  cursor: hand;
+.hideShowButton-horizontal {
+	top: 0;
+	left: 0;
+}
+
+.hideShowButton-vertical {
+	top: 0;
+	right: 0.1em;	
+}
+
+.hideShowButton:active {
+	top: 0.1em;
+}
+
+.hideShowButton:hover {
+	color: #fff;
+}
+
+.hideShowButton:visited {
+	color: #555;
+}
+
+.mainPanel {
+}
+
+.mapContainerPanel {
+	padding: 1px;
+	overflow: auto;
+}
+
+.menuPanel {
+	padding: 1em 0;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #FCFCFC;
+	background-color: rgba(252, 252, 252, 0.5);
+}
+
+.pager {
+	margin: 0 auto;
+	font-size: 1em;	
+}
+
+.pagerPanel {
+	width: 100%;
+	background-color: #FCFCFC;
 }
 
 .polygonSettingPanel {
@@ -465,26 +476,55 @@ h1 {
 	margin-right: 0.9em;
 }
 
-.buttonPanel {
-	background-color: #CCC;	
-	background-color: rgba(204, 204, 204, 0.25);
-	font-size: 1em;
-	padding: 0.3em;
-	padding-right: 2em;
-	text-align: right;
-	border: none;
-	-webkit-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);
-	box-shadow: inset 0px 1px 6px -2px rgba(0, 0, 0, 0.5);  
+.searchPanel {
+	background-color: #FFF;
 }
 
-.buttonPanel .gwt-Button-textButton {
-	margin: 0 0.3em;
-	
+.searchPanel .gwt-Button-textButton-resetSearch {
+	float: right;
 }
 
-.gwt-ListBox {
-	font-size: 1em;
+.searchpanel hr {
+	margin: 0.5em 0;
+} 
+
+.searchSettingPanel {
+	clear: both;
+}
+
+.searchText {
+	font-size: 1em !important;
+	color: #515151;
+}
+
+.sidePanel {
+	background-color: #FCFCFC;
+	background-color: rgba(252, 252, 252, 0.75);
+	-webkit-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0px 0px 6px -2px rgba(0, 0, 0, 0.5);
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+.sidePanel-collapsed {
+	margin-left: 2em;
+	overflow: visible;
+}
+
+.tablePanel {
+	background-color: #FFF;
+	overflow-y: scroll !important;
+	overflow-x: auto;
+}
+
+.tableWrapPanel {
+	background-color: transparent;
+}
+
+.tableWrapPanel-collapsed {
+	margin-bottom: 2em;
+	overflow: visible;
 }
 
 .userInfoPanel {
@@ -503,29 +543,4 @@ h1 {
 
 .userInfoPanel .gwt-Button {
 	margin: 0.5em auto;
-}
-
-.errorPopup {
-	background-color: #FFF;
-	z-index: 110;
-}
-
-.gwt-TextArea {
-	width: 25em;
-	min-height: 10em;
-}
-
-.googleMapsInfoWindow {
-	width: 18em;
-	font-size: 11px !important;
-	line-height: 1.5em;
-	padding: 0.5em;	
-}
-
-.googleMapsInfoWindow .infoWindowContent {
-   	white-space: pre-wrap;   
-   	white-space: -moz-pre-wrap;    
-   	white-space: -pre-wrap;     
-   	white-space: -o-pre-wrap;    
-   	word-wrap: break-word;	
 }
