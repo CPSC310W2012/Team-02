@@ -674,7 +674,7 @@ public class SearchPanel extends FlowPanel {
 	 * @return boolean value representing if the inputs were all valid
 	 */
 	private boolean validateIndivSearchInput(String criterion, String userInput) {
-		String numericAlert = " must be non-decimal numbers only.\n";
+		String numericAlert = " must be positive non-decimal numbers only.\n";
 		String postalCodeAlert = " is not a valid postal code.\n";
 		String invalidMsg = "";
 		boolean isOK = false;

@@ -69,6 +69,10 @@ public class PropertyMap {
 			public void onClick(MapClickEvent e) {
 				LatLng point = e.getLatLng();
 				if (specifyingRegion) {
+					//clear the region first
+					clearMap();
+					clearMarkers();
+					
 					drawSquare(point);
 					// allow only one square to be drawn at a time
 					setSpecifyingRegion(false);
@@ -108,438 +112,7 @@ public class PropertyMap {
 		map.addControl(new LargeMapControl3D());
 	}
 
-	/**
-	 * Finds the location and plots it on the map changes the street-view too
-	 * 
-	 * @param location
-	 *            - string representation of the address
-	 * @param placeMarker
-	 *            - true if you want to place a marker on map and update
-	 *            streetview, false otherwise.
-	 * @return returns LatLng point
-	 * 
-	 */
-	public LatLng findLocation(final HouseData house, final boolean placeMarker) {
-		final LatLngWrapper llWrap = new LatLngWrapper();
-
-		LatLngCallback callback = new LatLngCallback() {
-
-			public void onFailure() {
-				Window.alert("Location not found");
-			}
-
-			public void onSuccess(LatLng point) {
-				// add the location onto the map
-				// check if it's on sale, true for third param if so.
-				if (placeMarker) {
-					// addSpecialMarker(point, house, house.getIsSelling());
-					//addSpecialMarker(point, house);
-					// refreshStreetView(point);
-					compileMarker(point, house);
-				}
-				llWrap.setResponse(point);
-			}
-		};
-		geocoder = new Geocoder();
-		geocoder.getLatLng(house.getAddress() + " VANCOUVER, BC", callback);
-
-		return llWrap.getLL();
-	}
-
-	/**
-	 * get the lat and long in an array
-	 * 
-	 * @param house
-	 *            houseData object
-	 * @return a size 2 double array of lat and long given the house address -
-	 *         array at index 0 is latitude, array at index 1 is longitude
-	 *         Returns null if the lat and long was not found.
-	 * 
-	 */
-
-	public Double[] getLL(final HouseData house) {
-		Double[] latLong = new Double[2];
-		LatLng point = findLocation(house, false);
-		if (point != null) {
-			latLong[0] = point.getLatitude();
-			latLong[1] = point.getLongitude();
-		} else
-			return null;
-		return latLong;
-	}
-
-	/**
-	 * Reverse geocoding to get the postal Code
-	 * 
-	 * @param address
-	 *            Address of the postal code to be found
-	 * @return postal code
-	 * 
-	 */
-
-	public String getPostalCodeInVancouver(String address) {
-		final PCWrapper pcWrap = new PCWrapper();
-
-		LocationCallback callback = new LocationCallback() {
-
-			public void onFailure(int statusCode) {
-				Window.alert("Failed to geocode position ");
-			}
-
-			public void onSuccess(JsArray<Placemark> locations) {
-				if (locations.length() > 1) {
-					// Window.alert("more than one postal code found");
-				}
-				for (int i = 0; i < locations.length(); ++i) {
-					Placemark location = locations.get(i);
-					String pc = location.getPostalCode();
-					// Window.alert(pc);
-					pcWrap.setPC(pc);
-				}
-			}
-		};
-
-		geocoder = new Geocoder();
-		geocoder.getLocations(address + " VANCOUVER, BC", callback);
-		return pcWrap.getPC();
-	}
-
-	/**
-	 * Adds a marker to the map
-	 * 
-	 * @param point
-	 *            latitude and longitude
-	 * @param location
-	 *            string representation of the location to be displayed in
-	 *            overlay
-	 */
-	private void addMarker(final LatLng point, final String location) {
-		final Marker marker = new Marker(point);
-		map.addOverlay(marker);
-		map.setCenter(point);
-		map.getInfoWindow().open(marker,
-				new InfoWindowContent(location.toLowerCase()));
-		refreshStreetView(point);
-
-		marker.addMarkerClickHandler(new MarkerClickHandler() {
-			public void onClick(MarkerClickEvent event) {
-				try {
-					map.getInfoWindow().open(marker,
-							new InfoWindowContent(location.toLowerCase()));
-					refreshStreetView(point);
-				} catch (Exception e) {
-					Window.alert(e.getMessage());
-				}
-
-			}
-		});
-
-		markers.push(marker);
-	}
-
-	/**
-	 * Adds a marker to the map, if the property is on sale, it will be a green
-	 * marker
-	 * 
-	 * @param point
-	 *            latitude and longitude
-	 * @param location
-	 *            string representation of the location to be displayed in
-	 *            overlay
-	 * @param onSale
-	 *            true if the property is on sale
-	 * 
-	 */
-	private void addSpecialMarker(final LatLng point, final HouseData house) {
-
-		// Set up the marker and Icon
-		Icon icon = setIcon(house.getIsSelling());
-		MarkerOptions options = MarkerOptions.newInstance();
-		options.setIcon(icon);
-
-		final Marker marker = new Marker(point, options);
-		map.addOverlay(marker);
-		map.setCenter(point);
-
-		// Assemble the info window
-		final InfoWindowContent content = buildInfoWindow(house);
-		map.getInfoWindow().open(marker, content);
-
-		refreshStreetView(point);
-
-		// Click handler for each marker
-		marker.addMarkerClickHandler(new MarkerClickHandler() {
-			public void onClick(MarkerClickEvent event) {
-				try {
-					map.getInfoWindow().open(marker, content);
-					refreshStreetView(point);
-				} catch (Exception e) {
-					Window.alert(e.getMessage());
-				}
-
-			}
-		});
-
-		markers.push(marker);
-	}
-
-	/**
-	 * Assembles the info window for a marker given the house point
-	 * 
-	 * @param house
-	 *            HouseData point
-	 * @return InfoWindowContent either with one or two tabs
-	 */
-
-	private InfoWindowContent buildInfoWindow(HouseData house) {
-		InfoWindowContent iw;
-		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
-		// Show additional information if the house is being sold
-		if (house.getIsSelling()) {
-			FlowPanel secondTab = getContactInfoMarkerPanel(house);
-			iw = getInfoWindowTabs(firstTab, secondTab);
-		} else
-			iw = new InfoWindowContent(firstTab);
-
-		return iw;
-	}
 	
-	
-	private InfoWindowContent buildInfoWindow(LoginInfo user, HouseData house) {
-		InfoWindowContent iw;
-		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
-		// Show additional information if the house is being sold
-		if (house.getIsSelling()) {
-			FlowPanel secondTab = getContactInfoMarkerPanel(user);
-			iw = getInfoWindowTabs(firstTab, secondTab);
-		} else
-			iw = new InfoWindowContent(firstTab);
-
-		return iw;
-	}
-	
-
-	/**
-	 * if a property is on sale, the icon is set to real estate icon otherwise
-	 * the icon is set to a normal red marker
-	 * 
-	 * 
-	 * @param onSale
-	 * @return Icon
-	 */
-	private Icon setIcon(boolean onSale) {
-		// Set the icon
-		Icon icon;
-		String onSaleIconImgLink = "images/MapStuff/realestate.png";
-		String onSaleIconShadowLink = "images/MapStuff/realestate.shadow.png";
-		String normalIconImgLink = "images/MapStuff/red-dot.png";
-		String normalIconShadowLink = "images/MapStuff/msmarker.shadow.png";
-
-		// marker is a for sale sign if it's on sale, red otherwise
-		if (onSale) {
-			icon = Icon.newInstance(onSaleIconImgLink);
-			icon.setShadowURL(onSaleIconShadowLink);
-		} else {
-			icon = Icon.newInstance(normalIconImgLink);
-			icon.setShadowURL(normalIconShadowLink);
-		}
-		icon.setIconAnchor(Point.newInstance(6, 20));
-		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-
-		return icon;
-	}
-
-	/**
-	 * 
-	 * Takes in two vertical panels and puts them together
-	 * 
-	 * @param firstTab
-	 *            first tab content
-	 * @param secondTab
-	 *            second tab content
-	 * 
-	 */
-
-	private InfoWindowContent getInfoWindowTabs(FlowPanel firstTab,
-			FlowPanel secondTab) {
-
-		InfoWindowTab tabs[] = new InfoWindowTab[2];
-
-		tabs[0] = new InfoWindowTab("Info", firstTab);
-		tabs[1] = new InfoWindowTab("Contact", secondTab);
-		final InfoWindowContent content = new InfoWindowContent(tabs, 0);
-		return content;
-	}
-
-	/**
-	 * 
-	 * Takes in house data object and adds house info into panel
-	 * 
-	 * @param house
-	 *            the house object
-	 * 
-	 */
-
-	private FlowPanel getHouseInfoMarkerPanel(HouseData house) {
-		FlowPanel markerInfoWindow = new FlowPanel();
-		HTML htmlWidget;
-		// If the house is on sale, provide extra field for sale price and
-		// realtor information
-		if (house.getIsSelling()) {
-			// TODO: isSelling field for a house is not set when realtor edits
-			// on table
-			// need to add event handler and modify houseData point
-			htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
-					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
-					+ "</br>" + "<b>Current Land Value: </b>"
-					+ house.getCurrentLandValue() + "</br>"
-					+ "<b>Year built: </b>" + house.getYearBuilt() + "</br>"
-					+ "<b>Selling Price: </b>" + house.getPrice() + "</br>"
-					+ "</p></div>");
-		} else {
-			htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
-					+ "<b>Address: </b>" + house.getAddress().toLowerCase()
-					+ "</br>" + "<b>Current Land Value: </b>"
-					+ house.getCurrentLandValue() + "</br>"
-					+ "<b>Year built: </b>" + house.getYearBuilt() + "</p></div>");
-		}
-
-		markerInfoWindow.add(htmlWidget);
-
-		String shareURL = generateShareURL(house);
-		ShareButton shareBtn = new ShareButton(shareURL, "");
-		markerInfoWindow.add(shareBtn);
-
-		return markerInfoWindow;
-	}
-
-	/**
-	 * 
-	 * Get Realtor information. Assumes the house is being sold and realtor
-	 * information is available
-	 * 
-	 * @param house
-	 *            the house object
-	 * @return VerticalPanel containing the marker InfoWindow
-	 * 
-	 */
-
-	private FlowPanel getContactInfoMarkerPanel(HouseData house) {
-		FlowPanel markerInfoWindow = new FlowPanel();
-		final HTML htmlWidget;
-		final String email = house.getOwner();
-	 
-		//fail
-		LoginInfo user = new LoginInfo();
-		
-				//Window.alert("found user: " + user.getEmailAddress());
-				if (user != null) {
-					String realtor = user.getNickname();
-					long phoneNumber = user.getphoneNumber();
-					String website = user.getWebsite();
-					String description = user.getDescription();
-
-					htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
-							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
-							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p></div>");
-				} else {
-					String realtor = "Temporary Name";
-					String phoneNumber = "6042534432";
-					String website = "www.google.com";
-					String description = "Hello, please contact me for real estates" +
-							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
-					
-
-					htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
-							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
-							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p></div>");
-				}
-			
-
-		markerInfoWindow.add(htmlWidget);
-		markerInfoWindow.setWidth("150px");
-		return markerInfoWindow;
-	}
-
-	
-	private FlowPanel getContactInfoMarkerPanel(LoginInfo theUser) {
-		FlowPanel markerInfoWindow = new FlowPanel();
-		final HTML htmlWidget;
-	 
-		//fail
-		LoginInfo user = theUser;
-		
-				//Window.alert("found user: " + user.getEmailAddress());
-				if (user != null) {
-					String email = user.getEmailAddress();
-					String realtor = user.getNickname();
-					long phoneNumber = user.getphoneNumber();
-					String website = user.getWebsite();
-					String description = user.getDescription();
-					String phone;
-					
-					if(phoneNumber == 0)
-						phone = "";
-					else phone = phoneNumber + "";
-					
-					if(website == null)
-						website = "";
-					if(description == null)
-						description = "";
-
-					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
-							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-							+ email + "</br>" + "<b>Phone: </b>" + phone
-							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p>");
-				} else {
-					String email = "temp@email.com";
-					String realtor = "Temporary Name";
-					String phoneNumber = "6042534432";
-					String website = "www.google.com";
-					String description = "Hello, please contact me for real estates" +
-							"fjdsaljfldsajfdsfdlj long string here fjlksjfklsajfdsklfjdfds";
-					
-
-					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
-							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
-							+ "</br>" + "<b>Website: </b>" + website + "</br>"
-							+ "<b>About: </b>" + description + "</br>" + "</p>");
-				}
-			
-
-		markerInfoWindow.add(htmlWidget);
-		markerInfoWindow.setWidth("150px");
-		return markerInfoWindow;
-	}
-	
-	
-	
-	
-	
-	public LoginInfo getUser(String userEmail) {
-		final LoginWrapper loginWrap = new LoginWrapper();
-		// add the user if not already in db
-		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-				Window.alert("could not find user in DB - getUser method in property maps");
-			}
-			public void onSuccess(LoginInfo user) {
-				Window.alert("found user: " + user.getEmailAddress());
-				loginWrap.setLogin(user);
-			}
-		};
-		loginService.getUser(userEmail, userCallback);
-
-		return loginWrap.getLogin();
-	}
-
 	/**
 	 * Changes streetview location given location coordinates
 	 * 
@@ -561,7 +134,7 @@ public class PropertyMap {
 					}
 				});
 	}
-
+	
 	/**
 	 * Changes streetview location given location coordinates
 	 * 
@@ -630,6 +203,279 @@ public class PropertyMap {
 		return this.panorama;
 	}
 
+	
+	/**
+	 * Finds the location and plots it on the map changes the street-view too
+	 * 
+	 * @param location
+	 *            - string representation of the address
+	 * @param placeMarker
+	 *            - true if you want to place a marker on map and update
+	 *            streetview, false otherwise.
+	 * @return returns LatLng point
+	 * 
+	 */
+	public LatLng findLocation(final HouseData house, final boolean placeMarker) {
+		final LatLngWrapper llWrap = new LatLngWrapper();
+
+		LatLngCallback callback = new LatLngCallback() {
+
+			public void onFailure() {
+				Window.alert("Location not found");
+			}
+
+			public void onSuccess(LatLng point) {
+				// add the location onto the map
+				if (placeMarker) {
+					compileMarker(point, house);
+				}
+				llWrap.setResponse(point);
+			}
+		};
+		geocoder = new Geocoder();
+		geocoder.getLatLng(house.getAddress() + " VANCOUVER, BC", callback);
+
+		return llWrap.getLL();
+	}
+
+	/**
+	 * 
+	 * Compiles the marker with the infowindow and adds it to the map
+	 * 
+	 * @param point latlng point
+	 * @param house houseData object
+	 * 
+	 */
+	private void compileMarker(final LatLng point, final HouseData house) {
+		Icon icon = setIcon(house.getIsSelling());
+		MarkerOptions options = MarkerOptions.newInstance();
+		options.setIcon(icon);
+		final Marker marker = new Marker(point, options);
+		map.addOverlay(marker);
+		map.setCenter(point);
+		
+		if (house.getIsSelling()) {
+			AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
+				public void onFailure(Throwable caught) {
+					Window.alert("error trying to get user: propertyMap.java");
+				}
+
+				public void onSuccess(LoginInfo user) {
+					// Assemble the info window
+					final InfoWindowContent content = buildInfoWindow(user, house);
+					map.getInfoWindow().open(marker, content);
+
+					// Click handler for each marker
+					marker.addMarkerClickHandler(new MarkerClickHandler() {
+						public void onClick(MarkerClickEvent event) {
+							try {
+								map.getInfoWindow().open(marker, content);
+								refreshStreetView(point);
+							} catch (Exception e) {
+								Window.alert(e.getMessage());
+							}
+
+						}
+					});
+					markers.push(marker);
+				}
+			};
+			// Window.alert("getting user from db: " + house.getOwner());
+			loginService.getUser(house.getOwner(), userCallback);
+
+		} else // house is not being sold
+		{
+			// Assemble the info window
+			final InfoWindowContent content = buildInfoWindow(null, house);
+			map.getInfoWindow().open(marker, content);
+
+			// Click handler for each marker
+			marker.addMarkerClickHandler(new MarkerClickHandler() {
+				public void onClick(MarkerClickEvent event) {
+					try {
+						map.getInfoWindow().open(marker, content);
+						refreshStreetView(point);
+					} catch (Exception e) {
+						Window.alert(e.getMessage());
+					}
+
+				}
+			});
+			markers.push(marker);
+		}
+		refreshStreetView(point);
+	}
+	
+	/**
+	 * Assembles the info window for a marker given the house point
+	 * 
+	 * @param house
+	 *            HouseData point
+	 * @param realtor
+	 *            LoginInfo - the realtor in charge of the house
+	 * 
+	 * @return InfoWindowContent either with one or two tabs
+	 */
+	private InfoWindowContent buildInfoWindow(LoginInfo realtor, HouseData house) {
+		InfoWindowContent iw;
+		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
+		// Show additional information if the house is being sold
+		if (house.getIsSelling()) {
+			FlowPanel secondTab = getContactInfoMarkerPanel(realtor);
+			iw = getInfoWindowTabs(firstTab, secondTab);
+		} else
+			iw = new InfoWindowContent(firstTab);
+
+		return iw;
+	}
+
+	/**
+	 * if a property is on sale, the icon is set to real estate icon otherwise
+	 * the icon is set to a normal red marker
+	 * 
+	 * 
+	 * @param onSale
+	 * @return Icon
+	 */
+	private Icon setIcon(boolean onSale) {
+		// Set the icon
+		Icon icon;
+		String onSaleIconImgLink = "images/MapStuff/realestate.png";
+		String onSaleIconShadowLink = "images/MapStuff/realestate.shadow.png";
+		String normalIconImgLink = "images/MapStuff/red-dot.png";
+		String normalIconShadowLink = "images/MapStuff/msmarker.shadow.png";
+
+		// marker is a for sale sign if it's on sale, red otherwise
+		if (onSale) {
+			icon = Icon.newInstance(onSaleIconImgLink);
+			icon.setShadowURL(onSaleIconShadowLink);
+		} else {
+			icon = Icon.newInstance(normalIconImgLink);
+			icon.setShadowURL(normalIconShadowLink);
+		}
+		icon.setIconAnchor(Point.newInstance(6, 20));
+		icon.setInfoWindowAnchor(Point.newInstance(5, 1));
+
+		return icon;
+	}
+
+	/**
+	 * 
+	 * Takes in two vertical panels and puts them together
+	 * 
+	 * @param firstTab
+	 *            first tab content
+	 * @param secondTab
+	 *            second tab content
+	 * 
+	 */
+
+	private InfoWindowContent getInfoWindowTabs(FlowPanel firstTab,
+			FlowPanel secondTab) {
+
+		InfoWindowTab tabs[] = new InfoWindowTab[2];
+
+		tabs[0] = new InfoWindowTab("Info", firstTab);
+		tabs[1] = new InfoWindowTab("Contact", secondTab);
+		final InfoWindowContent content = new InfoWindowContent(tabs, 0);
+		return content;
+	}
+
+	/**
+	 * 
+	 * Takes in house data object and adds house info into panel
+	 * 
+	 * @param house
+	 *            the house object
+	 * 
+	 */
+
+	private FlowPanel getHouseInfoMarkerPanel(HouseData house) {
+		FlowPanel markerInfoWindow = new FlowPanel();
+		HTML htmlWidget;
+		// If the house is on sale, provide extra field for sale price and
+		if (house.getIsSelling()) {
+			htmlWidget = new HTML(
+					"<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
+							+ "<b>Address: </b>"
+							+ house.getAddress().toLowerCase() + "</br>"
+							+ "<b>Current Land Value: </b>"
+							+ house.getCurrentLandValue() + "</br>"
+							+ "<b>Year built: </b>" + house.getYearBuilt()
+							+ "</br>" + "<b>Selling Price: </b>"
+							+ house.getPrice() + "</br>" + "</p></div>");
+		} else { // show less information if it's not on sale
+			htmlWidget = new HTML(
+					"<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
+							+ "<b>Address: </b>"
+							+ house.getAddress().toLowerCase() + "</br>"
+							+ "<b>Current Land Value: </b>"
+							+ house.getCurrentLandValue() + "</br>"
+							+ "<b>Year built: </b>" + house.getYearBuilt()
+							+ "</p></div>");
+		}
+
+		markerInfoWindow.add(htmlWidget);
+
+		String shareURL = generateShareURL(house);
+		ShareButton shareBtn = new ShareButton(shareURL, "");
+		markerInfoWindow.add(shareBtn);
+
+		return markerInfoWindow;
+	}
+
+	 /**
+	 *
+	 * Get Realtor information. Assumes the house is being sold and realtor
+	 * information is available
+	 *
+	 * @param theUser  the realtor in charge of
+	 * the house object
+	 * @return flowPanel containing the marker InfoWindow
+	 *
+	 */
+	private FlowPanel getContactInfoMarkerPanel(LoginInfo theUser) {
+		FlowPanel markerInfoWindow = new FlowPanel();
+		final HTML htmlWidget;
+		LoginInfo user = theUser;
+
+		String email;
+		String realtor;
+		long phoneNumber;
+		String website;
+		String description;
+		String phone;
+		
+		if (user != null) {
+			email = user.getEmailAddress();
+			realtor = user.getNickname();
+			phoneNumber = user.getphoneNumber();
+			website = user.getWebsite();
+			description = user.getDescription();
+
+			if (phoneNumber == 0 || phoneNumber < 10) phone = "";
+			else phone = phoneNumber + "";
+			if (website == null || website.length() < 1) website = "";
+			if (description == null) description = "";
+		} 
+		else {
+			email = "";
+			realtor = "";
+			phone = "";
+			website = "";
+			description = "";
+		}
+		htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+				+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
+				+ email + "</br>" + "<b>Phone: </b>" + phone + "</br>"
+				+ "<b>Website: </b>" + website + "</br>" + "<b>About: </b>"
+				+ description + "</br>" + "</p>");
+
+		markerInfoWindow.add(htmlWidget);
+		markerInfoWindow.setWidth("150px");
+		return markerInfoWindow;
+	}
+
 	/**
 	 * 
 	 * Allows the user to edit the last drawn polygon
@@ -674,6 +520,7 @@ public class PropertyMap {
 	 * 
 	 * @param point
 	 *            the point to check if it is in the polygon
+	 * @return true if the point is in the polygon, false otherwise
 	 * 
 	 */
 	boolean isPointInPolygon(LatLng point) {
@@ -866,108 +713,6 @@ public class PropertyMap {
 		}
 	}
 
-	// Wrapper class for postalCode
-	class PCWrapper {
-		String thePC;
-
-		void setPC(String pc) {
-			this.thePC = pc;
-		}
-
-		String getPC() {
-			return thePC;
-		}
-	}
-
-	// Wrapper class for LoginInfo
-	class LoginWrapper {
-		LoginInfo theLogin;
-
-		void setLogin(LoginInfo login) {
-			this.theLogin = login;
-		}
-
-		LoginInfo getLogin() {
-			//if(theLogin == null)Window.alert("returning null user from getLogin wrapper");
-			return theLogin;
-		}
-	}
-	
-	
-	
-	
-	private void compileMarker(final LatLng point, final HouseData house) {
 
 
-		if(house.getIsSelling()){
-		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
-			public void onFailure(Throwable caught) {
-				Window.alert("error trying to get user: propertyMap.java");
-			}
-			public void onSuccess(LoginInfo user) {
-				//Window.alert("found user: " + user.getEmailAddress());
-				// Set up the marker and Icon
-				Icon icon = setIcon(house.getIsSelling());
-				MarkerOptions options = MarkerOptions.newInstance();
-				options.setIcon(icon);
-				final Marker marker = new Marker(point, options);
-				map.addOverlay(marker);
-				map.setCenter(point);
-
-				// Assemble the info window
-				final InfoWindowContent content = buildInfoWindow(user, house);
-				map.getInfoWindow().open(marker, content);
-
-				refreshStreetView(point);
-
-				// Click handler for each marker
-				marker.addMarkerClickHandler(new MarkerClickHandler() {
-					public void onClick(MarkerClickEvent event) {
-						try {
-							map.getInfoWindow().open(marker, content);
-							refreshStreetView(point);
-						} catch (Exception e) {
-							Window.alert(e.getMessage());
-						}
-
-					}
-				});
-				markers.push(marker);
-			}
-		};
-		//Window.alert("getting user from db: " + house.getOwner());
-		loginService.getUser(house.getOwner(), userCallback);	
-	
-	}
-	else // house is not being sold
-	{	
-		// Set up the marker and Icon
-		Icon icon = setIcon(house.getIsSelling());
-		MarkerOptions options = MarkerOptions.newInstance();
-		options.setIcon(icon);
-		final Marker marker = new Marker(point, options);
-		map.addOverlay(marker);
-		map.setCenter(point);
-
-		// Assemble the info window
-		final InfoWindowContent content = buildInfoWindow(null, house);
-		map.getInfoWindow().open(marker, content);
-
-		refreshStreetView(point);
-
-		// Click handler for each marker
-		marker.addMarkerClickHandler(new MarkerClickHandler() {
-			public void onClick(MarkerClickEvent event) {
-				try {
-					map.getInfoWindow().open(marker, content);
-					refreshStreetView(point);
-				} catch (Exception e) {
-					Window.alert(e.getMessage());
-				}
-
-			}
-		});
-		markers.push(marker);
-	}
-	}
 }
