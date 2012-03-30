@@ -75,8 +75,28 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// reduction factors (avg case) = houseID > Street > Civic Number >
 		// Postal Code > Realtor > Price > Is Selling > Values > Years > Not
 		// Selling
-		
-		System.out.println("Normal Search");
+
+		// TODO: Remove debugging purposes
+		System.out.println(0 + " " + userSearchInput[0]);
+		System.out.println(1 + " " + userSearchInput[1]);
+		System.out.println(2 + " " + userSearchInput[2] + " " + 3 + " "
+				+ userSearchInput[3]);
+		System.out.println(4 + " " + userSearchInput[4] + " " + 5 + " "
+				+ userSearchInput[5]);
+		System.out.println(6 + " " + userSearchInput[6]);
+		System.out.println(7 + " " + userSearchInput[7]);
+		System.out.println(8 + " " + userSearchInput[8] + " " + 9 + " "
+				+ userSearchInput[9]);
+		System.out.println(10 + " " + userSearchInput[10] + " " + 11 + " "
+				+ userSearchInput[11]);
+		System.out.println(12 + " " + userSearchInput[12] + " " + 13 + " "
+				+ userSearchInput[13]);
+		System.out.println(14 + " " + userSearchInput[14] + " " + 15 + " "
+				+ userSearchInput[15]);
+		System.out.println(16 + " " + userSearchInput[16] + " " + 17 + " "
+				+ userSearchInput[17]);
+		System.out.println(18 + " " + userSearchInput[18] + " " + 19 + " "
+				+ userSearchInput[19]);
 
 		Set<String> results = store.getAllKeysSet();
 
@@ -316,11 +336,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	public void searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude) {
 		System.out.println("Polygon Search");
-		
+
 		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
 		firstPassSearch(userSearchInput, results);
 		secondPassSearch(userSearchInput, results);
-		
+
 		// convert to array
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
@@ -376,6 +396,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 					Integer.parseInt(userSearchInput[8]),
 					Integer.parseInt(userSearchInput[9])));
 		}
+		if (!userSearchInput[10].equals("") && !userSearchInput[11].equals("")) {
+			results.retainAll(store.searchByAssessmentYear(
+					Integer.parseInt(userSearchInput[10]),
+					Integer.parseInt(userSearchInput[11])));
+		}
 		if (!userSearchInput[12].equals("") && !userSearchInput[13].equals("")) {
 			results.retainAll(store.searchByPreviousLandValue(
 					Integer.parseInt(userSearchInput[12]),
@@ -385,6 +410,11 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 			results.retainAll(store.searchByPreviousImprovementValue(
 					Integer.parseInt(userSearchInput[14]),
 					Integer.parseInt(userSearchInput[15])));
+		}
+		if (!userSearchInput[16].equals("") && !userSearchInput[17].equals("")) {
+			results.retainAll(store.searchByBigImprovementYear(
+					Integer.parseInt(userSearchInput[16]),
+					Integer.parseInt(userSearchInput[17])));
 		}
 		return results;
 	}
