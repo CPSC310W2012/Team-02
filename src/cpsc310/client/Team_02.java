@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -50,13 +51,14 @@ public class Team_02 implements EntryPoint {
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
-	private UserInfoPanel userInfoPanel;
+	private UserInfoPanel userInfoPanel;	
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
 	 * asynchronous request to login service, UI is built.
 	 */
 	public void onModuleLoad() {
+		
 		// Check login status using login service.
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
@@ -133,13 +135,14 @@ public class Team_02 implements EntryPoint {
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
+
+		// Inject css
+		MainResources.INSTANCE.css().ensureInjected();		
 		
 		// Associate Main panel with the HTML host page
+		RootPanel.get("loading").removeFromParent();
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);
-		
-		// Inject css
-		MainResources.INSTANCE.css().ensureInjected();
 	}
 
 	/**
