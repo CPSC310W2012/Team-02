@@ -465,11 +465,11 @@ public class PropertyMap {
 			website = "";
 			description = "";
 		}
-		htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
+		htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
 				+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 				+ email + "</br>" + "<b>Phone: </b>" + phone + "</br>"
 				+ "<b>Website: </b>" + website + "</br>" + "<b>About: </b>"
-				+ description + "</br>" + "</p>");
+				+ description + "</br>" + "</p></div>");
 
 		markerInfoWindow.add(htmlWidget);
 		markerInfoWindow.setWidth("150px");
