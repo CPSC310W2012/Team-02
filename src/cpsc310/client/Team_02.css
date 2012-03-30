@@ -325,32 +325,43 @@ a:active {
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
 	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
+	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
+	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
+	background: literal("-webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType = 0 )");	
 }
 
 .gwt-DialogBox .dialogContent {
-	padding: 20px;
+	padding: 10px;
 	font-size: 12px !important;	
+	background-color: #FCFCFC;
+}
+
+.gwt-DialogBox .docContents {
+	padding: 20px;
+	height: 280px;
+	overflow: auto;	
 }
 
 .gwt-DialogBox .dialogContent .gwt-Label {
-	font-size:12px !important;
+	font-size: 12px !important;
 }
 
 .gwt-DialogBox .dialogContent .gwt-Button {
-	font-size:12px !important;
+	font-size: 12px !important;
+	float: right;
+	margin: 5px 3px;
 }
 
 .editDialog {
+	width: 30%;	
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
 	font-family: Arial, Helvetica, sans-serif;
+	overflow: auto;	
 }
 
 .editDialog .Caption {
@@ -361,18 +372,19 @@ a:active {
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
 	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
+	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
+	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
+	background: literal("-webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType=0 )");
 }
 
 .editPanel .dialogContent {
 	padding: 2em;
 	font-size: 12px !important;
+	background-color: #FCFCFC;
 }
 
 
@@ -393,7 +405,7 @@ a:active {
 .gwt-PopupPanelGlass {
 	background-color: #000;
 	opacity: 0.3;
-	filter: alpha(opacity=30);
+	filter: literal("alpha(opacity = 30)");
 }
 
 .gwt-Button-textButton {
@@ -533,21 +545,16 @@ a:active {
 }
 
 .gmnoprint {
-	font-size: 12px !important;
-	white-space: pre-wrap;   
+   font-size: 12px !important;
+   white-space: pre-wrap;   
    white-space: -moz-pre-wrap;    
    white-space: -pre-wrap;     
    white-space: -o-pre-wrap;    
    word-wrap: break-word;
+   line-height: 1.5em;
 }
 
-.gmnoprint table{
-	font-size: 12px !important;
-	line-height: 1.5em;
-}
-
-.gmnoprint table a {
-	vertical-align: middle;
-	font-size: 12px !important;
-	margin-top: 10px;
+.gmnoprint .wordwrap{
+	height: 50%;
+	overflow: auto;
 }

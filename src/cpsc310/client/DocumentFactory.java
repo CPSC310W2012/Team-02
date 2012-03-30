@@ -19,7 +19,6 @@ public class DocumentFactory {
 	 */
 	public HTML createHelpDocument() {
 		HTML helpDoc = new HTML(
-		"<div>" +
 			"<span>" +
 			"1) How to register as a Realtor?<br><br>" +
 			"Login with your Google Account credentials.  Click on the \"Register Me\" button.  Fill out the required information and click Submit.<br><br>" +
@@ -43,8 +42,7 @@ public class DocumentFactory {
 			"Both the search panel and the table in our application can be collapsed.  A minimize button can be found at the top right of the search panel and another one can be found at the top left of the table.  In addition, the amount of space that the Google Map and Street View take can be adjusted by sliding the grey vertical bar that separates them.<br><br>" +
 			"11) Are there any policies or rules that I should be aware of?<br><br>" +
 			"This important information can be found in the link to our Terms of Use page." +
-			"</span>" +
-		"</div>");
+			"</span>");
 		helpDoc.setWordWrap(true);
 		return helpDoc;
 	}
@@ -57,14 +55,12 @@ public class DocumentFactory {
 	 */
 	public HTML createTermsDoc() {
 		HTML termsDoc = new HTML(
-		"<div>" +
 			"<span>" +
 				"Disclaimer: This application was solely produced for educational purposes.  We are not responsible for how the data is used.  In addition, there is no moderator for this application in any aspect, including the purchase of houses; in other words, we are not responsible for how users interact with the application as well as between each other.<br><br>" +
 				"By using the information in this application, you also agree to the terms in the following document online:<br><br>" +
 				"<center><a href=http://data.vancouver.ca/termsOfUse.htm>Data Vancouver Terms of Use</a></center><br><br>" +
 				"This document can be viewed at any time by clicking the \"Terms of Use\" link found on the application." +
-			"</span>" +
-		"</div>");
+			"</span>");
 		termsDoc.setWordWrap(true);
 		return termsDoc;
 	}
