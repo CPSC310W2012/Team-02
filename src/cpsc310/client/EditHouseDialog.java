@@ -26,8 +26,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * selecting only one house is done in the caller's class.
  */
 public class EditHouseDialog extends DialogBox {
-	private HouseDataServiceAsync houseDataSvc = GWT
-			.create(HouseDataService.class);
+	private HouseDataServiceAsync houseDataSvc;
 	private HouseData selectedHouse;
 	private LoginInfo loginInfo;
 	private PropertyMap map;
@@ -54,7 +53,7 @@ public class EditHouseDialog extends DialogBox {
 	 *            - table in the caller class
 	 */
 	public EditHouseDialog(HouseData selectedHouse, LoginInfo loginInfo,
-			PropertyMap map, HouseTable table) {
+			PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc) {
 		FlowPanel editPanel = new FlowPanel();
 
 		editPanel.addStyleDependentName("editPanel");
@@ -64,6 +63,7 @@ public class EditHouseDialog extends DialogBox {
 		this.loginInfo = loginInfo;
 		this.map = map;
 		this.table = table;
+		this.houseDataSvc = houseDataSvc;
 
 		// Build dialog contents
 		buildEditPanel(editPanel);

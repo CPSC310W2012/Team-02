@@ -41,8 +41,9 @@ public class SearchPanel extends FlowPanel {
 	private final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 	private final ListBox addressDropDown = new ListBox(false);
 	private List<String> addresses = new ArrayList<String>();
-	private HouseDataServiceAsync houseDataSvc = GWT
-			.create(HouseDataService.class);
+//	private HouseDataServiceAsync houseDataSvc = GWT
+//			.create(HouseDataService.class);
+	private HouseDataServiceAsync houseDataSvc;
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	// ORDER OF THESE VALUES MATTER! BECAREFUL!
 	private String[] searchCriteria = { "Street Number", "Street Name",
@@ -66,7 +67,8 @@ public class SearchPanel extends FlowPanel {
 	 * @param table
 	 *            - table that appears in caller's class
 	 */
-	public SearchPanel(PropertyMap map, HouseTable table) {
+	public SearchPanel(PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc) {
+		this.houseDataSvc = houseDataSvc;
 		final FlowPanel searchSettingPanel = new FlowPanel();
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
 		final FlowPanel advancedSettingPanel = new FlowPanel();

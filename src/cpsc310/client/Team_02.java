@@ -585,7 +585,7 @@ public class Team_02 implements EntryPoint {
 	 *            - tab panel to wrap the widgets
 	 */
 	private void buildSideTabPanel(final TabLayoutPanel sidebarTabPanel) {
-		SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
+		SearchPanel searchPanel = new SearchPanel(theMap, houseTable, houseDataSvc);
 
 		// Add Widgets to the tab panel
 		sidebarTabPanel.add(searchPanel, "Search");
@@ -682,7 +682,7 @@ public class Team_02 implements EntryPoint {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				if (selectedHouse != null) {
 					EditHouseDialog editDialog = new EditHouseDialog(selectedHouse,
-							loginInfo, theMap, houseTable);
+							loginInfo, theMap, houseTable, houseDataSvc);
 					editDialog.center();
 					editDialog.show();
 				}
