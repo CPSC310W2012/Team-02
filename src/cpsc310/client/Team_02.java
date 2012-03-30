@@ -102,7 +102,6 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildUI() {
 		
-		
 		// Initialize the map
 		theMap = new PropertyMap(vancouver);
 		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
@@ -124,6 +123,9 @@ public class Team_02 implements EntryPoint {
 		// Associate Main panel with the HTML host page
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);
+		
+		// Inject css
+		MainResources.INSTANCE.css().ensureInjected();
 	}
 
 	/**
