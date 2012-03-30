@@ -319,6 +319,7 @@ public class PropertyMap {
 	private InfoWindowContent buildInfoWindow(LoginInfo realtor, HouseData house) {
 		InfoWindowContent iw;
 		FlowPanel firstTab = getHouseInfoMarkerPanel(house);
+		firstTab.setHeight("135px");
 		// Show additional information if the house is being sold
 		if (house.getIsSelling()) {
 			FlowPanel secondTab = getContactInfoMarkerPanel(realtor);
