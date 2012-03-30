@@ -628,7 +628,7 @@ public class SearchPanel extends FlowPanel {
 
 		for (String criterion : searchCriteria) {
 			if (validateIndivSearchInput(criterion, userSearchInput[i]) == false) {
-				isOK = false;			
+				isOK = false;
 			}
 			if (criterion.endsWith("For Sale")) {
 			} else if (criterion.endsWith("Number")) {
@@ -636,7 +636,8 @@ public class SearchPanel extends FlowPanel {
 				i++;
 			} else if (criterion.endsWith("Value")
 					|| criterion.endsWith("Price")
-					|| criterion.endsWith("Year")) {
+					|| criterion.endsWith("Year")
+					|| criterion.startsWith("Year")) {
 				if ((userSearchInput[i].equals("") && !userSearchInput[i + 1]
 						.equals(""))
 						|| (!userSearchInput[i].equals("") && userSearchInput[i + 1]
@@ -646,7 +647,7 @@ public class SearchPanel extends FlowPanel {
 					errorMsg.setText(invalidMsg);
 				} else if (userSearchInput[i].equals("")
 						|| userSearchInput[i + 1].equals("")) {
-					
+
 				} else if (Integer.parseInt(userSearchInput[i]) > Integer
 						.parseInt(userSearchInput[i + 1])) {
 					invalidMsg = invalidMsg + criterion + greaterThanError;
@@ -657,10 +658,8 @@ public class SearchPanel extends FlowPanel {
 			} else {
 				i++;
 			}
-			
 		}
-		
-			
+
 		if (isOK == false) {
 			errorPopup.showRelativeTo(searchBtn);
 		} else {
@@ -688,19 +687,22 @@ public class SearchPanel extends FlowPanel {
 		boolean isOK = false;
 
 		if (criterion.endsWith("Value") || criterion.endsWith("Price")
-				|| criterion.endsWith("Number") || criterion.endsWith("Year")) {
+				|| criterion.endsWith("Number") || criterion.endsWith("Year")
+				|| criterion.startsWith("Year")) {
 			if (userInput.matches("^\\d*$")) {
 				isOK = true;
 			} else {
 				invalidMsg = criterion + numericAlert;
 			}
-		} else if (criterion.equals("Postal Code")) {
-			if (userInput
-					.matches("|^[ABCEGHJKLMNPRSTVXY]{1}\\d{1}[A-Z]{1} \\d{1}[A-Z]{1}\\d{1}$")) {
-				isOK = true;
-			} else {
-				invalidMsg = criterion + postalCodeAlert;
-			}
+			// } else if (criterion.equals("Postal Code")) {
+			// //TODO fix validation; commented out because cannot get working
+			// before demo
+			// if (userInput
+			// .matches("|^[ABCEGHJKLMNPRSTVXY][0-9][A-Z] [0-9][A-Z][0-9]$")) {
+			// isOK = true;
+			// } else {
+			// invalidMsg = criterion + postalCodeAlert;
+			// }
 		} else {
 			isOK = true;
 		}
