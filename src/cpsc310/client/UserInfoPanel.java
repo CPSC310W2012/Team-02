@@ -55,7 +55,6 @@ public class UserInfoPanel extends FlowPanel {
 	 * Add user info to the panel
 	 */
 	private void addUserInfo() {
-		Window.alert("adding userinfo to panel");
 		Label userName = new Label("");
 		Label userEmail = new Label("");
 		userPhoneNumber = new Label("");		
