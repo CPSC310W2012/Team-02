@@ -15,10 +15,20 @@
     <link href='http://fonts.googleapis.com/css?family=Glegoo' rel='stylesheet' type='text/css'>
     
 	<!--Site favicon-->
-	<link rel="shortcut icon" href="/favicon.ico" />    
+	<link rel="shortcut icon" href="/favicon.ico" />  
+	
+    <style type="text/css">
+		#loading {
+			text-align:center;
+			vertical-align: middle;
+			padding: 10em;
+			margin: 20em auto;
+			background-color: #FCFCFC;
+		}
+    </style>	  
 
     <!--Title that appears on the browser window-->
-    <title>iVanHomesPrices</title>    
+    <title>iVanHomesPrices</title>       
     
     <script type="text/javascript" language="javascript" src="team_02/team_02.nocache.js"></script>
   </head>
@@ -34,5 +44,14 @@
         in order for this application to display correctly.
       </div>
     </noscript>
+  
+  	<!-- Loading indicator -->
+  	<div id="loading">
+    	<div>
+      		<img src="images/loading.png" width="40" height="40" /><br />
+      		<span>iVanHomesPrices is loading...</span>
+    	</div>
+  	</div>
+  
   </body>
 </html>

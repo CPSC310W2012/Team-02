@@ -5,6 +5,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
@@ -315,19 +318,18 @@ public class UserInfoPanel extends FlowPanel {
 		 * @param descArea - text area to apply constraints
 		 */
 		private void buildDescArea(final TextArea descArea) {
-			descArea.addKeyPressHandler(new KeyPressHandler() {
+			descArea.addKeyDownHandler(new KeyDownHandler() {
 				@Override
-				public void onKeyPress(KeyPressEvent event) {
-					charCount = MAXCHARCOUNT - descArea.getText().length();
-					charCountLeft = "You have " + charCount + " characters left.";
-					charCountMsg.setText(charCountLeft);
-					if (descArea.getText().length() > MAXCHARCOUNT) {
+				public void onKeyDown(KeyDownEvent event) {					
+					if (charCount <= 0) {
 						errorMsg.setText("Description can't be more than 200 characters.");
 					}
-					else {
-						if (errorMsg.getText().length() > 0)
-							errorMsg.setText("");
-					}
+					int charLength = descArea.getText().length();
+					charCount = MAXCHARCOUNT - charLength;
+					charCountLeft = "You have " + charCount + " characters left.";
+					charCountMsg.setText(charCountLeft);
+					if (errorMsg.getText().length() > 0)
+						errorMsg.setText("");					
 				}
 			});
 		}
