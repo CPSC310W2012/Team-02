@@ -364,6 +364,10 @@ h1 {
 	margin: 1em 0.5em;	
 }
 
+.gwt-DialogBox table {
+	width: 100%;
+}
+
 .gwt-PopupPanelGlass {
 	background-color: #000;
 	opacity: 0.3;

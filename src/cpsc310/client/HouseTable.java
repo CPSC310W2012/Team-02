@@ -198,10 +198,11 @@ public class HouseTable {
 	  	columnName.add("Realtor");
 	  	
 	  	// Price column
-	  	Column<HouseData, String> priceColumn = new TextColumn<HouseData>() {
+	  	Column<HouseData, Number> priceColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return Double.toString(house.getPrice());
+	  		public Number getValue(HouseData house) {
+	  			return house.getPrice();
 	  		}
 	  	};
 	  	homesCellTable.addColumn(priceColumn, "Price");

@@ -364,9 +364,8 @@ a:active {
 	margin: 0.5em 0.5em;
 }
 
-.gwt-DialogBox .dialogContent-editPanel {
+.gwt-DialogBox table {
 	width: 100%;
-	padding: 2em;
 }
 
 .gwt-PopupPanelGlass {

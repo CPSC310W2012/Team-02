@@ -93,12 +93,13 @@ public class EditHouseDialog extends DialogBox {
 		errorMsg.addStyleDependentName("error");
 
 		// Display the address of the house currently trying to edit
-		houseName.setText("House to edit: " + selectedHouse.getAddress());
+		houseName.setText("House to edit:  " + selectedHouse.getAddress());
 
 		// Build button behaviors
 		buildOKBtn(okBtn);
 		buildCancelBtn(cancelBtn);
 
+		
 		// Assemble edit panel
 		editPanel.add(houseName);
 		editPanel.add(new InlineHTML("<br />Price: "));
