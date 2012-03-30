@@ -555,6 +555,7 @@ a:active {
 }
 
 .gmnoprint .wordwrap{
-	height: 50%;
+	height: 100px;
+	width: 225px;
 	overflow: auto;
 }
