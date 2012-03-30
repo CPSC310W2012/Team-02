@@ -452,7 +452,7 @@ public class PropertyMap {
 			phoneNumber = user.getphoneNumber();
 			website = user.getWebsite();
 			description = user.getDescription();
-
+			// empty strings if null 
 			if (phoneNumber == 0 || phoneNumber < 10) phone = "";
 			else phone = phoneNumber + "";
 			if (website == null || website.length() < 1) website = "";
