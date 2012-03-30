@@ -336,8 +336,15 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent {
-	font-size: 12px !important;
+	padding: 10px;
+	font-size: 12px !important;	
 	background-color: #FCFCFC;
+}
+
+.gwt-DialogBox .docContents {
+	padding: 20px;
+	height: 280px;
+	overflow: auto;	
 }
 
 .gwt-DialogBox .dialogContent .gwt-Label {
@@ -345,7 +352,9 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent .gwt-Button {
-	font-size:12px !important;
+	font-size: 12px !important;
+	float: right;
+	margin: 5px 3px;
 }
 
 .editDialog {
