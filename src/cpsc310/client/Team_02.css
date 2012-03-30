@@ -325,13 +325,13 @@ a:active {
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
 	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );	
+	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
+	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
+	background: literal("-webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType = 0 )");	
 }
 
 .gwt-DialogBox .dialogContent {
@@ -340,11 +340,11 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent .gwt-Label {
-	font-size:12px !important;
+	font-size: 12px !important;
 }
 
 .gwt-DialogBox .dialogContent .gwt-Button {
-	font-size:12px !important;
+	font-size: 12px !important;
 }
 
 .editDialog {
@@ -361,13 +361,13 @@ a:active {
 	border-bottom: 1px solid #bbbbbb;
 	border-top: 1px solid #D2D2D2;
 	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
+	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
+	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
+	background: literal("-webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: literal("-ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
+	filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType=0 )");
 }
 
 .editPanel .dialogContent {
@@ -393,7 +393,7 @@ a:active {
 .gwt-PopupPanelGlass {
 	background-color: #000;
 	opacity: 0.3;
-	filter: alpha(opacity=30);
+	filter: literal("alpha(opacity = 30)");
 }
 
 .gwt-Button-textButton {
