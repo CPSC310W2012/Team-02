@@ -57,6 +57,8 @@ public class EditHouseDialog extends DialogBox {
 			PropertyMap map, HouseTable table) {
 		FlowPanel editPanel = new FlowPanel();
 
+		editPanel.addStyleDependentName("editPanel");
+		
 		// Initialize class variables
 		this.selectedHouse = selectedHouse;
 		this.loginInfo = loginInfo;

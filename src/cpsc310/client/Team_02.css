@@ -364,17 +364,9 @@ a:active {
 	margin: 0.5em 0.5em;
 }
 
-.gwt-DialogBox .dialogContent .editPanel {
+.gwt-DialogBox .dialogContent-editPanel {
+	width: 100%;
 	padding: 2em;
-}
-
-.gwt-DialogBox .dialogContent .editPanel .gwt-Button {
-	float: right;
-	font-size: 1em;
-}
-
-.gwt-DialogBox .dialogContent .editPanel .gwt-Label {
-	font-size: 1em !important;
 }
 
 .gwt-PopupPanelGlass {

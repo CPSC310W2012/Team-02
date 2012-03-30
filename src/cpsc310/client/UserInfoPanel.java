@@ -208,7 +208,9 @@ public class UserInfoPanel extends FlowPanel {
 		 */
 		public EditUserInfoDialog2(LoginInfo loginInfo) {
 			FlowPanel contentWrap = new FlowPanel();
-			this.loginInfo = loginInfo;			
+			this.loginInfo = loginInfo;
+			
+			contentWrap.addStyleDependentName("editPanel");
 			
 			// Build dialog content
 			buildContent(contentWrap);

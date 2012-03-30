@@ -43,6 +43,8 @@ public class EditUserInfoDialog extends DialogBox{
 		FlowPanel contentWrap = new FlowPanel();
 		this.loginInfo = loginInfo;
 		
+		contentWrap.addStyleDependentName("editPanel");
+		
 		// Build dialog content
 		buildContent(contentWrap);
 		
