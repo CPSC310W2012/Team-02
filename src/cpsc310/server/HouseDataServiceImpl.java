@@ -315,11 +315,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude) {
+		//TODO: Degbuging - Remove
 		System.out.println("Polygon Search");
 		
 		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
-		firstPassSearch(userSearchInput, results);
-		secondPassSearch(userSearchInput, results);
+		results = firstPassSearch(userSearchInput, results);
+		results = secondPassSearch(userSearchInput, results);
 		
 		// convert to array
 		ArrayList<String> convertedResults = new ArrayList<String>();
