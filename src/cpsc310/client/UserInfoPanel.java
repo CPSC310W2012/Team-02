@@ -55,7 +55,6 @@ public class UserInfoPanel extends FlowPanel {
 	 * Add user info to the panel
 	 */
 	private void addUserInfo() {
-		Window.alert("adding userinfo to panel");
 		Label userName = new Label("");
 		Label userEmail = new Label("");
 		userPhoneNumber = new Label("");		
@@ -96,7 +95,7 @@ public class UserInfoPanel extends FlowPanel {
 	 * Builds and adds Change User Info button to the panel
 	 */
 	private void addChangeUserInfoBtn() {
-		final Button changeUserInfoBtn = new Button("Change My Info");
+		final Button changeUserInfoBtn = new Button("Edit Account Information");
 		changeUserInfoBtn.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -137,8 +136,6 @@ public class UserInfoPanel extends FlowPanel {
 	 * Async call to the server to grab user's houses
 	 */
 	private void getUserHouse() {
-		// TODO Make Async call once async call is implemented
-
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
@@ -149,14 +146,12 @@ public class UserInfoPanel extends FlowPanel {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
-
 			public void onSuccess(Void result) {
 				table.refreshTableFromBeginning();
 			}
 		};
 		houseDataSvc.getHomesByUser(loginInfo.getEmailAddress(), callback);
-		
-		
+
 	}
 	
 	public void refreshUserInfoPanel()
@@ -369,7 +364,6 @@ public class UserInfoPanel extends FlowPanel {
 							clear();
 							hide();
 							refreshUserInfoPanel();
-							//TODO:UPDATE THE UI
 						}
 					};
 
