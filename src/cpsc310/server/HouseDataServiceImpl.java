@@ -337,13 +337,13 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	private Set<String> firstPassSearch(String[] userSearchInput,
 			Set<String> results) {
 		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
-			results = store.searchByAddress(
-					Integer.parseInt(userSearchInput[0]), userSearchInput[1]);
+			results.retainAll(store.searchByAddress(
+					Integer.parseInt(userSearchInput[0]), userSearchInput[1]));
 		} else if (!userSearchInput[1].equals("")) {
-			results = store.searchByStreet(userSearchInput[1]);
+			results.retainAll(store.searchByStreet(userSearchInput[1]));
 		} else if (!userSearchInput[0].equals("")) {
-			results = store.searchByCivicNumber(Integer
-					.parseInt(userSearchInput[0]));
+			results.retainAll(store.searchByCivicNumber(Integer
+					.parseInt(userSearchInput[0])));
 		}
 		if (!userSearchInput[7].equals("")) {
 			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
