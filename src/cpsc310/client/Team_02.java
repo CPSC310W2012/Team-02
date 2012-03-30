@@ -223,8 +223,8 @@ public class Team_02 implements EntryPoint {
 	 */
 	private void buildButtonPanel(FlowPanel buttonPanel) {
 		Button hideShowTablePanelButton = new Button("-");
-		Button expandShrinkTableBtn = new Button("Expand table");
-		Button resetTableBtn = new Button("Reset table");
+		Button expandShrinkTableBtn = new Button("Expand Table");
+		Button resetTableBtn = new Button("Reset Table");
 
 		// Set the style of panel
 		buttonPanel.setStyleName("buttonPanel");
