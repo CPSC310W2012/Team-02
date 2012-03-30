@@ -27,13 +27,13 @@ public class DocumentFactory {
 			"3) How can I see more results per page of the table?<br><br>" +
 			"Click on Expand Table at the top right of the table and you will be able to view at most 50 houses per table page.<br><br>" +
 			"4) How do I view houses?<br><br>" +
-			"From the houses displayed in the table, click on the house that you’re interested in and the Google Map and Street View will update, displaying the house you clicked.<br><br>" +
+			"From the houses displayed in the table, click on the house that you're interested in and the Google Map and Street View will update, displaying the house you clicked.<br><br>" +
 			"5) How do I sell a house?<br><br>" +
 			"After successfully logging into our application, select the house you want to sell, and press the \"Edit\" button.  In the popup window, change the radio button from \"No\" to \"Yes\", edit the price, and then press \"OK\".  The house you selected will automatically update and display that it is for sale.<br><br>" +
 			"6) How do I remove sale information from a house?<br><br>" +
 			"After successfully logging into our application, select the house you want to remove the sale information from.  Click the \"Remove\" button and all information regarding the selling of that house will be removed.<br><br>" +
 			"7) What's the best way to share this application with people I know?<br><br>" +
-			"If you and your friends have Facebook accounts, you’re in luck, each house displayed on our Google Map contains a Facebook Share button which can post the link to a given house on various locations including your wall and your friend’s wall.<br><br>" +
+			"If you and your friends have Facebook accounts, you're in luck, each house displayed on our Google Map contains a Facebook Share button which can post the link to a given house on various locations including your wall and your friend's wall.<br><br>" +
 			"8) Is it possible to sort my search results?<br><br>" +
 			"It certainly is, in fact, we have implemented our sort so that you can sort the entire database by the value of any of the columns of our table.  All you have to do is click the value you want to sort by on the table, and you can sort in ascending or descending order.<br><br>" +
 			"9) Can I search for houses only within a particular region of the Google Map?<br><br>" +
