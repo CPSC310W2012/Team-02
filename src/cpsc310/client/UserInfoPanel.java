@@ -324,6 +324,30 @@ public class UserInfoPanel extends FlowPanel {
 		}
 		
 
+		private String checkFields(String phoneNum, String website, String description){
+			String msg = "";
+
+			if(website.length()>0){
+			if (!website.matches("^([a-z][a-z0-9\\-]+(\\.|\\-*\\.))+[a-z]{2,6}$")) {
+				msg = msg + "Website format must be www.example.com";
+			}
+			}
+			if(phoneNum.length()>0){
+			if (!phoneNum.matches("^$|^\\d{10}$")) {
+				errorMsg.setText("Phone number must be a 10-digit number only.");
+				msg = msg + "\nPhone number must be a 10-digit number only.";
+			}
+			}
+			if(description.length()>0){
+			if (description.length() > MAXKEYCOUNT){
+				msg = msg + "\nDescription can't be more than 200 characters.";
+			}
+			}
+
+			return msg;
+		}
+		
+		
 		/**
 		 * Attach OK Button behavior.
 		 * When OK button is clicked, button calls editUserInfo(), which invokes
@@ -335,7 +359,15 @@ public class UserInfoPanel extends FlowPanel {
 			okBtn.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					editUserInfo();
+					String phoneNum = phoneNumberBox.getText().trim();;
+					String website = websiteBox.getText().trim();
+					String description = descArea.getText();
+					String msg = checkFields(phoneNum, website, description);
+
+					if(msg.length()==0)
+						editUserInfo();
+					else
+						errorMsg.setText(msg);
 				}
 			});
 		}
