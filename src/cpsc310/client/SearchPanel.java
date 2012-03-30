@@ -629,7 +629,7 @@ public class SearchPanel extends FlowPanel {
 		int i = 0;
 
 		for (String criterion : searchCriteria) {
-			if (criterion.endsWith("For Sale")) {
+			if (!criterion.endsWith("For Sale")) {
 				isOK =validateIndivSearchInput(criterion,userSearchInput[i]);
 			}
 			
