@@ -62,20 +62,26 @@ public class Team_02 implements EntryPoint {
 
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
+		final String civicNumber = Window.Location.getParameter("cn");
+		final String streetName = Window.Location.getParameter("sn");
 		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
-						buildUI();						
-						resetDatabase();
+						buildUI();
+						if(civicNumber == null || streetName == null) {
+							resetDatabase();
+						}
 						loadURLSearch();
 					}
 
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
-						buildUI();						
-						resetDatabase();
+						buildUI();
+						if(civicNumber == null || streetName == null) {
+							resetDatabase();
+						}
 						loadURLSearch();
 					}
 				});
@@ -85,8 +91,7 @@ public class Team_02 implements EntryPoint {
 		Timer dailyRefresh = new Timer() {
 			@Override
 			public void run() {
-				// TODO
-				// Justin, just put the daily update code here.	
+				resetDatabase();
 			}
 		};
 		//set the code in run() to run once daily
@@ -723,32 +728,27 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Resets database to the initial view.  This method will only update
-	 * the database if either or both of the two parameters cn and sn don't exist. 
+	 * Resets database to the initial view. 
 	 */
 	private void resetDatabase() {
-		String civicNumber = Window.Location.getParameter("cn");
-		String streetName = Window.Location.getParameter("sn");
-
-		if(civicNumber == null || streetName == null) {
-			// Initialize the service proxy
-			if (houseDataSvc == null) {
-				houseDataSvc = GWT.create(HouseDataService.class);
-			}
-	
-			// Set up the callback object
-			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-				public void onFailure(Throwable caught) {
-					Window.alert(caught.getMessage());
-				}
-	
-				public void onSuccess(Void result) {
-					houseTable.refreshTableFromBeginning();
-				}
-			};
-			houseDataSvc.refreshIDStore(callback);
+		// Initialize the service proxy
+		if (houseDataSvc == null) {
+			houseDataSvc = GWT.create(HouseDataService.class);
 		}
+
+		// Set up the callback object
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+
+			public void onSuccess(Void result) {
+				houseTable.refreshTableFromBeginning();
+			}
+		};
+		houseDataSvc.refreshIDStore(callback);
 	}
+
 
 	/**
 	 * Method to search for a house based on the URL parameters. Searches for
@@ -762,6 +762,7 @@ public class Team_02 implements EntryPoint {
 	 *       Note: Spaces in the URL must be "+" or "%20"
 	 */
 	private void loadURLSearch() {
+		// Retrieve parameters from URL
 		final String civicNumber = Window.Location.getParameter("cn");
 		final String streetName = Window.Location.getParameter("sn");
 
