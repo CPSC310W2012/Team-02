@@ -69,6 +69,10 @@ public class PropertyMap {
 			public void onClick(MapClickEvent e) {
 				LatLng point = e.getLatLng();
 				if (specifyingRegion) {
+					//clear the region first
+					clearMap();
+					clearMarkers();
+					
 					drawSquare(point);
 					// allow only one square to be drawn at a time
 					setSpecifyingRegion(false);
@@ -234,6 +238,73 @@ public class PropertyMap {
 		return llWrap.getLL();
 	}
 
+	/**
+	 * 
+	 * Compiles the marker with the infowindow and adds it to the map
+	 * 
+	 * @param point latlng point
+	 * @param house houseData object
+	 * 
+	 */
+	private void compileMarker(final LatLng point, final HouseData house) {
+		Icon icon = setIcon(house.getIsSelling());
+		MarkerOptions options = MarkerOptions.newInstance();
+		options.setIcon(icon);
+		final Marker marker = new Marker(point, options);
+		map.addOverlay(marker);
+		map.setCenter(point);
+		
+		if (house.getIsSelling()) {
+			AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
+				public void onFailure(Throwable caught) {
+					Window.alert("error trying to get user: propertyMap.java");
+				}
+
+				public void onSuccess(LoginInfo user) {
+					// Assemble the info window
+					final InfoWindowContent content = buildInfoWindow(user, house);
+					map.getInfoWindow().open(marker, content);
+
+					// Click handler for each marker
+					marker.addMarkerClickHandler(new MarkerClickHandler() {
+						public void onClick(MarkerClickEvent event) {
+							try {
+								map.getInfoWindow().open(marker, content);
+								refreshStreetView(point);
+							} catch (Exception e) {
+								Window.alert(e.getMessage());
+							}
+
+						}
+					});
+					markers.push(marker);
+				}
+			};
+			// Window.alert("getting user from db: " + house.getOwner());
+			loginService.getUser(house.getOwner(), userCallback);
+
+		} else // house is not being sold
+		{
+			// Assemble the info window
+			final InfoWindowContent content = buildInfoWindow(null, house);
+			map.getInfoWindow().open(marker, content);
+
+			// Click handler for each marker
+			marker.addMarkerClickHandler(new MarkerClickHandler() {
+				public void onClick(MarkerClickEvent event) {
+					try {
+						map.getInfoWindow().open(marker, content);
+						refreshStreetView(point);
+					} catch (Exception e) {
+						Window.alert(e.getMessage());
+					}
+
+				}
+			});
+			markers.push(marker);
+		}
+		refreshStreetView(point);
+	}
 	
 	/**
 	 * Assembles the info window for a marker given the house point
@@ -382,9 +453,9 @@ public class PropertyMap {
 			website = user.getWebsite();
 			description = user.getDescription();
 
-			if (phoneNumber == 0) phone = "";
+			if (phoneNumber == 0 || phoneNumber < 10) phone = "";
 			else phone = phoneNumber + "";
-			if (website == null) website = "";
+			if (website == null || website.length() < 1) website = "";
 			if (description == null) description = "";
 		} 
 		else {
@@ -643,84 +714,5 @@ public class PropertyMap {
 	}
 
 
-	/**
-	 * 
-	 * Makes the marker with the infowindow and adds it to the map
-	 * 
-	 * @param point latlng point
-	 * @param house houseData object
-	 * 
-	 */
-	private void compileMarker(final LatLng point, final HouseData house) {
 
-		if (house.getIsSelling()) {
-			AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
-				public void onFailure(Throwable caught) {
-					Window.alert("error trying to get user: propertyMap.java");
-				}
-
-				public void onSuccess(LoginInfo user) {
-					Icon icon = setIcon(house.getIsSelling());
-					MarkerOptions options = MarkerOptions.newInstance();
-					options.setIcon(icon);
-					final Marker marker = new Marker(point, options);
-					map.addOverlay(marker);
-					map.setCenter(point);
-
-					// Assemble the info window
-					final InfoWindowContent content = buildInfoWindow(user,
-							house);
-					map.getInfoWindow().open(marker, content);
-
-					refreshStreetView(point);
-
-					// Click handler for each marker
-					marker.addMarkerClickHandler(new MarkerClickHandler() {
-						public void onClick(MarkerClickEvent event) {
-							try {
-								map.getInfoWindow().open(marker, content);
-								refreshStreetView(point);
-							} catch (Exception e) {
-								Window.alert(e.getMessage());
-							}
-
-						}
-					});
-					markers.push(marker);
-				}
-			};
-			// Window.alert("getting user from db: " + house.getOwner());
-			loginService.getUser(house.getOwner(), userCallback);
-
-		} else // house is not being sold
-		{
-			// Set up the marker and Icon
-			Icon icon = setIcon(house.getIsSelling());
-			MarkerOptions options = MarkerOptions.newInstance();
-			options.setIcon(icon);
-			final Marker marker = new Marker(point, options);
-			map.addOverlay(marker);
-			map.setCenter(point);
-
-			// Assemble the info window
-			final InfoWindowContent content = buildInfoWindow(null, house);
-			map.getInfoWindow().open(marker, content);
-
-			refreshStreetView(point);
-
-			// Click handler for each marker
-			marker.addMarkerClickHandler(new MarkerClickHandler() {
-				public void onClick(MarkerClickEvent event) {
-					try {
-						map.getInfoWindow().open(marker, content);
-						refreshStreetView(point);
-					} catch (Exception e) {
-						Window.alert(e.getMessage());
-					}
-
-				}
-			});
-			markers.push(marker);
-		}
-	}
 }
