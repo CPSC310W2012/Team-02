@@ -313,17 +313,25 @@ a:active {
 
 .gwt-DialogBox {
 	width: 30%;
+	border: 3px solid #A8A8A8;
+	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-webkit-border-radius: 10px;	
 	background-color: #FCFCFC;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
 .gwt-DialogBox .Caption {
-	padding: 4px 8px 4px 4px;
+	padding: 0.4em 1em 0.4em 0.4em;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
-	border-bottom: 1px solid #bbbbbb;
-	border-top: 1px solid #D2D2D2;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius: 10px;
+	 border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-right-radius: 10px;		
 	background: #fcfcfc;
 	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
 	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
@@ -335,12 +343,12 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent {
-	padding: 10px;
+	padding: 1.2em;
 	font-size: 12px !important;	
 	background-color: #FCFCFC;
 }
 
-.gwt-DialogBox .docContents {
+.gwt-DialogBox .dialogContent .docContents {
 	padding: 20px;
 	height: 280px;
 	overflow: auto;	
@@ -353,52 +361,19 @@ a:active {
 .gwt-DialogBox .dialogContent .gwt-Button {
 	font-size: 12px !important;
 	float: right;
-	margin: 5px 3px;
+	margin: 0.5em 0.5em;
 }
 
-.editDialog {
-	width: 30%;	
-	background-color: #FCFCFC;
-	border: 3px solid #A8A8A8;
-	font-family: Arial, Helvetica, sans-serif;
-	overflow: auto;	
-}
-
-.editDialog .Caption {
-	padding: 0.3em 0.8em 0.3em 0.4em;
-	font-family: Arial, Helvetica, sans-serif;;
-	font-size: 14px;
-	font-weight: bold;
-	border-bottom: 1px solid #bbbbbb;
-	border-top: 1px solid #D2D2D2;
-	background: #fcfcfc;
-	background: literal("-moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%)");
-	background: literal("-webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf))");
-	background: literal("-webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
-	background: literal("-o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
-	background: literal("-ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
-	background: literal("linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%)");
-	filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr = '#fcfcfc', endColorstr = '#d6dbbf',GradientType=0 )");
-}
-
-.editPanel .dialogContent {
+.gwt-DialogBox .dialogContent .editPanel {
 	padding: 2em;
-	font-size: 12px !important;
-	background-color: #FCFCFC;
 }
 
-
-.editPanel {
-	padding: 2em;
-	font-size: 12px;
-}
-
-.editPanel .gwt-Button {
+.gwt-DialogBox .dialogContent .editPanel .gwt-Button {
 	float: right;
 	font-size: 1em;
 }
 
-.editPanel .gwt-Label {
+.gwt-DialogBox .dialogContent .editPanel .gwt-Label {
 	font-size: 1em !important;
 }
 
@@ -527,6 +502,11 @@ a:active {
 
 .userInfoPanel .gwt-Label {
 	margin: 0.5em 0;
+	white-space: pre-wrap; 
+   	white-space: -moz-pre-wrap;    
+   	white-space: -pre-wrap;     
+   	white-space: -o-pre-wrap;    
+   	word-wrap: break-word;		
 }
 
 .userInfoPanel .gwt-Button {
@@ -538,24 +518,22 @@ a:active {
 	z-index: 110;
 }
 
-
 .gwt-TextArea {
 	width: 25em;
-	min-height: 15em;
+	min-height: 10em;
 }
 
-.gmnoprint {
-   font-size: 12px !important;
-   white-space: pre-wrap;   
-   white-space: -moz-pre-wrap;    
-   white-space: -pre-wrap;     
-   white-space: -o-pre-wrap;    
-   word-wrap: break-word;
-   line-height: 1.5em;
+.googleMapsInfoWindow {
+	width: 18em;
+	font-size: 11px !important;
+	line-height: 1.5em;
+	padding: 0.5em;
 }
 
-.gmnoprint .wordwrap{
-	height: 120px;
-	width: 225px;
-	overflow: auto;
+.googleMapsInfoWindow .infoWindowContent {
+   	white-space: pre-wrap;   
+   	white-space: -moz-pre-wrap;    
+   	white-space: -pre-wrap;     
+   	white-space: -o-pre-wrap;    
+   	word-wrap: break-word;
 }

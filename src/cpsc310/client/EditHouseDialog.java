@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * Dialog box that holds edit panel. The assumption is that type checking for
  * selecting only one house is done in the caller's class.
  */
-public class EditDialog extends DialogBox {
+public class EditHouseDialog extends DialogBox {
 	private HouseDataServiceAsync houseDataSvc = GWT
 			.create(HouseDataService.class);
 	private HouseData selectedHouse;
@@ -53,11 +53,9 @@ public class EditDialog extends DialogBox {
 	 * @param table
 	 *            - table in the caller class
 	 */
-	public EditDialog(HouseData selectedHouse, LoginInfo loginInfo,
+	public EditHouseDialog(HouseData selectedHouse, LoginInfo loginInfo,
 			PropertyMap map, HouseTable table) {
 		FlowPanel editPanel = new FlowPanel();
-
-		this.setStyleName("editDialog");
 
 		// Initialize class variables
 		this.selectedHouse = selectedHouse;
@@ -89,7 +87,6 @@ public class EditDialog extends DialogBox {
 		noSell.setValue(true);
 
 		// Set styles of components
-		editPanel.setStyleName("editPanel");
 		priceBox.addStyleDependentName("shorter");
 		errorMsg.addStyleDependentName("error");
 

@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -21,8 +23,11 @@ import com.google.gwt.user.client.ui.TextBox;
  *
  */
 public class EditUserInfoDialog extends DialogBox{
-	private int MAXKEYCOUNT = 200;
+	private static int MAXCHARCOUNT = 200;
+	private int charCount = 200;
+	String charCountLeft = "You have " + charCount + " characters left.";	
 	private Label errorMsg = new Label("");
+	private Label charCountMsg = new Label(charCountLeft); 
 	private int keyCount = 0;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	TextBox phoneNumberBox; 
@@ -37,7 +42,6 @@ public class EditUserInfoDialog extends DialogBox{
 	public EditUserInfoDialog(LoginInfo loginInfo) {
 		FlowPanel contentWrap = new FlowPanel();
 		this.loginInfo = loginInfo;
-		this.setStyleName("editDialog");
 		
 		// Build dialog content
 		buildContent(contentWrap);
@@ -61,7 +65,6 @@ public class EditUserInfoDialog extends DialogBox{
 		Button cancelBtn = new Button("Cancel");
 		
 		// Set style of components
-		contentWrap.setStyleName("editPanel");
 		phoneNumberBox.addStyleDependentName("longer");
 		websiteBox.addStyleDependentName("longer");
 		errorMsg.addStyleDependentName("error");
@@ -80,6 +83,7 @@ public class EditUserInfoDialog extends DialogBox{
 		contentWrap.add(new Label("Description about yourself (max 200 char): "));
 		contentWrap.add(new InlineHTML("<br>"));
 		contentWrap.add(descArea);
+		contentWrap.add(charCountMsg);
 		contentWrap.add(new HTML("<br>"));
 		contentWrap.add(errorMsg);
 		contentWrap.add(cancelBtn);
@@ -117,11 +121,15 @@ public class EditUserInfoDialog extends DialogBox{
 	 * @param descArea - text area to apply constraints
 	 */
 	private void buildDescArea(final TextArea descArea) {
-		descArea.addBlurHandler(new BlurHandler() {
+		descArea.addKeyPressHandler(new KeyPressHandler() {
 			@Override
-			public void onBlur(BlurEvent event) {
-				if (descArea.getText().length() > MAXKEYCOUNT)
+			public void onKeyPress(KeyPressEvent event) {			
+				charCount = MAXCHARCOUNT - descArea.getText().length();
+				charCountLeft = "You have " + charCount + " characters left.";					
+				charCountMsg.setText(charCountLeft);
+				if (descArea.getText().length() > MAXCHARCOUNT) {
 					errorMsg.setText("Description can't be more than 200 characters.");
+				}
 				else {
 					if (errorMsg.getText().length() > 0)
 						errorMsg.setText("");

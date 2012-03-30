@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -186,9 +188,12 @@ public class UserInfoPanel extends FlowPanel {
 		
 	}
 	
-	public class EditUserInfoDialog2 extends DialogBox{
-		private int MAXKEYCOUNT = 200;
+	public class EditUserInfoDialog2 extends DialogBox {
+		private static final int MAXCHARCOUNT = 200;
+		private int charCount = 200;
+		private String charCountLeft = "You have " + charCount + " characters left.";
 		private Label errorMsg = new Label("");
+		private Label charCountMsg = new Label(charCountLeft); 
 		private LoginServiceAsync loginService = GWT.create(LoginService.class);
 		TextBox phoneNumberBox; 
 		TextBox websiteBox;
@@ -203,9 +208,7 @@ public class UserInfoPanel extends FlowPanel {
 		 */
 		public EditUserInfoDialog2(LoginInfo loginInfo) {
 			FlowPanel contentWrap = new FlowPanel();
-			this.loginInfo = loginInfo;
-			this.setStyleName("editDialog");
-			
+			this.loginInfo = loginInfo;			
 			
 			// Build dialog content
 			buildContent(contentWrap);
@@ -229,7 +232,6 @@ public class UserInfoPanel extends FlowPanel {
 			Button cancelBtn = new Button("Cancel");
 			
 			// Set style of components
-			contentWrap.setStyleName("editPanel");
 			phoneNumberBox.addStyleDependentName("longer");
 			websiteBox.addStyleDependentName("longer");
 			errorMsg.addStyleDependentName("error");
@@ -249,6 +251,7 @@ public class UserInfoPanel extends FlowPanel {
 			contentWrap.add(new Label("Description about yourself (max 200 char): "));
 			contentWrap.add(new InlineHTML("<br>"));
 			contentWrap.add(descArea);
+			contentWrap.add(charCountMsg);
 			contentWrap.add(new HTML("<br>"));
 			contentWrap.add(errorMsg);
 			contentWrap.add(cancelBtn);
@@ -310,11 +313,15 @@ public class UserInfoPanel extends FlowPanel {
 		 * @param descArea - text area to apply constraints
 		 */
 		private void buildDescArea(final TextArea descArea) {
-			descArea.addBlurHandler(new BlurHandler() {
+			descArea.addKeyPressHandler(new KeyPressHandler() {
 				@Override
-				public void onBlur(BlurEvent event) {
-					if (descArea.getText().length() > MAXKEYCOUNT)
+				public void onKeyPress(KeyPressEvent event) {
+					charCount = MAXCHARCOUNT - descArea.getText().length();
+					charCountLeft = "You have " + charCount + " characters left.";
+					charCountMsg.setText(charCountLeft);
+					if (descArea.getText().length() > MAXCHARCOUNT) {
 						errorMsg.setText("Description can't be more than 200 characters.");
+					}
 					else {
 						if (errorMsg.getText().length() > 0)
 							errorMsg.setText("");
@@ -339,7 +346,7 @@ public class UserInfoPanel extends FlowPanel {
 			}
 			}
 			if(description.length()>0){
-			if (description.length() > MAXKEYCOUNT){
+			if (description.length() > MAXCHARCOUNT){
 				msg = msg + "\nDescription can't be more than 200 characters.";
 			}
 			}

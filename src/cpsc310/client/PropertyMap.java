@@ -393,33 +393,38 @@ public class PropertyMap {
 
 	private FlowPanel getHouseInfoMarkerPanel(HouseData house) {
 		FlowPanel markerInfoWindow = new FlowPanel();
-		HTML htmlWidget;
+		String shareURL = generateShareURL(house);
+		ShareButton shareBtn = new ShareButton(shareURL, "");
+		HTML content;
+		
+		// Write the content
 		// If the house is on sale, provide extra field for sale price and
 		if (house.getIsSelling()) {
-			htmlWidget = new HTML(
-					"<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
+			content = new HTML(
+					"<b><u>Property Information</u></b></br> "
 							+ "<b>Address: </b>"
 							+ house.getAddress().toLowerCase() + "</br>"
 							+ "<b>Current Land Value: </b>"
 							+ house.getCurrentLandValue() + "</br>"
 							+ "<b>Year built: </b>" + house.getYearBuilt()
 							+ "</br>" + "<b>Selling Price: </b>"
-							+ house.getPrice() + "</br>" + "</p></div>");
+							+ house.getPrice() + "</br>");
 		} else { // show less information if it's not on sale
-			htmlWidget = new HTML(
-					"<div class = 'wordwrap'><p><b><u>Property Information</u></b></br> "
+			content = new HTML(
+					"<b><u>Property Information</u></b></br> "
 							+ "<b>Address: </b>"
 							+ house.getAddress().toLowerCase() + "</br>"
 							+ "<b>Current Land Value: </b>"
 							+ house.getCurrentLandValue() + "</br>"
-							+ "<b>Year built: </b>" + house.getYearBuilt()
-							+ "</p></div>");
+							+ "<b>Year built: </b>" + house.getYearBuilt());
 		}
+		
+		// Append style to window and content
+		markerInfoWindow.setStyleName("googleMapsInfoWindow");
+		content.setStyleName("infoWindowContent");
 
-		markerInfoWindow.add(htmlWidget);
-
-		String shareURL = generateShareURL(house);
-		ShareButton shareBtn = new ShareButton(shareURL, "");
+		// Assemble info window panel
+		markerInfoWindow.add(content);
 		markerInfoWindow.add(shareBtn);
 
 		return markerInfoWindow;
@@ -437,16 +442,17 @@ public class PropertyMap {
 	 */
 	private FlowPanel getContactInfoMarkerPanel(LoginInfo theUser) {
 		FlowPanel markerInfoWindow = new FlowPanel();
-		final HTML htmlWidget;
+		final HTML content;
 		LoginInfo user = theUser;
-
+		
 		String email;
 		String realtor;
 		long phoneNumber;
 		String website;
 		String description;
 		String phone;
-		
+
+		// Write content
 		if (user != null) {
 			email = user.getEmailAddress();
 			realtor = user.getNickname();
@@ -466,14 +472,19 @@ public class PropertyMap {
 			website = "";
 			description = "";
 		}
-		htmlWidget = new HTML("<div class = 'wordwrap'><p><b><u>Contact Information</u></b></br> "
+		content = new HTML("<b><u>Contact Information</u></b></br>"
 				+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
 				+ email + "</br>" + "<b>Phone: </b>" + phone + "</br>"
 				+ "<b>Website: </b>" + website + "</br>" + "<b>About: </b>"
-				+ description + "</br>" + "</p></div>");
+				+ description + "</br>");
 
-		markerInfoWindow.add(htmlWidget);
-		markerInfoWindow.setWidth("150px");
+		// Append style to window and content
+		markerInfoWindow.setStyleName("googleMapsInfoWindow");
+		content.setStyleName("infoWindowContent");
+		
+		// Assemble info window panel
+		markerInfoWindow.add(content);
+		
 		return markerInfoWindow;
 	}
 

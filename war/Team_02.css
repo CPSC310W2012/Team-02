@@ -22,6 +22,20 @@ html, body {
 	background-image: url(images/bg.png);
 }
 
+a {
+	color: #757575;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #ffc33e;
+}
+
+a:active {
+	top: 1px;
+}
+
 hr {
 	margin: 1em 0;
 }
@@ -53,21 +67,6 @@ h1 {
 	text-shadow: #EEE 1px 1px 1px;
 	line-height: 1.7em;
 	vertical-align: middle;
-}
-
-
-a {
-	color: #757575;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-a:hover {
-	color: #ffc33e;
-}
-
-a:active {
-	top: 1px;
 }
 
 #footer {
@@ -315,16 +314,24 @@ a:active {
 	width: 30%;
 	background-color: #FCFCFC;
 	font-family: Arial, Helvetica, sans-serif;
-	overflow: auto;	
+	overflow: auto;
+	border: 3px solid #A8A8A8;
+	border-radius: 10px;
+  	-moz-border-radius: 10px;
+  	-webkit-border-radius: 10px;
 }
 
 .gwt-DialogBox .Caption {
-	padding: 4px 8px 4px 4px;
+	padding: 0.4em 1em 0.4em 0.4em;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
-	border-bottom: 1px solid #bbbbbb;
-	border-top: 1px solid #D2D2D2;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius: 10px;
+	 border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-right-radius: 10px;	
 	background: #fcfcfc;
 	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
@@ -336,12 +343,12 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent {
-	padding: 10px;
-	font-size: 12px !important;	
+	padding: 8em;
+	font-size: 12px !important;		
 	background-color: #FCFCFC;
 }
 
-.gwt-DialogBox .docContents {
+.gwt-DialogBox .dialogContent .docContents {
 	padding: 20px;
 	height: 280px;
 	overflow: auto;	
@@ -354,53 +361,7 @@ a:active {
 .gwt-DialogBox .dialogContent .gwt-Button {
 	font-size: 12px !important;
 	float: right;
-	margin: 5px 3px;
-}
-
-.editDialog {
-	width: 30%;
-	background-color: #FCFCFC;
-	border: 3px solid #A8A8A8;
-	font-family: Arial, Helvetica, sans-serif;
-	overflow: auto;	
-}
-
-.editDialog .Caption {
-	padding: 0.3em 0.8em 0.3em 0.4em;
-	font-family: Arial, Helvetica, sans-serif;;
-	font-size: 14px;
-	font-weight: bold;
-	border-bottom: 1px solid #bbbbbb;
-	border-top: 1px solid #D2D2D2;
-	background: #fcfcfc;
-	background: -moz-linear-gradient(top,  #fcfcfc 0%, #d6dbbf 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fcfcfc), color-stop(100%,#d6dbbf));
-	background: -webkit-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -o-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: -ms-linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	background: linear-gradient(top,  #fcfcfc 0%,#d6dbbf 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#d6dbbf',GradientType=0 );
-}
-
-.editPanel .dialogContent {
-	padding: 2em;
-	font-size: 12px !important;
-	background-color: #FCFCFC;
-}
-
-
-.editPanel {
-	padding: 2em;
-	font-size: 12px;
-}
-
-.editPanel .gwt-Button {
-	float: right;
-	font-size: 1em;
-}
-
-.editPanel .gwt-Label {
-	font-size: 1em !important;
+	margin: 1em 0.5em;	
 }
 
 .gwt-PopupPanelGlass {
@@ -478,6 +439,7 @@ a:active {
   text-decoration: none;
   border-radius: 2px;
   -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
   cursor: pointer;
   cursor: hand;
 }
@@ -528,6 +490,11 @@ a:active {
 
 .userInfoPanel .gwt-Label {
 	margin: 0.5em 0;
+	white-space: pre-wrap; 
+   	white-space: -moz-pre-wrap;    
+   	white-space: -pre-wrap;     
+   	white-space: -o-pre-wrap;    
+   	word-wrap: break-word;		
 }
 
 .userInfoPanel .gwt-Button {
@@ -539,23 +506,22 @@ a:active {
 	z-index: 110;
 }
 
-
 .gwt-TextArea {
 	width: 25em;
-	min-height: 15em;
+	min-height: 10em;
 }
 
-.gmnoprint {
-   font-size: 12px !important;
-   white-space: pre-wrap;   
-   white-space: -moz-pre-wrap;    
-   white-space: -pre-wrap;     
-   white-space: -o-pre-wrap;    
-   word-wrap: break-word;
-   line-height: 1.5em;
+.googleMapsInfoWindow {
+	width: 18em;
+	font-size: 11px !important;
+	line-height: 1.5em;
+	padding: 0.5em;	
 }
 
-.gmnoprint .wordwrap{
-	height: 50%;
-	overflow: auto;
+.googleMapsInfoWindow .infoWindowContent {
+   	white-space: pre-wrap;   
+   	white-space: -moz-pre-wrap;    
+   	white-space: -pre-wrap;     
+   	white-space: -o-pre-wrap;    
+   	word-wrap: break-word;	
 }
