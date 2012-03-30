@@ -1,6 +1,7 @@
 package cpsc310.client;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 
@@ -8,14 +9,9 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
  * Split panel that contains Google map and street view
  */
 public class MapContainerPanel extends SplitLayoutPanel {
-	private static int defaultMapSize = 600;
+	private static int defaultMapSize = 500;
 	private PropertyMap map = null;
-	private Timer loadMaps = new Timer() {
-		@Override
-		public void run() {
-			loadMapWidgets();	
-		}
-	};	
+	
 	private Timer streetViewResizeTimer = new Timer() {
         @Override
         public void run() {
@@ -38,18 +34,11 @@ public class MapContainerPanel extends SplitLayoutPanel {
 		this.map = map;
 		
 		// Add Google map and street view
-		loadMaps.schedule(600);
+		this.addWest(map.getMap(), ((Window.getClientWidth() / 5) * 2));
+		this.add(map.getStreetViewMap());
 		
 		// Set style name
 		this.setStyleName("mapContainerPanel");
-	}
-	
-	/**
-	 * Load Map widgets
-	 */
-	private void loadMapWidgets() {
-		this.addWest(map.getMap(), defaultMapSize);
-		this.add(map.getStreetViewMap());
 	}
 
 	/**
@@ -61,6 +50,5 @@ public class MapContainerPanel extends SplitLayoutPanel {
 	public void onResize() {
 		streetViewResizeTimer.schedule(400);
 		mapResizeTimer.schedule(400);		
-	}
-	
+	}	
 }

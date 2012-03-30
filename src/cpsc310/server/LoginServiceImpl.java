@@ -67,7 +67,7 @@ LoginService {
 	
 	//TODO:
 	public void editUser(String email, String nickname, 
-			int phoneNumber, String website, String description){
+			long phoneNumber, String website, String description){
 		// remove from datastore
 		LoginInfo user = getUser(email);
 		if(user == null){

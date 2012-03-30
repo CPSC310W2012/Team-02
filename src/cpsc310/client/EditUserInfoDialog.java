@@ -160,19 +160,12 @@ public class EditUserInfoDialog extends DialogBox{
 			}
 
 			public void onSuccess(Void result) {
-				Window.alert("edited user");
+				//Window.alert("edited user");
 				clear();
 				hide();
-				
-				//TODO:UPDATE THE UI
 			}
 		};
 		loginService.editUser(loginInfo.getEmailAddress(), loginInfo.getNickname(), Integer.parseInt(phoneNumberBox.getText()), websiteBox.getText(), descArea.getText(), editUserCallback);
-	}
-	
-	private void updateUI()
-	{
-		
 	}
 	
 

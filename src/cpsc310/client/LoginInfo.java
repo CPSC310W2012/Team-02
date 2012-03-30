@@ -13,7 +13,7 @@ public class LoginInfo implements Serializable {
 	@Id
 	private String emailAddress;
 	private String nickname;
-	private int phoneNumber;
+	private long phoneNumber;
 	private String website;
 	private String description;
 
@@ -49,11 +49,11 @@ public class LoginInfo implements Serializable {
 		this.emailAddress = emailAddress;
 	}
 
-	public int getphoneNumber() {
+	public long getphoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(int phone) {
+	public void setPhoneNumber(long phone) {
 		this.phoneNumber = phone;
 	}
 

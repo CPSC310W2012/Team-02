@@ -26,7 +26,7 @@ public class HouseTable {
 	private static int defaultPageSize = 8;
 	private static HouseTable houseTable = null;
 	private CellTable<HouseData> homesCellTable = null;
-	private CellTable.Resources resource = GWT.create(CellTableResources.class);	
+	private CellTable.Resources resource = GWT.create(CellTableResources.class);
 	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
 	private AsyncDataProvider<HouseData> dataProvider;
 	private int currentStartItem = 0;

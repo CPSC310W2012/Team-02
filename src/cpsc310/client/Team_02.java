@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -14,12 +15,10 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,7 +34,7 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
 public class Team_02 implements EntryPoint {
 	private HouseTable houseTable = HouseTable.createHouseTable();
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
-	private PropertyMap theMap = new PropertyMap(vancouver);
+	private PropertyMap theMap;
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private boolean isTableExpanded = false;
@@ -47,10 +46,8 @@ public class Team_02 implements EntryPoint {
 	private Set<HouseData> selectedHouses = null;
     
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
-	private MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
-	
 	private UserInfoPanel userInfoPanel;
 
 	/**
@@ -65,27 +62,21 @@ public class Team_02 implements EntryPoint {
 
 		// TODO: when deploying delete "Team_02.html?gwt.codesvr=127.0.0.1:9997"
 		// below.
-		loginService.login(GWT.getHostPageBaseURL()
-				+ "Team_02.html?gwt.codesvr=127.0.0.1:9997",
+		loginService.login(GWT.getHostPageBaseURL(),
 				new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
+						buildUI();						
 						resetDatabase();
-						buildUI();
-						//Display Disclaimer
-						new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
 					}
 
 					public void onSuccess(LoginInfo result) {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
+						buildUI();						
 						resetDatabase();
-						buildUI();
-						//Display Disclaimer
-						new DisclaimerGenerator().generateDisclaimer();
 						loadURLSearch();
-						addUser(result);
 					}
 				});
 		
@@ -105,45 +96,15 @@ public class Team_02 implements EntryPoint {
 		dailyRefresh.scheduleRepeating(dayInMilliSeconds);
 	}
 
-	/**
-	 * 
-	 * Adds a logged in user to our DB if not already in the DB
-	 * 
-	 * @param LoginInfo 
-	 */
-	private void addUser(LoginInfo result) {
-		// add the user if not already in db
-		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-
-			public void onSuccess(LoginInfo user) {
-				if (user == null) {
-					// add the user to db
-					AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
-						public void onFailure(Throwable caught) {
-							Window.alert(caught.getMessage());
-						}
-
-						public void onSuccess(Void result) {
-							// Window.alert("stored user");
-						}
-					};
-					loginService.storeUser(loginInfo, storeUserCallback);
-				}
-			}
-		};
-		if (result.getEmailAddress() != null) {
-			loginService.getUser(result.getEmailAddress(), userCallback);
-		}
-	}
-	
 
 	/**
 	 * Builds application's main UI
 	 */
 	private void buildUI() {
+		
+		// Initialize the map
+		theMap = new PropertyMap(vancouver);
+		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
 
 		// Initialize selection model for map and table
 		initSelection();
@@ -158,10 +119,13 @@ public class Team_02 implements EntryPoint {
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
-
+		
 		// Associate Main panel with the HTML host page
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);
+		
+		// Inject css
+		MainResources.INSTANCE.css().ensureInjected();
 	}
 
 	/**
@@ -594,6 +558,7 @@ public class Team_02 implements EntryPoint {
 		sidebarTabPanel.setAnimationDuration(100);
 		sidebarTabPanel.addStyleDependentName("sideTabPanel");
 
+		
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
 			if (loginInfo.isLoggedIn()) {
@@ -604,9 +569,26 @@ public class Team_02 implements EntryPoint {
 						Window.alert("could not find user in DB");
 					}
 					public void onSuccess(LoginInfo user) {
-						//Window.alert("found user: " + user.getEmailAddress());
-						userInfoPanel = new UserInfoPanel(user);
+						
+						if(user == null){
+							//Window.alert("user returned is null");
+							// add the user to db
+							AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
+								public void onFailure(Throwable caught) {
+									Window.alert("failed to store user");
+								}
+								public void onSuccess(Void result) {
+									//Window.alert("added new user to db");
+									userInfoPanel = new UserInfoPanel(loginInfo, houseTable);
+									sidebarTabPanel.add(userInfoPanel, "My Account");
+								}
+							};
+							loginService.storeUser(loginInfo, storeUserCallback);
+						}
+						else{
+						userInfoPanel = new UserInfoPanel(user, houseTable);
 						sidebarTabPanel.add(userInfoPanel, "My Account");
+						}
 					}
 				};
 				loginService.getUser(loginInfo.getEmailAddress(), userCallback);
@@ -741,25 +723,31 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Resets database to the initial view.
+	 * Resets database to the initial view.  This method will only update
+	 * the database if either or both of the two parameters cn and sn don't exist. 
 	 */
 	private void resetDatabase() {
-		// Initialize the service proxy
-		if (houseDataSvc == null) {
-			houseDataSvc = GWT.create(HouseDataService.class);
+		String civicNumber = Window.Location.getParameter("cn");
+		String streetName = Window.Location.getParameter("sn");
+
+		if(civicNumber == null || streetName == null) {
+			// Initialize the service proxy
+			if (houseDataSvc == null) {
+				houseDataSvc = GWT.create(HouseDataService.class);
+			}
+	
+			// Set up the callback object
+			AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					Window.alert(caught.getMessage());
+				}
+	
+				public void onSuccess(Void result) {
+					houseTable.refreshTableFromBeginning();
+				}
+			};
+			houseDataSvc.refreshIDStore(callback);
 		}
-
-		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
-			}
-
-			public void onSuccess(Void result) {
-				houseTable.refreshTableFromBeginning();
-			}
-		};
-		houseDataSvc.refreshIDStore(callback);
 	}
 
 	/**
@@ -774,9 +762,8 @@ public class Team_02 implements EntryPoint {
 	 *       Note: Spaces in the URL must be "+" or "%20"
 	 */
 	private void loadURLSearch() {
-		// acquire parameters from the URL
-		String civicNumber = Window.Location.getParameter("cn");
-		String streetName = Window.Location.getParameter("sn");
+		final String civicNumber = Window.Location.getParameter("cn");
+		final String streetName = Window.Location.getParameter("sn");
 
 		// only search for house if the street number and address are given
 		if (civicNumber != null && streetName != null) {
@@ -791,11 +778,40 @@ public class Team_02 implements EntryPoint {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 				}
-
-				public void onSuccess(HouseData result) {
+				Timer streetViewWatcher;
+				public void onSuccess(final HouseData result) {
 					// Update the Application UI
 					houseTable.refreshTableFromBeginning();
-					theMap.findLocation(result, true);
+										
+					//timer to help update street view
+					streetViewWatcher = new Timer() {
+						@Override
+						public void run() {
+							//check to see if Map has loaded, load house and cancel timer
+							int tableRowCount = houseTable.getHouseTable().getVisibleItemCount();
+							if(Maps.isLoaded()) {
+								if(tableRowCount == 1) {
+									//retrieve house information and compare to what's in table
+									String retrievedCN = String.valueOf(result.getCivicNumber());
+									String retrievedSN = result.getStreetName();
+									//if UI has been updated, find the house and select it in the table
+									if(civicNumber.equals(retrievedCN) && streetName.equals(retrievedSN)) {
+										theMap.findLocation(result, true);
+										houseTable.getHouseTable().getSelectionModel().setSelected(result, true);
+										streetViewWatcher.cancel();
+									}
+								}
+								//no results were found so stop timer
+								else if(tableRowCount == 0) {
+									streetViewWatcher.cancel();
+								}
+							}
+						}
+					};
+					//wait 5 seconds before attempting to check if UI has loaded
+					//if it hasn't loaded, try to check again in 1 second
+					streetViewWatcher.schedule(5000);
+					streetViewWatcher.scheduleRepeating(1000);
 				}
 			};
 
@@ -811,7 +827,6 @@ public class Team_02 implements EntryPoint {
 				// Don't bother searching if civic number isn't a number
 			}
 		}
-		refreshStreetView();
 	}
 
 	// Fix for refreshing street view //TODO: documentation
@@ -823,5 +838,4 @@ public class Team_02 implements EntryPoint {
 			theMap.refreshStreetView(civicNumber + streetName);
 		}
 	}
-
 }

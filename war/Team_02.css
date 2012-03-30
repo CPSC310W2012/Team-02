@@ -2,6 +2,8 @@
 
 /*Please don't touch css*/
 
+.mainCss {
+}
 
 * {
 	margin: 0;
@@ -9,15 +11,12 @@
 	position: relative;
 }
 
-html {
-	overflow: auto;
-}
-
-body {
-	width: 100% !important;	
+html, body {
+	width: 100% !important;
+	height: 100% !important;
 	color: #515151;
 	background-color:#FCFCFC;
-	font-size: 70%;
+	font-size: 82.5%;
 	font-family: Helvetica, Arial, sans-serif;
 	overflow: auto;
 	background-image: url(images/bg.png);
@@ -111,9 +110,8 @@ a:active {
 }
 
 .mapContainerPanel {
-	width:100%;
-	clear: both;
 	padding: 1px;
+	overflow: auto;
 }
 
 .searchText {
@@ -137,7 +135,7 @@ a:active {
 }
 
 .gwt-TabLayoutPanel-sideTabPanel {
-	height: 37em;
+	height: 39em;
 	margin: 0.5em 0.9em;
 }
 
@@ -205,7 +203,7 @@ a:active {
 
 .gwt-Button {
 	margin: 0;
-	padding: 5px 7px;
+	padding: 3px 5px;
 	text-decoration: none;
 	cursor: pointer;
 	cursor: hand;
@@ -314,6 +312,7 @@ a:active {
 
 
 .gwt-DialogBox {
+	width: 30%;
 	background-color: #FCFCFC;
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -535,6 +534,11 @@ a:active {
 
 .gmnoprint {
 	font-size: 12px !important;
+	white-space: pre-wrap;   
+   white-space: -moz-pre-wrap;    
+   white-space: -pre-wrap;     
+   white-space: -o-pre-wrap;    
+   word-wrap: break-word;
 }
 
 .gmnoprint table{
