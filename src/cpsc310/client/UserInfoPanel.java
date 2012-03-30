@@ -55,18 +55,33 @@ public class UserInfoPanel extends FlowPanel {
 	 * Add user info to the panel
 	 */
 	private void addUserInfo() {
+		Window.alert("adding userinfo to panel");
 		Label userName = new Label("");
 		Label userEmail = new Label("");
 		userPhoneNumber = new Label("");		
 		userWebsite = new Label("");
 		userDescription = new Label("");
 		
+		String website = loginInfo.getWebsite();
+		String description = loginInfo.getDescription();
+		long phoneNumber = loginInfo.getphoneNumber();
+		String phone;
+		
+		if(phoneNumber == 0)
+			phone = "";
+		else phone = phoneNumber + "";
+		
+		if(website == null)
+			website = "";
+		if(description == null)
+			description = "";
+		
 		// Get info from login info
 		userName.setText("Hello, " + loginInfo.getNickname());
 		userEmail.setText("Email: " + loginInfo.getEmailAddress());
-		userPhoneNumber.setText("Phone #: " + loginInfo.getphoneNumber());
-		userWebsite.setText("Website: " + loginInfo.getWebsite());
-		userDescription.setText("Description: " + loginInfo.getDescription());
+		userPhoneNumber.setText("Phone #: " + phone);
+		userWebsite.setText("Website: " + website);
+		userDescription.setText("Description: " + description);
 		
 		// Add to panel
 		this.add(userName);
@@ -152,9 +167,24 @@ public class UserInfoPanel extends FlowPanel {
 				Window.alert("exception in refreshUserInfoPanel - call to getUser");
 			}
 			public void onSuccess(LoginInfo user) {
-				userPhoneNumber.setText("Phone #: " + user.getphoneNumber());
-				userWebsite.setText("Website: " + user.getWebsite());
-				userDescription.setText("Description: " + user.getDescription());
+				
+				String website = user.getWebsite();
+				String description = user.getDescription();
+				long phoneNumber = user.getphoneNumber();
+				String phone;
+				
+				if(phoneNumber == 0)
+					phone = "";
+				else phone = phoneNumber + "";
+				
+				if(website == null)
+					website = "";
+				if(description == null)
+					description = "";
+				
+				userPhoneNumber.setText("Phone #: " + phone);
+				userWebsite.setText("Website: " + website);
+				userDescription.setText("Description: " + description);
 			}
 		};
 		loginService.getUser(loginInfo.getEmailAddress(), userCallback);

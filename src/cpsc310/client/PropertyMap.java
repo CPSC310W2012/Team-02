@@ -480,10 +480,20 @@ public class PropertyMap {
 					long phoneNumber = user.getphoneNumber();
 					String website = user.getWebsite();
 					String description = user.getDescription();
+					String phone;
+					
+					if(phoneNumber == 0)
+						phone = "";
+					else phone = phoneNumber + "";
+					
+					if(website == null)
+						website = "";
+					if(description == null)
+						description = "";
 
 					htmlWidget = new HTML("<p><b><u>Contact Information</u></b></br> "
 							+ "<b>Realtor: </b>" + realtor + "</br>" + "<b>Email: </b>"
-							+ email + "</br>" + "<b>Phone: </b>" + phoneNumber
+							+ email + "</br>" + "<b>Phone: </b>" + phone
 							+ "</br>" + "<b>Website: </b>" + website + "</br>"
 							+ "<b>About: </b>" + description + "</br>" + "</p>");
 				} else {
