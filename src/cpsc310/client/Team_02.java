@@ -615,14 +615,14 @@ public class Team_02 implements EntryPoint {
 								}
 								public void onSuccess(Void result) {
 									//Window.alert("added new user to db");
-									userInfoPanel = new UserInfoPanel(loginInfo, houseTable);
+									userInfoPanel = new UserInfoPanel(loginInfo, houseTable, houseDataSvc);
 									sidebarTabPanel.add(userInfoPanel, "My Account");
 								}
 							};
 							loginService.storeUser(loginInfo, storeUserCallback);
 						}
 						else{
-						userInfoPanel = new UserInfoPanel(user, houseTable);
+						userInfoPanel = new UserInfoPanel(user, houseTable, houseDataSvc);
 						sidebarTabPanel.add(userInfoPanel, "My Account");
 						}
 					}

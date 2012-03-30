@@ -31,16 +31,16 @@ public class UserInfoPanel extends FlowPanel {
 	protected Label userWebsite;
 	protected Label userDescription;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
-	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
+	private HouseDataServiceAsync houseDataSvc;
 	private HouseTable table;
 	
 	/**
 	 * Constructor
 	 * @param loginInfo - current user's information instance
 	 */
-	public UserInfoPanel(LoginInfo loginInfo, HouseTable table) {
+	public UserInfoPanel(LoginInfo loginInfo, HouseTable table, HouseDataServiceAsync houseDataSvc) {
 		if (loginInfo != null) {
-
+			this.houseDataSvc = houseDataSvc;
 			this.loginInfo = loginInfo;
 			this.table = table;
 			
