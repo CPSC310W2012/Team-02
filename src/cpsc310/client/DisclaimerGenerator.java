@@ -17,6 +17,10 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
  * If the browser has cookies enabled.  A cookie storing the user's
  * decision on how whether or not to display the disclaimer at the
  * application's start up is stored for 1 year.
+ * 
+ * Note: This class has been tested and functions correctly; however,
+ * the value this feature added to the application wasn't deemed
+ * worthy.
  */
 public class DisclaimerGenerator {
 
