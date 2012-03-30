@@ -37,31 +37,49 @@ public class IntegrationTests {
 	public void testValidFile() {
 		csvFile = observerService.downloadFile(validURL);
 		houses = fileParser.parseData(csvFile);
-		house = houses.get(0);
+		house = houses.get("1185 12TH AVE E");
 		
-		//@TODO fix assert Statements
-//		assertEquals("014900009", house.getPID());
-//		assertEquals("1185 12TH AVE E", house.getAddress());
+		assertEquals("1185 12TH AVE E", house.getHouseID());
+		assertEquals(1185, house.getCivicNumber());
+		assertEquals("12TH AVE E", house.getStreetName());
 		assertFalse(house.getIsSelling());
-//		assertEquals(634000.0, house.getLandValue(), 0);
-		assertNull(house.getOwner());
+		assertEquals(634000.0, house.getCurrentLandValue(), 0);
+		assertEquals(600000.0, house.getPreviousLandValue(), 0);
+		assertNotNull(house.getOwner());
 		assertEquals("V5T 2J8", house.getPostalCode());
 		assertEquals(0.0, house.getPrice(), 0);
+		assertEquals(2012, house.getAssessmentYear());
+		assertEquals(1974, house.getBigImprovementYear());
+		assertEquals(83600, house.getCurrentImprovementValue());
+		assertEquals(-91.0, house.getLatitude(), 0);
+		assertEquals(-181.0, house.getLongitude(), 0);
+		assertEquals(76400.0, house.getPreviousImprovementValue(), 0);
+		assertEquals(1974, house.getYearBuilt());
+		
 	}
 	
 	@Test
 	public void testValidZipFile() {
 		csvFile = observerService.downloadFile(validZipURL);
 		houses = fileParser.parseData(csvFile);
-		house = houses.get(0);
-		//@TODO fix assert Statements
-//		assertEquals("014900009", house.getPID());
-//		assertEquals("1185 12TH AVE E", house.getAddress());
+		house = houses.get("1185 12TH AVE E");
+		
+		assertEquals("1185 12TH AVE E", house.getHouseID());
+		assertEquals(1185, house.getCivicNumber());
+		assertEquals("12TH AVE E", house.getStreetName());
 		assertFalse(house.getIsSelling());
-//		assertEquals(634000.0, house.getLandValue(), 0);
-		assertNull(house.getOwner());
+		assertEquals(634000.0, house.getCurrentLandValue(), 0);
+		assertEquals(600000.0, house.getPreviousLandValue(), 0);
+		assertNotNull(house.getOwner());
 		assertEquals("V5T 2J8", house.getPostalCode());
-		assertEquals(0.0, house.getPrice(), 0);		
+		assertEquals(0.0, house.getPrice(), 0);
+		assertEquals(2012, house.getAssessmentYear());
+		assertEquals(1974, house.getBigImprovementYear());
+		assertEquals(83600, house.getCurrentImprovementValue());
+		assertEquals(-91.0, house.getLatitude(), 0);
+		assertEquals(-181.0, house.getLongitude(), 0);
+		assertEquals(76400.0, house.getPreviousImprovementValue(), 0);
+		assertEquals(1974, house.getYearBuilt());
 	}
 	
 	@Test (expected = NullPointerException.class)
