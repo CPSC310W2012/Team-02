@@ -201,6 +201,8 @@ public class SearchPanel extends FlowPanel {
 		polygonSettingPanel.setStyleName("polygonSettingPanel");
 
 		// Polygon settings
+		specifyRegionBtn.setTitle("Draw a region on the map");
+		clearPolygonBtn.setTitle("Remove drawing on the map");
 		specifyRegionBtn.addStyleDependentName("polygonBtn");
 		clearPolygonBtn.addStyleDependentName("polygonBtn");
 

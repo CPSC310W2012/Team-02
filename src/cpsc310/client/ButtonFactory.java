@@ -4,6 +4,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ToggleButton;
 
+/**
+ * Class to create buttons for Google Map.
+ */
 public class ButtonFactory {
 		
 	/**
@@ -15,6 +18,9 @@ public class ButtonFactory {
 		
 	/**
 	 * Method to set the button as a draw button.
+	 * @pre true;
+	 * @post true;
+	 * @return a ToggleButton with faces for a draw button.
 	 */
 	public ToggleButton createDrawButton() {
 		ToggleButton drawBtn = new ToggleButton();
@@ -26,6 +32,9 @@ public class ButtonFactory {
 	
 	/**
 	 * Method to set the button as an erase button
+	 * @pre true;
+	 * @post true;
+	 * @return a PushButton with faces for an erase button.
 	 */
 	public PushButton createEraseButton() {
 		PushButton eraseBtn = new PushButton();
