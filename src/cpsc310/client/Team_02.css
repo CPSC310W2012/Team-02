@@ -234,6 +234,10 @@ hr {
 	Sorted in alphabetical order.
 	Note: IDs takes precedence of classes. */
 
+#loading {
+	display: none;
+}
+
 #header {
 	background-color: #00B4FF;
 	background-color: rgba(0, 180, 255, 0.6);
