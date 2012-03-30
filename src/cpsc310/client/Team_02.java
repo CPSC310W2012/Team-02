@@ -452,22 +452,34 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// create dialogbox
 				final DialogBox helpWindow = new DialogBox();
-				ScrollPanel scrollPanel = new ScrollPanel();
 				FlowPanel dialogBoxHolder = new FlowPanel();
-				scrollPanel.setSize("300", "500");
+				Button closeBtn = new Button("Close");
+				
+				// Set the behavior of dialog box
 				helpWindow.setText("iVanHomePrices Help Guide");
-				Button closeBtn = new Button("X");
+				helpWindow.setGlassEnabled(true);
+				helpWindow.setAnimationEnabled(true);
+				
+				// Add the close button behavior
 				closeBtn.addClickHandler(new ClickHandler() {
 
 					@Override
 					public void onClick(ClickEvent event) {
+						helpWindow.clear();
 						helpWindow.hide();
 					}
 				});
-				dialogBoxHolder.add(new DocumentFactory().createHelpDocument());
+				
+				// Set the details of contents
+				HTML content = new DocumentFactory().createHelpDocument();
+				content.setStyleName("docContents");
+				
+				// Assemble Dialog box
+				dialogBoxHolder.add(content);
 				dialogBoxHolder.add(closeBtn);
-				scrollPanel.add(dialogBoxHolder);
-				helpWindow.add(scrollPanel);
+				helpWindow.setWidget(dialogBoxHolder);
+				
+				// Show dialog box
 				helpWindow.center();
 				helpWindow.show();
 			}
@@ -489,23 +501,30 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// create dialogbox and ok button to close it
 				final DialogBox termsWindow = new DialogBox();
-				ScrollPanel scrollPanel = new ScrollPanel();
-				scrollPanel.setSize("500", "200");
-				termsWindow.setText("Terms of Use");
-				termsWindow.setGlassEnabled(true);
 				FlowPanel dialogBoxHolder = new FlowPanel();
 				Button okBtn = new Button();
+				
+				// Set details of dialog box
+				termsWindow.setText("Terms of Use");
+				termsWindow.setGlassEnabled(true);
+				termsWindow.setAnimationEnabled(true);
+
+				// Set behavior of button
 				okBtn.setText("OK");
 				okBtn.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
+						termsWindow.clear();
 						termsWindow.hide();
 					}
 				});
+				
+				// Assemble dialog box
 				dialogBoxHolder.add(new DocumentFactory().createTermsDoc());
 				dialogBoxHolder.add(okBtn);
-				scrollPanel.add(dialogBoxHolder);
-				termsWindow.add(scrollPanel);
+				termsWindow.setWidget(dialogBoxHolder);
+				
+				// Show dialog box
 				termsWindow.show();
 				termsWindow.center();
 			}

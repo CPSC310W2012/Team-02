@@ -315,6 +315,7 @@ a:active {
 	width: 30%;
 	background-color: #FCFCFC;
 	font-family: Arial, Helvetica, sans-serif;
+	overflow: auto;	
 }
 
 .gwt-DialogBox .Caption {
@@ -335,8 +336,8 @@ a:active {
 }
 
 .gwt-DialogBox .dialogContent {
-	padding: 20px;
-	font-size: 12px !important;	
+	font-size: 12px !important;
+	background-color: #FCFCFC;
 }
 
 .gwt-DialogBox .dialogContent .gwt-Label {
@@ -348,9 +349,11 @@ a:active {
 }
 
 .editDialog {
+	width: 30%;
 	background-color: #FCFCFC;
 	border: 3px solid #A8A8A8;
 	font-family: Arial, Helvetica, sans-serif;
+	overflow: auto;	
 }
 
 .editDialog .Caption {
@@ -373,6 +376,7 @@ a:active {
 .editPanel .dialogContent {
 	padding: 2em;
 	font-size: 12px !important;
+	background-color: #FCFCFC;
 }
 
 
@@ -533,21 +537,16 @@ a:active {
 }
 
 .gmnoprint {
-	font-size: 12px !important;
-	white-space: pre-wrap;   
+   font-size: 12px !important;
+   white-space: pre-wrap;   
    white-space: -moz-pre-wrap;    
    white-space: -pre-wrap;     
    white-space: -o-pre-wrap;    
    word-wrap: break-word;
+   line-height: 1.5em;
 }
 
-.gmnoprint table{
-	font-size: 12px !important;
-	line-height: 1.5em;
-}
-
-.gmnoprint table a {
-	vertical-align: middle;
-	font-size: 12px !important;
-	margin-top: 10px;
+.gmnoprint .wordwrap{
+	height: 50%;
+	overflow: auto;
 }
