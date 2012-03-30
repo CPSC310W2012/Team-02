@@ -140,7 +140,6 @@ public class Team_02 implements EntryPoint {
 		MainResources.INSTANCE.css().ensureInjected();		
 		
 		// Associate Main panel with the HTML host page
-		RootPanel.get("loading").clear();
 		RootPanel.get("loading").removeFromParent();
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);
