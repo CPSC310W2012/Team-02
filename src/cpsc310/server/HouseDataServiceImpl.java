@@ -335,12 +335,14 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public void searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude) {
+		//TODO: Degbuging - Remove
 		System.out.println("Polygon Search");
 
 		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
-		firstPassSearch(userSearchInput, results);
-		secondPassSearch(userSearchInput, results);
 
+		results = firstPassSearch(userSearchInput, results);
+		results = secondPassSearch(userSearchInput, results);
+		
 		// convert to array
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
@@ -356,13 +358,13 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	private Set<String> firstPassSearch(String[] userSearchInput,
 			Set<String> results) {
 		if (!userSearchInput[0].equals("") && !userSearchInput[1].equals("")) {
-			results = store.searchByAddress(
-					Integer.parseInt(userSearchInput[0]), userSearchInput[1]);
+			results.retainAll(store.searchByAddress(
+					Integer.parseInt(userSearchInput[0]), userSearchInput[1]));
 		} else if (!userSearchInput[1].equals("")) {
-			results = store.searchByStreet(userSearchInput[1]);
+			results.retainAll(store.searchByStreet(userSearchInput[1]));
 		} else if (!userSearchInput[0].equals("")) {
-			results = store.searchByCivicNumber(Integer
-					.parseInt(userSearchInput[0]));
+			results.retainAll(store.searchByCivicNumber(Integer
+					.parseInt(userSearchInput[0])));
 		}
 		if (!userSearchInput[7].equals("")) {
 			results.retainAll(store.searchByPostalCode(userSearchInput[7]));
@@ -412,9 +414,14 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 					Integer.parseInt(userSearchInput[15])));
 		}
 		if (!userSearchInput[16].equals("") && !userSearchInput[17].equals("")) {
-			results.retainAll(store.searchByBigImprovementYear(
+			results.retainAll(store.searchByYearBuilt(
 					Integer.parseInt(userSearchInput[16]),
 					Integer.parseInt(userSearchInput[17])));
+		}
+		if (!userSearchInput[18].equals("") && !userSearchInput[19].equals("")) {
+			results.retainAll(store.searchByBigImprovementYear(
+					Integer.parseInt(userSearchInput[18]),
+					Integer.parseInt(userSearchInput[19])));
 		}
 		return results;
 	}

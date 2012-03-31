@@ -198,10 +198,11 @@ public class HouseTable {
 	  	columnName.add("Realtor");
 	  	
 	  	// Price column
-	  	Column<HouseData, String> priceColumn = new TextColumn<HouseData>() {
+	  	Column<HouseData, Number> priceColumn = 
+	  			new Column<HouseData, Number>(new NumberCell()) {
 	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return Double.toString(house.getPrice());
+	  		public Number getValue(HouseData house) {
+	  			return house.getPrice();
 	  		}
 	  	};
 	  	homesCellTable.addColumn(priceColumn, "Price");
@@ -285,68 +286,6 @@ public class HouseTable {
 	 * attaches comparators to enable sorting, and attaches the hander to the table.
 	 */
 	private void createSort() {
-		/* local sort
-		 // Create sort handler, associate sort handler to the table
-		homesCellTable.addColumnSortHandler( new ColumnSortEvent.Handler() {
-			public void onColumnSort(ColumnSortEvent event) {
-				@SuppressWarnings("unchecked")
-				Column<HouseData,?> sortedColumn = (Column<HouseData, ?>) event.getColumn();
-				int sortedIndex = homesCellTable.getColumnIndex(sortedColumn);
-				List<HouseData> newData = new ArrayList<HouseData>(homesCellTable.getVisibleItems());
-				
-				Comparator<HouseData> c = HouseData.HouseAddrComparator;
-				switch(sortedIndex) {
-				case 0:
-					c = HouseData.HouseAddrComparator;
-					break;
-				case 1:
-					c = HouseData.HousePostalCodeComparator;
-					break;
-				case 2:
-					c = HouseData.HouseCurrentLandValueComparator;
-					break;
-				case 3:
-					c = HouseData.HouseCurrentImprovementValueComparator;
-					break;
-				case 4:
-					c = HouseData.HouseAssYearComparator;
-					break;
-				case 5:
-					c = HouseData.HousePrevLandValueComparator;
-					break;				
-				case 6:
-					c = HouseData.HousePrevImprovementValueComparator;
-					break;
-				case 7:
-					c = HouseData.HouseYearBuiltComparator;
-					break;
-				case 8:
-					c = HouseData.HouseBigImprYearComparator;
-					break;
-				case 9:
-					c = HouseData.HouseOwnerComparator;
-					break;
-				case 10:
-					c = HouseData.HousePriceComparator;
-					break;
-				case 11:
-					c = HouseData.HouseIsSellingComparator;
-					break;					
-				default:
-					break;
-				}
-				if (event.isSortAscending()) {
-					Collections.sort(newData, c);
-				}
-				else {
-					Collections.sort(newData, Collections.reverseOrder(c));
-				}
-				homesCellTable.setRowData(homesCellTable.getPageStart(), newData);
-			}
-		});
-		// Get the ColumnSortInfo from the table.
-		        		
-		*/
 		// Server-side sort
 		AsyncHandler columnSortHandler = new ColumnSortEvent.AsyncHandler(homesCellTable) {
 			public void onColumnSort(ColumnSortEvent event) {

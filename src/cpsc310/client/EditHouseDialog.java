@@ -25,9 +25,8 @@ import com.google.gwt.user.client.ui.TextBox;
  * Dialog box that holds edit panel. The assumption is that type checking for
  * selecting only one house is done in the caller's class.
  */
-public class EditDialog extends DialogBox {
-	private HouseDataServiceAsync houseDataSvc = GWT
-			.create(HouseDataService.class);
+public class EditHouseDialog extends DialogBox {
+	private HouseDataServiceAsync houseDataSvc;
 	private HouseData selectedHouse;
 	private LoginInfo loginInfo;
 	private PropertyMap map;
@@ -53,17 +52,18 @@ public class EditDialog extends DialogBox {
 	 * @param table
 	 *            - table in the caller class
 	 */
-	public EditDialog(HouseData selectedHouse, LoginInfo loginInfo,
-			PropertyMap map, HouseTable table) {
+	public EditHouseDialog(HouseData selectedHouse, LoginInfo loginInfo,
+			PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc) {
 		FlowPanel editPanel = new FlowPanel();
 
-		this.setStyleName("editDialog");
-
+		editPanel.addStyleDependentName("editPanel");
+		
 		// Initialize class variables
 		this.selectedHouse = selectedHouse;
 		this.loginInfo = loginInfo;
 		this.map = map;
 		this.table = table;
+		this.houseDataSvc = houseDataSvc;
 
 		// Build dialog contents
 		buildEditPanel(editPanel);
@@ -89,17 +89,17 @@ public class EditDialog extends DialogBox {
 		noSell.setValue(true);
 
 		// Set styles of components
-		editPanel.setStyleName("editPanel");
 		priceBox.addStyleDependentName("shorter");
 		errorMsg.addStyleDependentName("error");
 
 		// Display the address of the house currently trying to edit
-		houseName.setText("House to edit: " + selectedHouse.getAddress());
+		houseName.setText("House to edit:  " + selectedHouse.getAddress());
 
 		// Build button behaviors
 		buildOKBtn(okBtn);
 		buildCancelBtn(cancelBtn);
 
+		
 		// Assemble edit panel
 		editPanel.add(houseName);
 		editPanel.add(new InlineHTML("<br />Price: "));

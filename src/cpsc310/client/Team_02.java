@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
@@ -50,13 +51,14 @@ public class Team_02 implements EntryPoint {
 	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
-	private UserInfoPanel userInfoPanel;
+	private UserInfoPanel userInfoPanel;	
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
 	 * asynchronous request to login service, UI is built.
 	 */
 	public void onModuleLoad() {
+		
 		// Check login status using login service.
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
@@ -133,13 +135,14 @@ public class Team_02 implements EntryPoint {
 
 		// Make mapContainerPanel
 		mainPanel.add(mapPanel);
+
+		// Inject css
+		MainResources.INSTANCE.css().ensureInjected();		
 		
 		// Associate Main panel with the HTML host page
+		RootPanel.get("loading").removeFromParent();
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
 		rootLayoutPanel.add(mainPanel);
-		
-		// Inject css
-		MainResources.INSTANCE.css().ensureInjected();
 	}
 
 	/**
@@ -582,7 +585,7 @@ public class Team_02 implements EntryPoint {
 	 *            - tab panel to wrap the widgets
 	 */
 	private void buildSideTabPanel(final TabLayoutPanel sidebarTabPanel) {
-		SearchPanel searchPanel = new SearchPanel(theMap, houseTable);
+		SearchPanel searchPanel = new SearchPanel(theMap, houseTable, houseDataSvc);
 
 		// Add Widgets to the tab panel
 		sidebarTabPanel.add(searchPanel, "Search");
@@ -612,14 +615,14 @@ public class Team_02 implements EntryPoint {
 								}
 								public void onSuccess(Void result) {
 									//Window.alert("added new user to db");
-									userInfoPanel = new UserInfoPanel(loginInfo, houseTable);
+									userInfoPanel = new UserInfoPanel(loginInfo, houseTable, houseDataSvc);
 									sidebarTabPanel.add(userInfoPanel, "My Account");
 								}
 							};
 							loginService.storeUser(loginInfo, storeUserCallback);
 						}
 						else{
-						userInfoPanel = new UserInfoPanel(user, houseTable);
+						userInfoPanel = new UserInfoPanel(user, houseTable, houseDataSvc);
 						sidebarTabPanel.add(userInfoPanel, "My Account");
 						}
 					}
@@ -678,8 +681,8 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				if (selectedHouse != null) {
-					EditDialog editDialog = new EditDialog(selectedHouse,
-							loginInfo, theMap, houseTable);
+					EditHouseDialog editDialog = new EditHouseDialog(selectedHouse,
+							loginInfo, theMap, houseTable, houseDataSvc);
 					editDialog.center();
 					editDialog.show();
 				}
