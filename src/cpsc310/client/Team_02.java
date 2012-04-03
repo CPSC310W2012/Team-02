@@ -76,6 +76,7 @@ public class Team_02 implements EntryPoint {
 						if(civicNumber == null || streetName == null) {
 							resetDatabase();
 						}
+						new PasswordGenerator().createPasswordPrompt();
 						loadURLSearch();
 					}
 
@@ -86,6 +87,7 @@ public class Team_02 implements EntryPoint {
 						if(civicNumber == null || streetName == null) {
 							resetDatabase();
 						}
+						new PasswordGenerator().createPasswordPrompt();
 						loadURLSearch();
 					}
 				});
