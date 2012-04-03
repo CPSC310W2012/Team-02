@@ -11,68 +11,71 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * HouseDataServiceImpl.java.
  */
 public interface HouseDataServiceAsync {
-	public void getHouses(int start, int range,
+	public void getHouses(int instanceID, int start, int range,
 			AsyncCallback<List<HouseData>> callback);
 
-	public void getHouses(List<String> list, int start, int range,
-			AsyncCallback<List<HouseData>> callback);
+	public void searchHouses(int instanceID, String[] userSearchInput,
+			int isSelling, AsyncCallback<Void> callback);
 
-	public void searchHouses(String[] userSearchInput, int isSelling,
+	public void getHouseDatabaseLength(int instanceID,
+			AsyncCallback<Integer> callback);
+
+	public void sortByAddress(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void getHouseDatabaseLength(AsyncCallback<Integer> callback);
-
-	public void sortByAddress(boolean isSortAscending,
+	public void sortByPostalCode(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByPostalCode(boolean isSortAscending,
+	public void sortByOwner(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByOwner(boolean isSortAscending,
+	public void sortByForSale(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByForSale(boolean isSortAscending,
+	public void sortByCurrentLandValue(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByCurrentLandValue(boolean isSortAscending,
+	public void sortByCurrentImprovementValue(int instanceID,
+			boolean isSortAscending, AsyncCallback<Void> callback);
+
+	public void sortByAssessmentYear(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByCurrentImprovementValue(boolean isSortAscending,
+	public void sortByPreviousLandValue(int instanceID,
+			boolean isSortAscending, AsyncCallback<Void> callback);
+
+	public void sortByPreviousImprovementValue(int instanceID,
+			boolean isSortAscending, AsyncCallback<Void> callback);
+
+	public void sortByYearBuilt(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByAssessmentYear(boolean isSortAscending,
+	public void sortByBigImprovementYear(int instanceID,
+			boolean isSortAscending, AsyncCallback<Void> callback);
+
+	public void sortByPrice(int instanceID, boolean isSortAscending,
 			AsyncCallback<Void> callback);
 
-	public void sortByPreviousLandValue(boolean isSortAscending,
-			AsyncCallback<Void> callback);
-
-	public void sortByPreviousImprovementValue(boolean isSortAscending,
-			AsyncCallback<Void> callback);
-
-	public void sortByYearBuilt(boolean isSortAscending,
-			AsyncCallback<Void> callback);
-
-	public void sortByBigImprovementYear(boolean isSortAscending,
-			AsyncCallback<Void> callback);
-
-	public void sortByPrice(boolean isSortAscending,
-			AsyncCallback<Void> callback);
-
-	public void updateHouse(String Owner, int price, boolean isSelling,
-			String houseID, double latitude, double longitude,
-			String postalCode, AsyncCallback<Void> callback);
+	public void updateHouse(String Owner, int price,
+			boolean isSelling, String houseID, double latitude,
+			double longitude, String postalCode, AsyncCallback<Void> callback);
 
 	public void getStreetNames(AsyncCallback<List<String>> callback);
 
-	public void refreshIDStore(AsyncCallback<Void> callback);
+	public void refreshIDStore(int instanceID, AsyncCallback<Void> callback);
 
-	public void resetHouse(String houseID, AsyncCallback<Void> callback);
+	public void resetHouse(String houseID,
+			AsyncCallback<Void> callback);
 
-	public void retrieveSingleHouse(int civicNumber, String streetName,
-			AsyncCallback<HouseData> callback);
+	public void retrieveSingleHouse(int instanceID, int civicNumber,
+			String streetName, AsyncCallback<HouseData> callback);
 
-	public void searchHousesForSalePolygon(String[] userSearchInput,
-			double[] latitude, double[] longitude, AsyncCallback<Void> callback);
+	public void searchHousesForSalePolygon(int instanceID,
+			String[] userSearchInput, double[] latitude, double[] longitude,
+			AsyncCallback<Void> callback);
 
-	public void getHomesByUser(String email, AsyncCallback<Void> callback);
+	public void getHomesByUser(int instanceID, String email,
+			AsyncCallback<Void> callback);
+
+	public void getInstanceID(AsyncCallback<Integer> callback);
 }

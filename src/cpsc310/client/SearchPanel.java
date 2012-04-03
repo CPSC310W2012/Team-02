@@ -41,8 +41,8 @@ public class SearchPanel extends FlowPanel {
 	private final List<RadioButton> forSale = new ArrayList<RadioButton>(3);
 	private final ListBox addressDropDown = new ListBox(false);
 	private List<String> addresses = new ArrayList<String>();
-//	private HouseDataServiceAsync houseDataSvc = GWT
-//			.create(HouseDataService.class);
+	// private HouseDataServiceAsync houseDataSvc = GWT
+	// .create(HouseDataService.class);
 	private HouseDataServiceAsync houseDataSvc;
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	// ORDER OF THESE VALUES MATTER! BECAREFUL!
@@ -58,16 +58,25 @@ public class SearchPanel extends FlowPanel {
 	// for local access of search button
 	final Button searchBtn;
 
+	// identities instance to client
+	private int instanceID;
+
 	/**
 	 * Constructor
 	 * 
+	 * @param instanceID
+	 *            - identifies instance when calling server
 	 * @param map
 	 *            - map to specify polygon selection on. This ensures that this
 	 *            class modifies the same instance of map as its caller class.
 	 * @param table
 	 *            - table that appears in caller's class
+	 * @param houseDataSvc
+	 *            - shared houseDataObject for single client
 	 */
-	public SearchPanel(PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc) {
+	public SearchPanel(int instanceID, PropertyMap map, HouseTable table,
+			HouseDataServiceAsync houseDataSvc) {
+		this.instanceID = instanceID;
 		this.houseDataSvc = houseDataSvc;
 		final FlowPanel searchSettingPanel = new FlowPanel();
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
@@ -573,12 +582,14 @@ public class SearchPanel extends FlowPanel {
 		// Get radio button (For Sale) response
 		int isSelling = convertRadioBtnSearch(forSale);
 		if (map.getPolyLat() != null) {
-			houseDataSvc.searchHousesForSalePolygon(userSearchInput, map
-					.getPolyLat(), map.getPolyLng(), callback);
+			houseDataSvc.searchHousesForSalePolygon(instanceID,
+					userSearchInput, map.getPolyLat(), map.getPolyLng(),
+					callback);
 		} else {
 			// Make the call to the house data service to search for data in the
 			// server
-			houseDataSvc.searchHouses(userSearchInput, isSelling, callback);
+			houseDataSvc.searchHouses(instanceID, userSearchInput, isSelling,
+					callback);
 		}
 	}
 

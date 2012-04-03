@@ -27,26 +27,35 @@ import com.google.gwt.user.client.ui.TextBox;
 public class UserInfoPanel extends FlowPanel {
 	private LoginInfo loginInfo = null;
 	private Label errorMsg;
-	protected Label userPhoneNumber;		
+	protected Label userPhoneNumber;
 	protected Label userWebsite;
 	protected Label userDescription;
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	private HouseDataServiceAsync houseDataSvc;
 	private HouseTable table;
-	
+	private int instanceID;
+
 	/**
 	 * Constructor
-	 * @param loginInfo - current user's information instance
+	 * 
+	 * @param instanceID
+	 *            - identifies instance when calling server
+	 * @param loginInfo
+	 *            - current user's information instance
+	 * @param houseDataSvc
+	 *            - shared houseDataObject for single client
 	 */
-	public UserInfoPanel(LoginInfo loginInfo, HouseTable table, HouseDataServiceAsync houseDataSvc) {
+	public UserInfoPanel(int instanceID, LoginInfo loginInfo, HouseTable table,
+			HouseDataServiceAsync houseDataSvc) {
 		if (loginInfo != null) {
+			this.instanceID = instanceID;
 			this.houseDataSvc = houseDataSvc;
 			this.loginInfo = loginInfo;
 			this.table = table;
-			
+
 			// Set style
 			this.setStyleName("userInfoPanel");
-			
+
 			// Add user's current information to the panel
 			addUserInfo();
 
@@ -62,31 +71,32 @@ public class UserInfoPanel extends FlowPanel {
 	private void addUserInfo() {
 		Label userName = new Label("");
 		Label userEmail = new Label("");
-		userPhoneNumber = new Label("");		
+		userPhoneNumber = new Label("");
 		userWebsite = new Label("");
 		userDescription = new Label("");
-		
+
 		String website = loginInfo.getWebsite();
 		String description = loginInfo.getDescription();
 		long phoneNumber = loginInfo.getphoneNumber();
 		String phone;
-		
-		if(phoneNumber == 0)
+
+		if (phoneNumber == 0)
 			phone = "";
-		else phone = phoneNumber + "";
-		
-		if(website == null)
+		else
+			phone = phoneNumber + "";
+
+		if (website == null)
 			website = "";
-		if(description == null)
+		if (description == null)
 			description = "";
-		
+
 		// Get info from login info
 		userName.setText("Hello, " + loginInfo.getNickname());
 		userEmail.setText("Email: " + loginInfo.getEmailAddress());
 		userPhoneNumber.setText("Phone #: " + phone);
 		userWebsite.setText("Website: " + website);
 		userDescription.setText("Description: " + description);
-		
+
 		// Add to panel
 		this.add(userName);
 		this.add(new HTML("<br>"));
@@ -105,155 +115,157 @@ public class UserInfoPanel extends FlowPanel {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				EditUserInfoDialog2 editUserInfoDialog = 
-						new EditUserInfoDialog2(loginInfo);
+				EditUserInfoDialog2 editUserInfoDialog = new EditUserInfoDialog2(
+						loginInfo);
 				editUserInfoDialog.center();
 				editUserInfoDialog.show();
 
 			}
-			
+
 		});
-		
+
 		this.add(changeUserInfoBtn);
 	}
 
 	/**
-	 * Builds and adds button that allows user to
-	 * see all his/her houses to the panel
+	 * Builds and adds button that allows user to see all his/her houses to the
+	 * panel
 	 */
 	private void addSeeUserHousesBtn() {
 		final Button seeUserHousesBtn = new Button("See My Houses");
-		
+
 		seeUserHousesBtn.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				getUserHouse();				
+				getUserHouse();
 			}
 		});
-		
+
 		this.add(new HTML("<hr>"));
 		this.add(seeUserHousesBtn);
 	}
 
-	
 	/**
 	 * Async call to the server to grab user's houses
 	 */
 	private void getUserHouse() {
-		// Initialize the service proxy
-		if (houseDataSvc == null) {
-			houseDataSvc = GWT.create(HouseDataService.class);
-		}
 
 		// Set up the callback object
 		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
+
 			public void onSuccess(Void result) {
 				table.refreshTableFromBeginning();
 			}
 		};
-		houseDataSvc.getHomesByUser(loginInfo.getEmailAddress(), callback);
+		houseDataSvc.getHomesByUser(instanceID, loginInfo.getEmailAddress(), callback);
 
 	}
-	
-	public void refreshUserInfoPanel()
-	{
+
+	public void refreshUserInfoPanel() {
 		AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 				Window.alert("exception in refreshUserInfoPanel - call to getUser");
 			}
+
 			public void onSuccess(LoginInfo user) {
-				
+
 				String website = user.getWebsite();
 				String description = user.getDescription();
 				long phoneNumber = user.getphoneNumber();
 				String phone;
-				
-				if(phoneNumber == 0)
+
+				if (phoneNumber == 0)
 					phone = "";
-				else phone = phoneNumber + "";
-				
-				if(website == null)
+				else
+					phone = phoneNumber + "";
+
+				if (website == null)
 					website = "";
-				if(description == null)
+				if (description == null)
 					description = "";
-				
+
 				userPhoneNumber.setText("Phone #: " + phone);
 				userWebsite.setText("Website: " + website);
 				userDescription.setText("Description: " + description);
 			}
 		};
 		loginService.getUser(loginInfo.getEmailAddress(), userCallback);
-		
+
 	}
-	
+
 	public class EditUserInfoDialog2 extends DialogBox {
 		private static final int MAXCHARCOUNT = 200;
 		private int charCount = 200;
-		private String charCountLeft = "You have " + charCount + " characters left.";
+		private String charCountLeft = "You have " + charCount
+				+ " characters left.";
 		private Label errorMsg = new Label("");
-		private Label charCountMsg = new Label(charCountLeft); 
+		private Label charCountMsg = new Label(charCountLeft);
 		private LoginServiceAsync loginService = GWT.create(LoginService.class);
-		TextBox phoneNumberBox; 
+		TextBox phoneNumberBox;
 		TextBox websiteBox;
 		TextArea descArea;
 		LoginInfo loginInfo;
 		UserInfoPanel infoPanel;
-		
-		
+
 		/**
 		 * Constructor
-		 * @param loginInfo - LoginInfo class instance that has user's information
+		 * 
+		 * @param loginInfo
+		 *            - LoginInfo class instance that has user's information
 		 */
 		public EditUserInfoDialog2(LoginInfo loginInfo) {
 			FlowPanel contentWrap = new FlowPanel();
 			this.loginInfo = loginInfo;
-			
+
 			contentWrap.addStyleDependentName("editPanel");
-			
+
 			// Build dialog content
 			buildContent(contentWrap);
-			
+
 			// Assemble dialog
 			this.setText("Change my information");
 			this.setGlassEnabled(true);
-			this.setAnimationEnabled(true);		
-			this.setWidget(contentWrap);		
+			this.setAnimationEnabled(true);
+			this.setWidget(contentWrap);
 		}
-		
+
 		/**
 		 * Build dialog content
-		 * @param contentWrap - panel that wraps the contents of dialog
+		 * 
+		 * @param contentWrap
+		 *            - panel that wraps the contents of dialog
 		 */
 		private void buildContent(FlowPanel contentWrap) {
-			phoneNumberBox = new TextBox(); 
+			phoneNumberBox = new TextBox();
 			websiteBox = new TextBox();
 			descArea = new TextArea();
 			Button okBtn = new Button("OK");
 			Button cancelBtn = new Button("Cancel");
-			
+
 			// Set style of components
 			phoneNumberBox.addStyleDependentName("longer");
 			websiteBox.addStyleDependentName("longer");
 			errorMsg.addStyleDependentName("error");
-			
+
 			// Build components
 			buildDescArea(descArea);
 			buildPhoneNumberBox(phoneNumberBox);
 			buildWebsiteBox(websiteBox);
 			buildOKBtn(okBtn);
 			buildCancelBtn(cancelBtn);
-			
+
 			// Assemble content
 			contentWrap.add(new Label("Phone # (without - or space): "));
 			contentWrap.add(phoneNumberBox);
 			contentWrap.add(new Label("Website: "));
 			contentWrap.add(websiteBox);
-			contentWrap.add(new Label("Description about yourself (max 200 char): "));
+			contentWrap.add(new Label(
+					"Description about yourself (max 200 char): "));
 			contentWrap.add(new InlineHTML("<br>"));
 			contentWrap.add(descArea);
 			contentWrap.add(charCountMsg);
@@ -263,10 +275,12 @@ public class UserInfoPanel extends FlowPanel {
 			contentWrap.add(new InlineHTML("&nbsp;&nbsp;"));
 			contentWrap.add(okBtn);
 		}
-		
+
 		/**
 		 * Add blur handler to the phone number box for type checking
-		 * @param phoneNumberBox - phone number box to add this behavior
+		 * 
+		 * @param phoneNumberBox
+		 *            - phone number box to add this behavior
 		 */
 		private void buildPhoneNumberBox(final TextBox phoneNumberBox) {
 			phoneNumberBox.addBlurHandler(new BlurHandler() {
@@ -277,20 +291,21 @@ public class UserInfoPanel extends FlowPanel {
 					if (!phoneNum.matches("^$|^\\d{10}$")) {
 						errorMsg.setText("Phone number must be a 10-digit number only.");
 						phoneNumberBox.selectAll();
-					}
-					else {
+					} else {
 						if (errorMsg.getText().length() > 0)
 							errorMsg.setText("");
 					}
 				}
-				
+
 			});
-			
+
 		}
-		
+
 		/**
 		 * Add blur handler to the phone number box for type checking
-		 * @param phoneNumberBox - phone number box to add this behavior
+		 * 
+		 * @param phoneNumberBox
+		 *            - phone number box to add this behavior
 		 */
 		private void buildWebsiteBox(final TextBox websiteBox) {
 			websiteBox.addBlurHandler(new BlurHandler() {
@@ -298,104 +313,110 @@ public class UserInfoPanel extends FlowPanel {
 				@Override
 				public void onBlur(BlurEvent event) {
 					String website = websiteBox.getText().trim();
-					if (!website.matches("^([a-z][a-z0-9\\-]+(\\.|\\-*\\.))+[a-z]{2,6}$")) {
+					if (!website
+							.matches("^([a-z][a-z0-9\\-]+(\\.|\\-*\\.))+[a-z]{2,6}$")) {
 						errorMsg.setText("Website format must be www.example.com");
 						websiteBox.selectAll();
-					}
-					else {
+					} else {
 						if (errorMsg.getText().length() > 0)
 							errorMsg.setText("");
 					}
 				}
-				
+
 			});
-			
+
 		}
 
 		/**
-		 * Build details of description text area.
-		 * Limit user's input into 200 characters
-		 * @param descArea - text area to apply constraints
+		 * Build details of description text area. Limit user's input into 200
+		 * characters
+		 * 
+		 * @param descArea
+		 *            - text area to apply constraints
 		 */
 		private void buildDescArea(final TextArea descArea) {
 			descArea.addKeyDownHandler(new KeyDownHandler() {
 				@Override
-				public void onKeyDown(KeyDownEvent event) {					
+				public void onKeyDown(KeyDownEvent event) {
 					if (charCount <= 0) {
 						errorMsg.setText("Description can't be more than 200 characters.");
 					}
 					int charLength = descArea.getText().length();
 					charCount = MAXCHARCOUNT - charLength;
-					charCountLeft = "You have " + charCount + " characters left.";
+					charCountLeft = "You have " + charCount
+							+ " characters left.";
 					charCountMsg.setText(charCountLeft);
 					if (errorMsg.getText().length() > 0)
-						errorMsg.setText("");					
+						errorMsg.setText("");
 				}
 			});
 		}
-		
 
-		private String checkFields(String phoneNum, String website, String description){
+		private String checkFields(String phoneNum, String website,
+				String description) {
 			String msg = "";
 
-			if(website.length()>0){
-			if (!website.matches("^([a-z][a-z0-9\\-]+(\\.|\\-*\\.))+[a-z]{2,6}$")) {
-				msg = msg + "Website format must be www.example.com";
+			if (website.length() > 0) {
+				if (!website
+						.matches("^([a-z][a-z0-9\\-]+(\\.|\\-*\\.))+[a-z]{2,6}$")) {
+					msg = msg + "Website format must be www.example.com";
+				}
 			}
+			if (phoneNum.length() > 0) {
+				if (!phoneNum.matches("^$|^\\d{10}$")) {
+					errorMsg.setText("Phone number must be a 10-digit number only.");
+					msg = msg
+							+ "\nPhone number must be a 10-digit number only.";
+				}
 			}
-			if(phoneNum.length()>0){
-			if (!phoneNum.matches("^$|^\\d{10}$")) {
-				errorMsg.setText("Phone number must be a 10-digit number only.");
-				msg = msg + "\nPhone number must be a 10-digit number only.";
-			}
-			}
-			if(description.length()>0){
-			if (description.length() > MAXCHARCOUNT){
-				msg = msg + "\nDescription can't be more than 200 characters.";
-			}
+			if (description.length() > 0) {
+				if (description.length() > MAXCHARCOUNT) {
+					msg = msg
+							+ "\nDescription can't be more than 200 characters.";
+				}
 			}
 
 			return msg;
 		}
-		
-		
+
 		/**
-		 * Attach OK Button behavior.
-		 * When OK button is clicked, button calls editUserInfo(), which invokes
-		 * async call to the server.
+		 * Attach OK Button behavior. When OK button is clicked, button calls
+		 * editUserInfo(), which invokes async call to the server.
 		 * 
-		 * @param okBtn - button to attach ok button behavior
+		 * @param okBtn
+		 *            - button to attach ok button behavior
 		 */
 		private void buildOKBtn(Button okBtn) {
 			okBtn.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					String phoneNum = phoneNumberBox.getText().trim();;
+					String phoneNum = phoneNumberBox.getText().trim();
+					;
 					String website = websiteBox.getText().trim();
 					String description = descArea.getText();
 					String msg = checkFields(phoneNum, website, description);
 
-					if(msg.length()==0)
+					if (msg.length() == 0)
 						editUserInfo();
 					else
 						errorMsg.setText(msg);
 				}
 			});
 		}
-		
-		
+
 		/**
 		 * Async call to the server to edit user's information
 		 */
 		private void editUserInfo() {
 			// TODO add asycn call when implemented. make sure dialog is closed.
 			// add the user to db
-			
+
 			AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 					Window.alert("exception in edit user method - call to getUser");
 				}
+
 				public void onSuccess(LoginInfo user) {
 					AsyncCallback<Void> editUserCallback = new AsyncCallback<Void>() {
 						public void onFailure(Throwable caught) {
@@ -403,7 +424,7 @@ public class UserInfoPanel extends FlowPanel {
 						}
 
 						public void onSuccess(Void result) {
-							//Window.alert("edited user");
+							// Window.alert("edited user");
 							clear();
 							hide();
 							refreshUserInfoPanel();
@@ -414,27 +435,31 @@ public class UserInfoPanel extends FlowPanel {
 					String phoneString = phoneNumberBox.getValue();
 					if (!phoneString.isEmpty())
 						phone = Long.parseLong(phoneNumberBox.getValue());
-					else phone = user.getphoneNumber();
-					
+					else
+						phone = user.getphoneNumber();
+
 					String website = websiteBox.getValue();
-					if(website.isEmpty()) website = user.getWebsite();
-					
+					if (website.isEmpty())
+						website = user.getWebsite();
+
 					String description = descArea.getValue();
-					if(description.isEmpty()) description = user.getDescription();
-					loginService.editUser(user.getEmailAddress(), loginInfo.getNickname(), phone, website, description, editUserCallback);
+					if (description.isEmpty())
+						description = user.getDescription();
+					loginService.editUser(user.getEmailAddress(),
+							loginInfo.getNickname(), phone, website,
+							description, editUserCallback);
 				}
 			};
 			loginService.getUser(loginInfo.getEmailAddress(), userCallback);
-			
+
 		}
-		
-		
 
 		/**
-		 * Attaches Cancel button behavior.
-		 * A click on cancel button clears the dialog and closes.
+		 * Attaches Cancel button behavior. A click on cancel button clears the
+		 * dialog and closes.
 		 * 
-		 * @param cancelBtn - button to attach cancel button behavior
+		 * @param cancelBtn
+		 *            - button to attach cancel button behavior
 		 */
 		private void buildCancelBtn(Button cancelBtn) {
 			cancelBtn.addClickHandler(new ClickHandler() {
@@ -443,11 +468,9 @@ public class UserInfoPanel extends FlowPanel {
 					clear();
 					hide();
 				}
-			});	
+			});
 		}
-		
 
 	}
 
-	
 }

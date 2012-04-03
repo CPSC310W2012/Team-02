@@ -17,224 +17,230 @@ import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
-
 /**
  * Singleton class which encapsulates the CellTable on main UI.
  */
 public class HouseTable {
-	
+
 	private static int defaultPageSize = 8;
 	private static HouseTable houseTable = null;
 	private CellTable<HouseData> homesCellTable = null;
 	private CellTable.Resources resource = GWT.create(CellTableResources.class);
-	private HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
+	private static HouseDataServiceAsync houseDataSvc;
 	private AsyncDataProvider<HouseData> dataProvider;
 	private int currentStartItem = 0;
 	private int pageLength = 0;
 	private int databaseLength = 0;
 	private boolean isSearching = false;
 	private ArrayList<String> columnName = new ArrayList<String>();
-	
+	private static int instanceID;
+
 	/**
-	 * Singleton constructor. Create one CellTable which contains HouseData. 
+	 * Singleton constructor. Create one CellTable which contains HouseData.
 	 */
 	private HouseTable() {
 		homesCellTable = createCellTable();
 	}
-	
+
 	/**
 	 * Create only one instance for HouseTable
 	 * 
 	 * @return singleton HouseTable instance
 	 */
-	public static HouseTable createHouseTable() {
+	public static HouseTable createHouseTable(int inID,
+			HouseDataServiceAsync houseDS) {
+		instanceID = inID;
+		houseDataSvc = houseDS;
 		if (houseTable == null) {
 			houseTable = new HouseTable();
 		}
 		return houseTable;
 	}
-	
+
 	/**
-	 * Build CellTable<HouseData>, assemble sorting, and populate table with HouseData
-	 * fetched from server.
+	 * Build CellTable<HouseData>, assemble sorting, and populate table with
+	 * HouseData fetched from server.
 	 * 
 	 * @return populated CellTable<HouseData> with sorting ability
 	 */
 	private CellTable<HouseData> createCellTable() {
-		homesCellTable = new CellTable<HouseData>(defaultPageSize, resource, HouseData.KEY_PROVIDER);	  	
+		homesCellTable = new CellTable<HouseData>(defaultPageSize, resource,
+				HouseData.KEY_PROVIDER);
 		addColumns();
 		createSort();
 		populateTable();
 		return homesCellTable;
 	}
-	
+
 	/**
 	 * Helper to createCellTable(). Adds columns to the table.
 	 */
-	private void addColumns() {	  	
+	private void addColumns() {
 		NumberFormat yearFormat = NumberFormat.getFormat("0000");
-		
-	  	// Address column
-	  	TextColumn<HouseData> addrColumn = new TextColumn<HouseData>() {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return house.getAddress();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(addrColumn, "Address");		
-	  	addrColumn.setSortable(true);
-	  	columnName.add("Address");
-	  	
-	  	// Postal code column
-	  	TextColumn<HouseData> postalColumn = new TextColumn<HouseData>() {
+
+		// Address column
+		TextColumn<HouseData> addrColumn = new TextColumn<HouseData>() {
+			@Override
+			public String getValue(HouseData house) {
+				return house.getAddress();
+			}
+		};
+		homesCellTable.addColumn(addrColumn, "Address");
+		addrColumn.setSortable(true);
+		columnName.add("Address");
+
+		// Postal code column
+		TextColumn<HouseData> postalColumn = new TextColumn<HouseData>() {
 			@Override
 			public String getValue(HouseData house) {
 				return house.getPostalCode();
 			}
 		};
-		homesCellTable.addColumn(postalColumn, "Postal Code");		
-	  	postalColumn.setSortable(true);
-	  	columnName.add("Postal Code");
-	  		  	
-	  	// Current Land Value column
-	  	Column<HouseData, Number> currlandValColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getCurrentLandValue();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(currlandValColumn, "Current Land Value");				
-	  	currlandValColumn.setSortable(true);
-	  	columnName.add("Current Land Value");
-	  	
-	  	// Current Improvement Value column
-	  	Column<HouseData, Number> currImprovValColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getCurrentImprovementValue();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(currImprovValColumn, "Current Improvement Value");				
-	  	currImprovValColumn.setSortable(true);
-	  	columnName.add("Current Improvement Value");
-	  	
-	  	
-	  	// Assessment Year column
-	  	Column<HouseData, Number> assYearColumn = 
-	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getAssessmentYear();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(assYearColumn, "Assessment Year");				
-	  	assYearColumn.setSortable(true);
-	  	columnName.add("Assessment Year");
-	  	
-	  	// Previous Land Value column
-	  	Column<HouseData, Number> prevlandValColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getPreviousLandValue();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(prevlandValColumn, "Previous Land Value");				
-	  	prevlandValColumn.setSortable(true);
-	  	columnName.add("Previous Land Value");
-	  	
-	  	// Previous Improvement Value column
-	  	Column<HouseData, Number> prevImprovValColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getPreviousImprovementValue();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(prevImprovValColumn, "Previous Improvement Value");				
-	  	prevImprovValColumn.setSortable(true);  	  	
-	  	columnName.add("Previous Improvement Value");
-	  	
-	  	// Built Year column
-	  	Column<HouseData, Number> yrBuiltColumn = 
-	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getYearBuilt();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(yrBuiltColumn, "Year Built");				
-	  	yrBuiltColumn.setSortable(true);
-	  	columnName.add("Year Built");
-	  	
-	  	// Big Improvement Year column
-	  	Column<HouseData, Number> improvYearColumn = 
-	  			new Column<HouseData, Number>(new NumberCell(yearFormat)) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getBigImprovementYear();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(improvYearColumn, "Big Improvement Year");				
-	  	improvYearColumn.setSortable(true);
-	  	columnName.add("Big Improvement Year");
-	  	
-	  	
-	  	/* User specified column begins.
-	  	 * User specified columns are class variables because enableEdit() needs to
-	  	 * replace following columns with editable cells.
-	  	 */
-	  	// Realtor column 
-	  	Column<HouseData, String> ownerColumn = new TextColumn<HouseData>() {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			return house.getOwner();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(ownerColumn, "Realtor");
-	  	ownerColumn.setSortable(true);
-	  	columnName.add("Realtor");
-	  	
-	  	// Price column
-	  	Column<HouseData, Number> priceColumn = 
-	  			new Column<HouseData, Number>(new NumberCell()) {
-	  		@Override
-	  		public Number getValue(HouseData house) {
-	  			return house.getPrice();
-	  		}
-	  	};
-	  	homesCellTable.addColumn(priceColumn, "Price");
-	  	priceColumn.setSortable(true);
-	  	columnName.add("Price");
-	  	
-	  	// For Sale column
-	  	Column<HouseData, String> isSellingColumn = new TextColumn<HouseData>() {
-	  		@Override
-	  		public String getValue(HouseData house) {
-	  			if (house.getIsSelling())
-	  				return "For Sale";
-	  			return "";
-	  		}
-	  	};
-	  	homesCellTable.addColumn(isSellingColumn, "Sale");
-	  	isSellingColumn.setSortable(true);
-	  	columnName.add("Sale");
-	  	  	
+		homesCellTable.addColumn(postalColumn, "Postal Code");
+		postalColumn.setSortable(true);
+		columnName.add("Postal Code");
+
+		// Current Land Value column
+		Column<HouseData, Number> currlandValColumn = new Column<HouseData, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getCurrentLandValue();
+			}
+		};
+		homesCellTable.addColumn(currlandValColumn, "Current Land Value");
+		currlandValColumn.setSortable(true);
+		columnName.add("Current Land Value");
+
+		// Current Improvement Value column
+		Column<HouseData, Number> currImprovValColumn = new Column<HouseData, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getCurrentImprovementValue();
+			}
+		};
+		homesCellTable.addColumn(currImprovValColumn,
+				"Current Improvement Value");
+		currImprovValColumn.setSortable(true);
+		columnName.add("Current Improvement Value");
+
+		// Assessment Year column
+		Column<HouseData, Number> assYearColumn = new Column<HouseData, Number>(
+				new NumberCell(yearFormat)) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getAssessmentYear();
+			}
+		};
+		homesCellTable.addColumn(assYearColumn, "Assessment Year");
+		assYearColumn.setSortable(true);
+		columnName.add("Assessment Year");
+
+		// Previous Land Value column
+		Column<HouseData, Number> prevlandValColumn = new Column<HouseData, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getPreviousLandValue();
+			}
+		};
+		homesCellTable.addColumn(prevlandValColumn, "Previous Land Value");
+		prevlandValColumn.setSortable(true);
+		columnName.add("Previous Land Value");
+
+		// Previous Improvement Value column
+		Column<HouseData, Number> prevImprovValColumn = new Column<HouseData, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getPreviousImprovementValue();
+			}
+		};
+		homesCellTable.addColumn(prevImprovValColumn,
+				"Previous Improvement Value");
+		prevImprovValColumn.setSortable(true);
+		columnName.add("Previous Improvement Value");
+
+		// Built Year column
+		Column<HouseData, Number> yrBuiltColumn = new Column<HouseData, Number>(
+				new NumberCell(yearFormat)) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getYearBuilt();
+			}
+		};
+		homesCellTable.addColumn(yrBuiltColumn, "Year Built");
+		yrBuiltColumn.setSortable(true);
+		columnName.add("Year Built");
+
+		// Big Improvement Year column
+		Column<HouseData, Number> improvYearColumn = new Column<HouseData, Number>(
+				new NumberCell(yearFormat)) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getBigImprovementYear();
+			}
+		};
+		homesCellTable.addColumn(improvYearColumn, "Big Improvement Year");
+		improvYearColumn.setSortable(true);
+		columnName.add("Big Improvement Year");
+
+		/*
+		 * User specified column begins. User specified columns are class
+		 * variables because enableEdit() needs to replace following columns
+		 * with editable cells.
+		 */
+		// Realtor column
+		Column<HouseData, String> ownerColumn = new TextColumn<HouseData>() {
+			@Override
+			public String getValue(HouseData house) {
+				return house.getOwner();
+			}
+		};
+		homesCellTable.addColumn(ownerColumn, "Realtor");
+		ownerColumn.setSortable(true);
+		columnName.add("Realtor");
+
+		// Price column
+		Column<HouseData, Number> priceColumn = new Column<HouseData, Number>(
+				new NumberCell()) {
+			@Override
+			public Number getValue(HouseData house) {
+				return house.getPrice();
+			}
+		};
+		homesCellTable.addColumn(priceColumn, "Price");
+		priceColumn.setSortable(true);
+		columnName.add("Price");
+
+		// For Sale column
+		Column<HouseData, String> isSellingColumn = new TextColumn<HouseData>() {
+			@Override
+			public String getValue(HouseData house) {
+				if (house.getIsSelling())
+					return "For Sale";
+				return "";
+			}
+		};
+		homesCellTable.addColumn(isSellingColumn, "Sale");
+		isSellingColumn.setSortable(true);
+		columnName.add("Sale");
+
 	}
-	
+
 	/**
-	 * Helper to createTable(). Populate table with data fetched by rpc call to the server.
+	 * Helper to createTable(). Populate table with data fetched by rpc call to
+	 * the server.
 	 */
 	private void populateTable() {
 		// Initialize the service proxy
 		if (houseDataSvc == null) {
 			houseDataSvc = GWT.create(HouseDataService.class);
-		}		
-		
+		}
+
 		updateRowCount();
-		
+
 		// Data provider to populate Table
 		dataProvider = new AsyncDataProvider<HouseData>() {
 			@Override
@@ -242,197 +248,221 @@ public class HouseTable {
 				currentStartItem = display.getVisibleRange().getStart();
 				int range = display.getVisibleRange().getLength();
 				pageLength = range;
-								
-				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+
+				AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
 					@Override
-					public void onFailure (Throwable caught) {
-						Window.alert(caught.getMessage());	
+					public void onFailure(Throwable caught) {
+						Window.alert(caught.getMessage());
 					}
+
 					@Override
-					public void onSuccess (List<HouseData> result) {
+					public void onSuccess(List<HouseData> result) {
 						updateRowData(currentStartItem, result);
 					}
 				};
-				houseDataSvc.getHouses(currentStartItem, range, callback);									
+				houseDataSvc.getHouses(instanceID, currentStartItem, range,
+						callback);
 			}
 		};
-		dataProvider.addDataDisplay(homesCellTable);		
-		
+		dataProvider.addDataDisplay(homesCellTable);
+
 	}
-		
-	
+
 	/**
-	 * Update the number of rows to the length of the current working set in
-	 * in the server. Current working set refers to either search results,
-	 * or the entire database.
+	 * Update the number of rows to the length of the current working set in in
+	 * the server. Current working set refers to either search results, or the
+	 * entire database.
 	 */
 	private void updateRowCount() {
-		AsyncCallback<Integer> callback = new AsyncCallback<Integer> () {
+		AsyncCallback<Integer> callback = new AsyncCallback<Integer>() {
 			@Override
-			public void onFailure (Throwable caught) {
-				Window.alert(caught.getMessage());	
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
 			}
+
 			@Override
-			public void onSuccess (Integer result) {
+			public void onSuccess(Integer result) {
 				dataProvider.updateRowCount(result, true);
 				databaseLength = result;
 			}
 		};
-		houseDataSvc.getHouseDatabaseLength(callback);
+		houseDataSvc.getHouseDatabaseLength(instanceID, callback);
 	}
 
 	/**
-	 * Helper to createTable(). Creates ColumnSortEvent.Handler for homesCellTable,
-	 * attaches comparators to enable sorting, and attaches the hander to the table.
+	 * Helper to createTable(). Creates ColumnSortEvent.Handler for
+	 * homesCellTable, attaches comparators to enable sorting, and attaches the
+	 * hander to the table.
 	 */
 	private void createSort() {
 		// Server-side sort
-		AsyncHandler columnSortHandler = new ColumnSortEvent.AsyncHandler(homesCellTable) {
+		AsyncHandler columnSortHandler = new ColumnSortEvent.AsyncHandler(
+				homesCellTable) {
 			public void onColumnSort(ColumnSortEvent event) {
-				
+
 				@SuppressWarnings("unchecked")
-				Column<HouseData,?> sortedColumn = (Column<HouseData, ?>) event.getColumn();				
+				Column<HouseData, ?> sortedColumn = (Column<HouseData, ?>) event
+						.getColumn();
 				int columnIndex = homesCellTable.getColumnIndex(sortedColumn);
 				boolean isSortAscending = event.isSortAscending();
-				
-				
-				AsyncCallback<Void> callback = new AsyncCallback<Void> () {
+
+				AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 					@Override
-					public void onFailure (Throwable caught) {
-						Window.alert(caught.getMessage());	
+					public void onFailure(Throwable caught) {
+						Window.alert(caught.getMessage());
 					}
+
 					@Override
-					public void onSuccess (Void result) {
+					public void onSuccess(Void result) {
 						refreshTableCurrentView();
 					}
 				};
-				switch(columnIndex) {
-					case 0:
-						houseDataSvc.sortByAddress(isSortAscending, callback);
-						break;
-					case 1:
-						houseDataSvc.sortByPostalCode(isSortAscending, callback);
-						break;
-					case 2:
-						houseDataSvc.sortByCurrentLandValue(isSortAscending, callback);
-						break;
-					case 3:
-						houseDataSvc.sortByCurrentImprovementValue(isSortAscending, callback);
-						break;
-					case 4:
-						houseDataSvc.sortByAssessmentYear(isSortAscending, callback);
-						break;
-					case 5:
-						houseDataSvc.sortByPreviousLandValue(isSortAscending, callback);
-						break;				
-					case 6:
-						houseDataSvc.sortByPreviousImprovementValue(isSortAscending, callback);
-						break;
-					case 7:
-						houseDataSvc.sortByYearBuilt(isSortAscending, callback);
-						break;
-					case 8:
-						houseDataSvc.sortByBigImprovementYear(isSortAscending, callback);
-						break;
-					case 9:
-						houseDataSvc.sortByOwner(isSortAscending, callback);
-						break;
-					case 10:
-						houseDataSvc.sortByPrice(isSortAscending, callback);
-						break;
-					case 11:
-						houseDataSvc.sortByForSale(isSortAscending, callback);
-						break;					
-					default:
-						break;
-					}				 
+				switch (columnIndex) {
+				case 0:
+					houseDataSvc.sortByAddress(instanceID, isSortAscending,
+							callback);
+					break;
+				case 1:
+					houseDataSvc.sortByPostalCode(instanceID, isSortAscending,
+							callback);
+					break;
+				case 2:
+					houseDataSvc.sortByCurrentLandValue(instanceID,
+							isSortAscending, callback);
+					break;
+				case 3:
+					houseDataSvc.sortByCurrentImprovementValue(instanceID,
+							isSortAscending, callback);
+					break;
+				case 4:
+					houseDataSvc.sortByAssessmentYear(instanceID,
+							isSortAscending, callback);
+					break;
+				case 5:
+					houseDataSvc.sortByPreviousLandValue(instanceID,
+							isSortAscending, callback);
+					break;
+				case 6:
+					houseDataSvc.sortByPreviousImprovementValue(instanceID,
+							isSortAscending, callback);
+					break;
+				case 7:
+					houseDataSvc.sortByYearBuilt(instanceID, isSortAscending,
+							callback);
+					break;
+				case 8:
+					houseDataSvc.sortByBigImprovementYear(instanceID,
+							isSortAscending, callback);
+					break;
+				case 9:
+					houseDataSvc.sortByOwner(instanceID, isSortAscending,
+							callback);
+					break;
+				case 10:
+					houseDataSvc.sortByPrice(instanceID, isSortAscending,
+							callback);
+					break;
+				case 11:
+					houseDataSvc.sortByForSale(instanceID, isSortAscending,
+							callback);
+					break;
+				default:
+					break;
+				}
 			}
 		};
-		homesCellTable.addColumnSortHandler(columnSortHandler);		
+		homesCellTable.addColumnSortHandler(columnSortHandler);
 	}
-	
+
 	// Getter begins
 	/**
 	 * Getter for CellTable.
+	 * 
 	 * @return CellTable<HouseData>
 	 */
 	public CellTable<HouseData> getHouseTable() {
 		return this.homesCellTable;
 	}
-	
+
 	/**
 	 * Getter for page length
+	 * 
 	 * @return length of a cell table page
 	 */
 	public int getPageLength() {
 		return this.pageLength;
 	}
-	
+
 	/**
 	 * Getter for start item
+	 * 
 	 * @return index of current start item in the table
 	 */
 	public int getCurrentStartItem() {
 		return this.currentStartItem;
 	}
-	
+
 	/**
 	 * Attach selection model to homesCellTable
-	 * @param model MultiSelectionModel
+	 * 
+	 * @param model
+	 *            MultiSelectionModel
 	 */
-	public void enableSelection (MultiSelectionModel<HouseData> model) {
+	public void enableSelection(MultiSelectionModel<HouseData> model) {
 		// Associate the selection model with the table
 		homesCellTable.setSelectionModel(model);
 	}
-	
+
 	/**
-	 * Refreshes the table from the beginning.
-	 * This is expected to be called by search methods to update table
-	 * with the search results.
+	 * Refreshes the table from the beginning. This is expected to be called by
+	 * search methods to update table with the search results.
 	 */
 	public void refreshTableFromBeginning() {
 		// Refresh the count of rows (Because now it's showing search results)
 		updateRowCount();
-		
+
 		// Fetch new data from the server
-		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
 			@Override
-			public void onFailure (Throwable caught) {
+			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
+
 			@Override
-			public void onSuccess (List<HouseData> result) {
+			public void onSuccess(List<HouseData> result) {
 				dataProvider.updateRowData(0, result);
 			}
 		};
-		houseDataSvc.getHouses(0, pageLength, callback);
+		houseDataSvc.getHouses(instanceID, 0, pageLength, callback);
 	}
-	
-	
+
 	/**
 	 * Refresh current view of table, fetching new data from server by
-	 * asynchronous call.
-	 * This is expected to be called by any methods that want to
-	 * refresh the view of table after edits to the database.
+	 * asynchronous call. This is expected to be called by any methods that want
+	 * to refresh the view of table after edits to the database.
 	 */
 	public void refreshTableCurrentView() {
-		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>> () {
+		AsyncCallback<List<HouseData>> callback = new AsyncCallback<List<HouseData>>() {
 			@Override
-			public void onFailure (Throwable caught) {
+			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
+
 			@Override
-			public void onSuccess (List<HouseData> result) {
+			public void onSuccess(List<HouseData> result) {
 				dataProvider.updateRowData(currentStartItem, result);
 			}
 		};
-		houseDataSvc.getHouses(currentStartItem, pageLength, callback);
+		houseDataSvc.getHouses(instanceID, currentStartItem, pageLength,
+				callback);
 	}
-		
+
 	/**
 	 * Expand or shrink the page size of the table.
-	 * @param pageSize - size of the page to which the table will expand
-	 * -1 indicates default page size.
+	 * 
+	 * @param pageSize
+	 *            - size of the page to which the table will expand -1 indicates
+	 *            default page size.
 	 */
 	public void expandShrinkTable(int pageSize) {
 		if (pageSize == -1)
@@ -441,5 +471,5 @@ public class HouseTable {
 			this.homesCellTable.setPageSize(pageSize);
 		this.refreshTableCurrentView();
 	}
-	
+
 }

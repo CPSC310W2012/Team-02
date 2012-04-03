@@ -401,7 +401,7 @@ public class DataStoreTests {
 	// Test address Sort
 	@Test
 	public void testSortByAddress() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByHouseID(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -417,7 +417,7 @@ public class DataStoreTests {
 	// Test postal code Sort
 	@Test
 	public void testSortByPostalCode() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPostalCode(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -433,7 +433,7 @@ public class DataStoreTests {
 	// Test owners Sort
 	@Test
 	public void testSortByOwner() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByOwner(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -449,7 +449,7 @@ public class DataStoreTests {
 	// Test by sale sort
 	@Test
 	public void testSortByForSale() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByForSale(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -465,7 +465,7 @@ public class DataStoreTests {
 	// Test by currentLandValue sort
 	@Test
 	public void testSortByCurrentLandValue() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByCurrentLandValue(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -481,7 +481,7 @@ public class DataStoreTests {
 	// Test by currentImprovementValue sort
 	@Test
 	public void testSortByCurrentImprovementValue() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByCurrentImprovementValue(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -497,7 +497,7 @@ public class DataStoreTests {
 	// Test by assessmentYear sort
 	@Test
 	public void testSortByAssessmentYear() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByAssessmentYear(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -513,7 +513,7 @@ public class DataStoreTests {
 	// Test by previousLandValue sort
 	@Test
 	public void testSortByPreviousLandValue() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPreviousLandValue(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -529,7 +529,7 @@ public class DataStoreTests {
 	// Test by previousImprovementValue sort
 	@Test
 	public void testSortByPreviousImprovementValue() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPreviousImprovementValue(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -545,7 +545,7 @@ public class DataStoreTests {
 	// Test by YearBuilt sort
 	@Test
 	public void testSortByYearBuilt() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByYearBuilt(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -561,7 +561,7 @@ public class DataStoreTests {
 	// Test by BigImprovementYear sort
 	@Test
 	public void testSortByBigImprovementYear() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByBigImprovementYear(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -578,7 +578,7 @@ public class DataStoreTests {
 	// Test address Sort Descending
 	@Test
 	public void testSortByAddressDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByHouseIDDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -594,7 +594,7 @@ public class DataStoreTests {
 	// Test postal code Sort Descending
 	@Test
 	public void testSortByPostalCodeDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPostalCodeDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -610,7 +610,7 @@ public class DataStoreTests {
 	// Test owners Sort Descending
 	@Test
 	public void testSortByOwnerDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByOwnerDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -626,7 +626,7 @@ public class DataStoreTests {
 	// Test by sale sort Descending
 	@Test
 	public void testSortByForSaleDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByForSaleDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -642,7 +642,7 @@ public class DataStoreTests {
 	// Test by currentLandValue sort Descending
 	@Test
 	public void testSortByCurrentLandValueDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByCurrentLandValueDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -658,7 +658,7 @@ public class DataStoreTests {
 	// Test by currentImprovementValue sort Descending
 	@Test
 	public void testSortByCurrentImprovementValueDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByCurrentImprovementValueDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -674,7 +674,7 @@ public class DataStoreTests {
 	// Test by assessmentYear sort Descending
 	@Test
 	public void testSortByAssessmentYearDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByAssessmentYearDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -690,7 +690,7 @@ public class DataStoreTests {
 	// Test by previousLandValue sort Descending
 	@Test
 	public void testSortByPreviousLandValueDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPreviousLandValueDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -706,7 +706,7 @@ public class DataStoreTests {
 	// Test by previousImprovementValue sort Descending
 	@Test
 	public void testSortByPreviousImprovementValueDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByPreviousImprovementValueDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -722,7 +722,7 @@ public class DataStoreTests {
 	// Test by YearBuilt sort Descending
 	@Test
 	public void testSortByYearBuiltDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByYearBuiltDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());
@@ -738,7 +738,7 @@ public class DataStoreTests {
 	// Test by BigImprovementYear sort Descending
 	@Test
 	public void testSortByBigImprovementYearDes() {
-		List<String> tempArray = datastore.getAllKeys();
+		ArrayList<String> tempArray = datastore.getAllKeys();
 		tempArray = datastore.sortByBigImprovementYearDes(tempArray);
 		List<HouseDataPoint> houses = datastore.getHouses(tempArray, 0,
 				tempArray.size());

@@ -34,31 +34,52 @@ import com.reveregroup.gwt.facebook4gwt.ShareButton;
  * Main EntryPoint class. UI is built, client-side request is handled.
  */
 public class Team_02 implements EntryPoint {
-	private HouseTable houseTable = HouseTable.createHouseTable();
+	private HouseTable houseTable;
 	private LatLng vancouver = LatLng.newInstance(49.264448, -123.185844);
 	private PropertyMap theMap;
 	private boolean streetLoaded = false;
 	private boolean isSidePanelHidden = false;
 	private boolean isTablePanelHidden = false;
 	private boolean isTableExpanded = false;
-	private HouseDataServiceAsync houseDataSvc = GWT
-			.create(HouseDataService.class);
+
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	private LoginInfo loginInfo = null;
 	private boolean isLoginServiceAvailable = false;
 	private Set<HouseData> selectedHouses = null;
-    
-	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);	
+
+	private DockLayoutPanel mainPanel = new DockLayoutPanel(Unit.EM);
 	private FlowPanel sidePanel = new FlowPanel();
 	private DockLayoutPanel tableWrapPanel = new DockLayoutPanel(Unit.EM);
-	private UserInfoPanel userInfoPanel;	
+	private UserInfoPanel userInfoPanel;
+
+	static int instanceID;
+	static HouseDataServiceAsync houseDataSvc;
 
 	/**
 	 * Entry point method. Initializes login service. Upon completion of
 	 * asynchronous request to login service, UI is built.
 	 */
 	public void onModuleLoad() {
-		
+
+		HouseDataServiceAsync houseDataSvc = GWT.create(HouseDataService.class);
+		// Set up the callback object
+		AsyncCallback<Integer> callback = new AsyncCallback<Integer>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Integer result) {
+				instanceID = result;
+			}
+		};
+
+		// get instanceID for identifying client
+		houseDataSvc.getInstanceID(callback);
+
+		houseTable = HouseTable.createHouseTable(instanceID, houseDataSvc);
+
 		// Check login status using login service.
 		if (loginService == null) {
 			loginService = GWT.create(LoginService.class);
@@ -73,7 +94,7 @@ public class Team_02 implements EntryPoint {
 					public void onFailure(Throwable error) {
 						Window.alert("Login service could not be loaded.");
 						buildUI();
-						if(civicNumber == null || streetName == null) {
+						if (civicNumber == null || streetName == null) {
 							resetDatabase();
 						}
 						new PasswordGenerator().createPasswordPrompt();
@@ -84,15 +105,15 @@ public class Team_02 implements EntryPoint {
 						loginInfo = result;
 						isLoginServiceAvailable = true;
 						buildUI();
-						if(civicNumber == null || streetName == null) {
+						if (civicNumber == null || streetName == null) {
 							resetDatabase();
 						}
 						new PasswordGenerator().createPasswordPrompt();
 						loadURLSearch();
 					}
 				});
-		
-		//timer to refresh the database daily if a user never refreshes browser
+
+		// timer to refresh the database daily if a user never refreshes browser
 		int dayInMilliSeconds = 86400000;
 		Timer dailyRefresh = new Timer() {
 			@Override
@@ -100,29 +121,31 @@ public class Team_02 implements EntryPoint {
 				resetDatabase();
 			}
 		};
-		//set the code in run() to run once daily
-		//since database has already be loaded, delay code in the run() by 24 hours
+		// set the code in run() to run once daily
+		// since database has already be loaded, delay code in the run() by 24
+		// hours
 		dailyRefresh.schedule(dayInMilliSeconds);
-		//invoke the run() every 24 hours after the initially delay
+		// invoke the run() every 24 hours after the initially delay
 		dailyRefresh.scheduleRepeating(dayInMilliSeconds);
 	}
-
 
 	/**
 	 * Builds application's main UI
 	 */
 	private void buildUI() {
-		
+
 		// Initialize the map
 		theMap = new PropertyMap(vancouver);
-		//add initialized handler to notify when the street view has initialized itself
-		theMap.getStreetViewMap().addInitializedHandler(new StreetviewInitializedHandler() {
-			@Override
-			public void onInitialized(StreetviewInitializedEvent event) {
-				streetLoaded = true;
-			}			
-		});
-		MapContainerPanel mapPanel = new MapContainerPanel(theMap);		
+		// add initialized handler to notify when the street view has
+		// initialized itself
+		theMap.getStreetViewMap().addInitializedHandler(
+				new StreetviewInitializedHandler() {
+					@Override
+					public void onInitialized(StreetviewInitializedEvent event) {
+						streetLoaded = true;
+					}
+				});
+		MapContainerPanel mapPanel = new MapContainerPanel(theMap);
 
 		// Initialize selection model for map and table
 		initSelection();
@@ -139,8 +162,8 @@ public class Team_02 implements EntryPoint {
 		mainPanel.add(mapPanel);
 
 		// Inject css
-		MainResources.INSTANCE.css().ensureInjected();		
-		
+		MainResources.INSTANCE.css().ensureInjected();
+
 		// Associate Main panel with the HTML host page
 		RootPanel.get("loading").removeFromParent();
 		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
@@ -266,19 +289,21 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (!isTablePanelHidden) {
 					isTablePanelHidden = true;
-					hideShowTablePanelButton.addStyleDependentName("horizontal-collapsed");					
+					hideShowTablePanelButton
+							.addStyleDependentName("horizontal-collapsed");
 					hideShowTablePanelButton.setText("+");
 					hideShowTablePanelButton.setTitle("Unminimize");
 					tableWrapPanel.addStyleDependentName("collapsed");
 					mainPanel.setWidgetSize(tableWrapPanel, 2);
-					mainPanel.animate(300);							
+					mainPanel.animate(300);
 
 				} else {
 					isTablePanelHidden = false;
-					hideShowTablePanelButton.removeStyleDependentName("horizontal-collapsed");
+					hideShowTablePanelButton
+							.removeStyleDependentName("horizontal-collapsed");
 					hideShowTablePanelButton.setText("-");
 					hideShowTablePanelButton.setTitle("Minimize");
-					mainPanel.setWidgetSize(tableWrapPanel, 27);			
+					mainPanel.setWidgetSize(tableWrapPanel, 27);
 					mainPanel.animate(300);
 					tableWrapPanel.removeStyleDependentName("collapsed");
 				}
@@ -392,7 +417,8 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				if (!isSidePanelHidden) {
 					isSidePanelHidden = true;
-					hideShowSidePanelButton.addStyleDependentName("vertical-collapsed");
+					hideShowSidePanelButton
+							.addStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("+");
 					hideShowSidePanelButton.setTitle("Unminimize");
 					mainPanel.setWidgetSize(sidePanel, 2);
@@ -401,11 +427,12 @@ public class Team_02 implements EntryPoint {
 
 				} else {
 					isSidePanelHidden = false;
-					hideShowSidePanelButton.removeStyleDependentName("vertical-collapsed");
+					hideShowSidePanelButton
+							.removeStyleDependentName("vertical-collapsed");
 					hideShowSidePanelButton.setText("-");
 					hideShowSidePanelButton.setTitle("Minimize");
 					sidePanel.removeStyleDependentName("collapsed");
-					mainPanel.setWidgetSize(sidePanel, 22);		
+					mainPanel.setWidgetSize(sidePanel, 22);
 					mainPanel.animate(300);
 				}
 			}
@@ -468,12 +495,12 @@ public class Team_02 implements EntryPoint {
 				final DialogBox helpWindow = new DialogBox();
 				FlowPanel dialogBoxHolder = new FlowPanel();
 				Button closeBtn = new Button("Close");
-				
+
 				// Set the behavior of dialog box
 				helpWindow.setText("iVanHomePrices Help Guide");
 				helpWindow.setGlassEnabled(true);
 				helpWindow.setAnimationEnabled(true);
-				
+
 				// Add the close button behavior
 				closeBtn.addClickHandler(new ClickHandler() {
 
@@ -483,16 +510,16 @@ public class Team_02 implements EntryPoint {
 						helpWindow.hide();
 					}
 				});
-				
+
 				// Set the details of contents
 				HTML content = new DocumentFactory().createHelpDocument();
 				content.setStyleName("docContents");
-				
+
 				// Assemble Dialog box
 				dialogBoxHolder.add(content);
 				dialogBoxHolder.add(closeBtn);
 				helpWindow.setWidget(dialogBoxHolder);
-				
+
 				// Show dialog box
 				helpWindow.center();
 				helpWindow.show();
@@ -517,7 +544,7 @@ public class Team_02 implements EntryPoint {
 				final DialogBox termsWindow = new DialogBox();
 				FlowPanel dialogBoxHolder = new FlowPanel();
 				Button okBtn = new Button();
-				
+
 				// Set details of dialog box
 				termsWindow.setText("Terms of Use");
 				termsWindow.setGlassEnabled(true);
@@ -532,12 +559,12 @@ public class Team_02 implements EntryPoint {
 						termsWindow.hide();
 					}
 				});
-				
+
 				// Assemble dialog box
 				dialogBoxHolder.add(new DocumentFactory().createTermsDoc());
 				dialogBoxHolder.add(okBtn);
 				termsWindow.setWidget(dialogBoxHolder);
-				
+
 				// Show dialog box
 				termsWindow.show();
 				termsWindow.center();
@@ -587,7 +614,8 @@ public class Team_02 implements EntryPoint {
 	 *            - tab panel to wrap the widgets
 	 */
 	private void buildSideTabPanel(final TabLayoutPanel sidebarTabPanel) {
-		SearchPanel searchPanel = new SearchPanel(theMap, houseTable, houseDataSvc);
+		SearchPanel searchPanel = new SearchPanel(instanceID, theMap,
+				houseTable, houseDataSvc);
 
 		// Add Widgets to the tab panel
 		sidebarTabPanel.add(searchPanel, "Search");
@@ -596,42 +624,46 @@ public class Team_02 implements EntryPoint {
 		sidebarTabPanel.setAnimationDuration(100);
 		sidebarTabPanel.addStyleDependentName("sideTabPanel");
 
-		
 		// If user is logged in, assemble user info panel and add it to the tab
 		if (isLoginServiceAvailable == true) {
 			if (loginInfo.isLoggedIn()) {
-				
+
 				AsyncCallback<LoginInfo> userCallback = new AsyncCallback<LoginInfo>() {
 					public void onFailure(Throwable caught) {
 						Window.alert(caught.getMessage());
 						Window.alert("could not find user in DB");
 					}
+
 					public void onSuccess(LoginInfo user) {
-						
-						if(user == null){
-							//Window.alert("user returned is null");
+
+						if (user == null) {
+							// Window.alert("user returned is null");
 							// add the user to db
 							AsyncCallback<Void> storeUserCallback = new AsyncCallback<Void>() {
 								public void onFailure(Throwable caught) {
 									Window.alert("failed to store user");
 								}
+
 								public void onSuccess(Void result) {
-									//Window.alert("added new user to db");
-									userInfoPanel = new UserInfoPanel(loginInfo, houseTable, houseDataSvc);
-									sidebarTabPanel.add(userInfoPanel, "My Account");
+									// Window.alert("added new user to db");
+									userInfoPanel = new UserInfoPanel(
+											instanceID, loginInfo, houseTable,
+											houseDataSvc);
+									sidebarTabPanel.add(userInfoPanel,
+											"My Account");
 								}
 							};
-							loginService.storeUser(loginInfo, storeUserCallback);
-						}
-						else{
-						userInfoPanel = new UserInfoPanel(user, houseTable, houseDataSvc);
-						sidebarTabPanel.add(userInfoPanel, "My Account");
+							loginService
+									.storeUser(loginInfo, storeUserCallback);
+						} else {
+							userInfoPanel = new UserInfoPanel(instanceID, user,
+									houseTable, houseDataSvc);
+							sidebarTabPanel.add(userInfoPanel, "My Account");
 						}
 					}
 				};
 				loginService.getUser(loginInfo.getEmailAddress(), userCallback);
-				
-				
+
 			} else {
 				if (sidebarTabPanel.getWidgetCount() > 1) {
 					userInfoPanel.clear();
@@ -683,8 +715,9 @@ public class Team_02 implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				HouseData selectedHouse = checkAndGetSelectedHouse();
 				if (selectedHouse != null) {
-					EditHouseDialog editDialog = new EditHouseDialog(selectedHouse,
-							loginInfo, theMap, houseTable, houseDataSvc);
+					EditHouseDialog editDialog = new EditHouseDialog(
+							selectedHouse, loginInfo, theMap, houseTable,
+							houseDataSvc);
 					editDialog.center();
 					editDialog.show();
 				}
@@ -761,7 +794,7 @@ public class Team_02 implements EntryPoint {
 	}
 
 	/**
-	 * Resets database to the initial view. 
+	 * Resets database to the initial view.
 	 */
 	private void resetDatabase() {
 		// Initialize the service proxy
@@ -779,9 +812,8 @@ public class Team_02 implements EntryPoint {
 				houseTable.refreshTableFromBeginning();
 			}
 		};
-		houseDataSvc.refreshIDStore(callback);
+		houseDataSvc.refreshIDStore(instanceID, callback);
 	}
-
 
 	/**
 	 * Method to search for a house based on the URL parameters. Searches for
@@ -812,38 +844,49 @@ public class Team_02 implements EntryPoint {
 				public void onFailure(Throwable caught) {
 					Window.alert(caught.getMessage());
 				}
+
 				Timer streetViewWatcher;
+
 				public void onSuccess(final HouseData result) {
 					// Update the Application UI
 					houseTable.refreshTableFromBeginning();
-										
-					//timer to help update street view
+
+					// timer to help update street view
 					streetViewWatcher = new Timer() {
 						@Override
 						public void run() {
-							//check to see if Map has loaded, load house and cancel timer
-							int tableRowCount = houseTable.getHouseTable().getVisibleItemCount();
-							if(Maps.isLoaded() && streetLoaded) {
-								if(tableRowCount == 1) {
-									//retrieve house information and compare to what's in table
-									String retrievedCN = String.valueOf(result.getCivicNumber());
+							// check to see if Map has loaded, load house and
+							// cancel timer
+							int tableRowCount = houseTable.getHouseTable()
+									.getVisibleItemCount();
+							if (Maps.isLoaded() && streetLoaded) {
+								if (tableRowCount == 1) {
+									// retrieve house information and compare to
+									// what's in table
+									String retrievedCN = String.valueOf(result
+											.getCivicNumber());
 									String retrievedSN = result.getStreetName();
-									//if UI has been updated, find the house and select it in the table
-									if(civicNumber.equals(retrievedCN) && streetName.equals(retrievedSN)) {
+									// if UI has been updated, find the house
+									// and select it in the table
+									if (civicNumber.equals(retrievedCN)
+											&& streetName.equals(retrievedSN)) {
 										theMap.findLocation(result, true);
-										houseTable.getHouseTable().getSelectionModel().setSelected(result, true);
+										houseTable.getHouseTable()
+												.getSelectionModel()
+												.setSelected(result, true);
 										streetViewWatcher.cancel();
 									}
 								}
-								//no results were found so stop timer
-								else if(tableRowCount == 0) {
+								// no results were found so stop timer
+								else if (tableRowCount == 0) {
 									streetViewWatcher.cancel();
 								}
 							}
 						}
 					};
-					//wait 5 seconds before attempting to check if UI has loaded
-					//if it hasn't loaded, try to check again in 1 second
+					// wait 5 seconds before attempting to check if UI has
+					// loaded
+					// if it hasn't loaded, try to check again in 1 second
 					streetViewWatcher.schedule(5000);
 					streetViewWatcher.scheduleRepeating(1000);
 				}
@@ -855,11 +898,13 @@ public class Team_02 implements EntryPoint {
 				civicNumberAsInt = Integer.valueOf(civicNumber);
 				// Make the call to the house data service to search for the
 				// house in the server
-				if(civicNumberAsInt >= 0) {
-					houseDataSvc.retrieveSingleHouse(civicNumberAsInt, streetName, callback);
+				if (civicNumberAsInt >= 0) {
+					houseDataSvc.retrieveSingleHouse(instanceID,
+							civicNumberAsInt, streetName, callback);
 				}
 			} catch (NumberFormatException e) {
-				// Don't bother searching if civic number isn't a number or is negative
+				// Don't bother searching if civic number isn't a number or is
+				// negative
 			}
 		}
 	}

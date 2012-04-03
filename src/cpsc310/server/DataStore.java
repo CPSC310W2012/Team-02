@@ -369,8 +369,8 @@ public class DataStore {
 	 * 
 	 * @return keys
 	 */
-	public List<String> getAllKeys() {
-		List<String> keys = new ArrayList<String>();
+	public ArrayList<String> getAllKeys() {
+		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(store.keySet());
 		return keys;
 	}
@@ -679,7 +679,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByHouseID(List<String> currentList) {
+	public ArrayList<String> sortByHouseID(ArrayList<String> currentList) {
 		HouseIDComparator comp = new HouseIDComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -693,7 +693,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByOwner(List<String> currentList) {
+	public ArrayList<String> sortByOwner(ArrayList<String> currentList) {
 		OwnerComparator comp = new OwnerComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -707,7 +707,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPostalCode(List<String> currentList) {
+	public ArrayList<String> sortByPostalCode(ArrayList<String> currentList) {
 		PostalCodeComparator comp = new PostalCodeComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -721,7 +721,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByForSale(List<String> currentList) {
+	public ArrayList<String> sortByForSale(ArrayList<String> currentList) {
 		ForSaleComparator comp = new ForSaleComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -735,7 +735,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentLandValue(List<String> currentList) {
+	public ArrayList<String> sortByCurrentLandValue(
+			ArrayList<String> currentList) {
 		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -749,7 +750,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentImprovementValue(List<String> currentList) {
+	public ArrayList<String> sortByCurrentImprovementValue(
+			ArrayList<String> currentList) {
 		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -764,7 +766,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByAssessmentYear(List<String> currentList) {
+	public ArrayList<String> sortByAssessmentYear(ArrayList<String> currentList) {
 		AssessmentYearComparator comp = new AssessmentYearComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -778,7 +780,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousLandValue(List<String> currentList) {
+	public ArrayList<String> sortByPreviousLandValue(
+			ArrayList<String> currentList) {
 		PreviousLandValueComparator comp = new PreviousLandValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -793,7 +796,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousImprovementValue(List<String> currentList) {
+	public ArrayList<String> sortByPreviousImprovementValue(
+			ArrayList<String> currentList) {
 		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -808,7 +812,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByYearBuilt(List<String> currentList) {
+	public ArrayList<String> sortByYearBuilt(ArrayList<String> currentList) {
 		YearBuiltComparator comp = new YearBuiltComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -822,7 +826,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByBigImprovementYear(List<String> currentList) {
+	public ArrayList<String> sortByBigImprovementYear(
+			ArrayList<String> currentList) {
 		BigImprovementYearComparator comp = new BigImprovementYearComparator(
 				store);
 		Collections.sort(currentList, comp);
@@ -837,7 +842,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPrice(List<String> currentList) {
+	public ArrayList<String> sortByPrice(ArrayList<String> currentList) {
 		PriceComparator comp = new PriceComparator(store);
 		Collections.sort(currentList, comp);
 		return currentList;
@@ -851,7 +856,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByHouseIDDes(List<String> currentList) {
+	public ArrayList<String> sortByHouseIDDes(ArrayList<String> currentList) {
 		HouseIDComparator comp = new HouseIDComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -865,7 +870,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByOwnerDes(List<String> currentList) {
+	public ArrayList<String> sortByOwnerDes(ArrayList<String> currentList) {
 		OwnerComparator comp = new OwnerComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -879,7 +884,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPostalCodeDes(List<String> currentList) {
+	public ArrayList<String> sortByPostalCodeDes(ArrayList<String> currentList) {
 		PostalCodeComparator comp = new PostalCodeComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -893,7 +898,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByForSaleDes(List<String> currentList) {
+	public ArrayList<String> sortByForSaleDes(ArrayList<String> currentList) {
 		ForSaleComparator comp = new ForSaleComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -907,7 +912,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentLandValueDes(List<String> currentList) {
+	public ArrayList<String> sortByCurrentLandValueDes(
+			ArrayList<String> currentList) {
 		CurrentLandValueComparator comp = new CurrentLandValueComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -921,8 +927,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByCurrentImprovementValueDes(
-			List<String> currentList) {
+	public ArrayList<String> sortByCurrentImprovementValueDes(
+			ArrayList<String> currentList) {
 		CurrentImprovementValueComparator comp = new CurrentImprovementValueComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -937,7 +943,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByAssessmentYearDes(List<String> currentList) {
+	public ArrayList<String> sortByAssessmentYearDes(
+			ArrayList<String> currentList) {
 		AssessmentYearComparator comp = new AssessmentYearComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -951,7 +958,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousLandValueDes(List<String> currentList) {
+	public ArrayList<String> sortByPreviousLandValueDes(
+			ArrayList<String> currentList) {
 		PreviousLandValueComparator comp = new PreviousLandValueComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -966,8 +974,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPreviousImprovementValueDes(
-			List<String> currentList) {
+	public ArrayList<String> sortByPreviousImprovementValueDes(
+			ArrayList<String> currentList) {
 		PreviousImprovementValueComparator comp = new PreviousImprovementValueComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -982,7 +990,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByYearBuiltDes(List<String> currentList) {
+	public ArrayList<String> sortByYearBuiltDes(ArrayList<String> currentList) {
 		YearBuiltComparator comp = new YearBuiltComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -996,7 +1004,8 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByBigImprovementYearDes(List<String> currentList) {
+	public ArrayList<String> sortByBigImprovementYearDes(
+			ArrayList<String> currentList) {
 		BigImprovementYearComparator comp = new BigImprovementYearComparator(
 				store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
@@ -1011,7 +1020,7 @@ public class DataStore {
 	 * @return sortedList - ArrayList of houseIDs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> sortByPriceDes(List<String> currentList) {
+	public ArrayList<String> sortByPriceDes(ArrayList<String> currentList) {
 		PriceComparator comp = new PriceComparator(store);
 		Collections.sort(currentList, Collections.reverseOrder(comp));
 		return currentList;
@@ -1088,8 +1097,8 @@ public class DataStore {
 	 */
 	public void updateHouse(String Owner, int price, boolean isSelling,
 			String house, double longitude, double latitude, String postalCode) {
-		
-		//TODO Remove - Debugging purposes
+
+		// TODO Remove - Debugging purposes
 		System.out.println("Add New User");
 		System.out.println(Owner);
 		System.out.println(price);
@@ -1097,7 +1106,7 @@ public class DataStore {
 		System.out.println(latitude);
 		System.out.println(longitude);
 		System.out.println(postalCode);
-		
+
 		// create and set object variables
 		HouseDataPoint currentHouse = store.get(house);
 
@@ -1174,7 +1183,7 @@ public class DataStore {
 				boolean oddNodes = false;
 				double y = currentHouse.getLatitude();
 				double x = currentHouse.getLongitude();
-				
+
 				System.out.println(y + " " + x);
 
 				for (int i = 0; i < numVertexes; i++) {
@@ -1183,13 +1192,12 @@ public class DataStore {
 						j = 0;
 					}
 					if (((latitudes[i] < y) && (latitudes[j] >= y))
-						|| ((latitudes[j] < y) && (latitudes[i] >= y))) 
-					
+							|| ((latitudes[j] < y) && (latitudes[i] >= y)))
+
 					{
-						if (longitudes[i] 
-						  + (y - latitudes[i]) 
-						  / (latitudes[j] - latitudes[i])
-						  * (longitudes[j] - longitudes[i]) < x) {
+						if (longitudes[i] + (y - latitudes[i])
+								/ (latitudes[j] - latitudes[i])
+								* (longitudes[j] - longitudes[i]) < x) {
 							oddNodes = !oddNodes;
 						}
 					}
