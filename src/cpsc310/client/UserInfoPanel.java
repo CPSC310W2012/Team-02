@@ -1,5 +1,7 @@
 package cpsc310.client;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -33,16 +35,18 @@ public class UserInfoPanel extends FlowPanel {
 	private LoginServiceAsync loginService = GWT.create(LoginService.class);
 	private HouseDataServiceAsync houseDataSvc;
 	private HouseTable table;
+	private List<String> currentIDStore;
 	
 	/**
 	 * Constructor
 	 * @param loginInfo - current user's information instance
 	 */
-	public UserInfoPanel(LoginInfo loginInfo, HouseTable table, HouseDataServiceAsync houseDataSvc) {
+	public UserInfoPanel(LoginInfo loginInfo, HouseTable table, HouseDataServiceAsync houseDataSvc,List<String> currentID) {
 		if (loginInfo != null) {
 			this.houseDataSvc = houseDataSvc;
 			this.loginInfo = loginInfo;
 			this.table = table;
+			currentIDStore = currentID;
 			
 			// Set style
 			this.setStyleName("userInfoPanel");
@@ -147,12 +151,14 @@ public class UserInfoPanel extends FlowPanel {
 		}
 
 		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+		AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 			}
-			public void onSuccess(Void result) {
+			@Override
+			public void onSuccess(List<String> result) {
 				table.refreshTableFromBeginning();
+				currentIDStore = result;
 			}
 		};
 		houseDataSvc.getHomesByUser(loginInfo.getEmailAddress(), callback);

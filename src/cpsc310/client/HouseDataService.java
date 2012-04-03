@@ -11,15 +11,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface HouseDataService extends RemoteService {
 
 	/**
-	 * Get house data for initial drawing of table.
-	 * 
-	 * @param start
-	 * @param range
-	 * @return list of HouseData within specified range
-	 */
-	public List<HouseData> getHouses(int start, int range);
-
-	/**
 	 * Get house data for drawing of table from search result.
 	 * 
 	 * @param list
@@ -37,74 +28,67 @@ public interface HouseDataService extends RemoteService {
 	 * @param isSelling
 	 *            - integer values, 0 not for sale, 1 for sale, -1 all
 	 */
-	public void searchHouses(String[] userSearchInput, int isSelling);
-
-	/**
-	 * Helper to table drawing to figure out how many rows need to exist.
-	 * 
-	 * @return size of database
-	 */
-	public int getHouseDatabaseLength();
+	public List<String> searchHouses(String[] userSearchInput, int isSelling);
 
 	/**
 	 * Sort by Address in server side current working id set
 	 */
-	public void sortByAddress(boolean isSortAscending);
+	public List<String> sortByAddress(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Postal Code in server side current working id set
 	 */
-	public void sortByPostalCode(boolean isSortAscending);
+	public List<String> sortByPostalCode(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Realtor in server side current working id set
 	 */
-	public void sortByOwner(boolean isSortAscending);
+	public List<String> sortByOwner(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by For Sale Status in server side current working id set
 	 */
-	public void sortByForSale(boolean isSortAscending);
+	public List<String> sortByForSale(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by land value in server side current working id set
 	 */
-	public void sortByCurrentLandValue(boolean isSortAscending);
+	public List<String> sortByCurrentLandValue(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Improvement Value in server side current working id set
 	 */
-	public void sortByCurrentImprovementValue(boolean isSortAscending);
+	public List<String> sortByCurrentImprovementValue(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Assessment Year in server side current working id set
 	 */
-	public void sortByAssessmentYear(boolean isSortAscending);
+	public List<String> sortByAssessmentYear(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Previous Land Value in server side current working id set
 	 */
-	public void sortByPreviousLandValue(boolean isSortAscending);
+	public List<String> sortByPreviousLandValue(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Previous Improvement Value in server side current working id set
 	 */
-	public void sortByPreviousImprovementValue(boolean isSortAscending);
+	public List<String> sortByPreviousImprovementValue(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Year Built in server side current working id set
 	 */
-	public void sortByYearBuilt(boolean isSortAscending);
+	public List<String> sortByYearBuilt(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Big Improvement Year in server side current working id set
 	 */
-	public void sortByBigImprovementYear(boolean isSortAscending);
+	public List<String> sortByBigImprovementYear(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Sort by Price in server side current working id set
 	 */
-	public void sortByPrice(boolean isSortAscending);
+	public List<String> sortByPrice(boolean isSortAscending, List<String> houseIDs);
 
 	/**
 	 * Add/update user specified information about the specified data in the
@@ -138,7 +122,7 @@ public interface HouseDataService extends RemoteService {
 	/**
 	 * Sets ID store to all the keys of the DB
 	 */
-	public void refreshIDStore();
+	public List<String> refreshIDStore();
 
 	/**
 	 * resets the house (owner status, for sale) and removes from datastore
@@ -163,7 +147,7 @@ public interface HouseDataService extends RemoteService {
 	 * 
 	 * @param email
 	 */
-	public void getHomesByUser(String email);
+	public List<String> getHomesByUser(String email);
 
 	/**
 	 * Searchs within the list of for sale houses within a specified polygon
@@ -173,6 +157,13 @@ public interface HouseDataService extends RemoteService {
 	 * @param latitude
 	 * @param longitude
 	 */
-	public void searchHousesForSalePolygon(String[] userSearchInput,
+	public List<String> searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude);
+	
+	/**
+	 * Helper to table drawing to figure out how many rows need to exist.
+	 * 
+	 * @return size of database
+	 */
+	public int getHouseDatabaseLength();
 }

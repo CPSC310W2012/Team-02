@@ -57,6 +57,8 @@ public class SearchPanel extends FlowPanel {
 
 	// for local access of search button
 	final Button searchBtn;
+	
+	private List<String> currentIDStore;
 
 	/**
 	 * Constructor
@@ -67,7 +69,7 @@ public class SearchPanel extends FlowPanel {
 	 * @param table
 	 *            - table that appears in caller's class
 	 */
-	public SearchPanel(PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc) {
+	public SearchPanel(PropertyMap map, HouseTable table, HouseDataServiceAsync houseDataSvc, List<String> currentIDStore) {
 		this.houseDataSvc = houseDataSvc;
 		final FlowPanel searchSettingPanel = new FlowPanel();
 		final PopupPanel advancedSettingPopup = new PopupPanel(false);
@@ -76,6 +78,7 @@ public class SearchPanel extends FlowPanel {
 		final Button advancedSearchBtn = new Button("Advanced Search >>");
 		searchBtn = new Button("Search");
 		final Button resetSearchBtn = new Button("Reset");
+		this.currentIDStore = currentIDStore;
 
 		// Attach caller's map and table
 		this.map = map;
@@ -556,17 +559,19 @@ public class SearchPanel extends FlowPanel {
 		}
 
 		// Set up the callback object
-		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+		AsyncCallback<List<String>> callback = new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
 				Window.alert(caught.getMessage());
 				loadingSearch.removeFromParent();
 				searchBtn.setEnabled(true);
 			}
 
-			public void onSuccess(Void result) {
+			@Override
+			public void onSuccess(List<String> result) {
 				table.refreshTableFromBeginning();
 				loadingSearch.removeFromParent();
 				searchBtn.setEnabled(true);
+				currentIDStore = result;
 			}
 		};
 

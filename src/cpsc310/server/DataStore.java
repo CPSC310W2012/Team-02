@@ -369,8 +369,8 @@ public class DataStore {
 	 * 
 	 * @return keys
 	 */
-	public List<String> getAllKeys() {
-		List<String> keys = new ArrayList<String>();
+	public ArrayList<String> getAllKeys() {
+		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(store.keySet());
 		return keys;
 	}

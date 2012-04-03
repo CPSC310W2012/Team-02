@@ -16,7 +16,6 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		HouseDataService {
 
 	private DataStore store;
-	private List<String> workingIDStore;
 
 	/**
 	 * Constructor
@@ -29,36 +28,12 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Refreshes the working set of IDs
 	 */
-	public void refreshIDStore() {
-		workingIDStore = store.getAllKeys();
-	}
-
-	/**
-	 * Get house data for initial drawing of table. Returning list must be
-	 * ArrayList because of Google RPC's Serialization policy.
-	 * 
-	 * @param start
-	 * @param range
-	 * @return list of HouseData within specified range
-	 */
-	@Override
-	public List<HouseData> getHouses(int start, int range) {
-		// retrieve house data points
-		List<HouseDataPoint> tempList = store.getHouses(workingIDStore, start,
-				range);
-
-		// Convert HouseDataPoint into HouseData
-		if (tempList == null) {
-			tempList = new ArrayList<HouseDataPoint>();
-		}
-		List<HouseData> grab = convertToListHouseData(tempList);
-
-		// Change below to return grab
-		return grab;
+	public List<String> refreshIDStore() {
+		return store.getAllKeys();
 	}
 
 	@Override
-	public void searchHouses(String[] userSearchInput, int isSelling) {
+	public List<String> searchHouses(String[] userSearchInput, int isSelling) {
 		// [0]"civicNumber"
 		// [1]"StreetName",
 		// Value "Current Land Value" - [2]min, [3]max
@@ -117,18 +92,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 		// convert results
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
-		workingIDStore = convertedResults;
-	}
-
-	/**
-	 * Helper to table drawing to figure out how many rows need to exist.
-	 * 
-	 * @return size of database
-	 */
-	@Override
-	public int getHouseDatabaseLength() {
-		int databaseLength = workingIDStore.size();
-		return databaseLength;
+		return convertedResults;
 	}
 
 	/**
@@ -195,114 +159,122 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void sortByAddress(boolean isSortAscending) {
+	public List<String> sortByAddress(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByHouseID(workingIDStore);
+			return store.sortByHouseID(houseIDs);
 		} else {
-			workingIDStore = store.sortByHouseIDDes(workingIDStore);
+			return store.sortByHouseIDDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByPostalCode(boolean isSortAscending) {
+	public List<String> sortByPostalCode(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByPostalCode(workingIDStore);
+			return store.sortByPostalCode(houseIDs);
 		} else {
-			workingIDStore = store.sortByPostalCodeDes(workingIDStore);
+			return store.sortByPostalCodeDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByOwner(boolean isSortAscending) {
+	public List<String> sortByOwner(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByOwner(workingIDStore);
+			return store.sortByOwner(houseIDs);
 		} else {
-			workingIDStore = store.sortByOwnerDes(workingIDStore);
+			return store.sortByOwnerDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByForSale(boolean isSortAscending) {
+	public List<String> sortByForSale(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByForSale(workingIDStore);
+			return store.sortByForSale(houseIDs);
 		} else {
-			workingIDStore = store.sortByForSaleDes(workingIDStore);
+			return store.sortByForSaleDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByCurrentLandValue(boolean isSortAscending) {
+	public List<String> sortByCurrentLandValue(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByCurrentLandValue(workingIDStore);
+			return store.sortByCurrentLandValue(houseIDs);
 		} else {
-			workingIDStore = store.sortByCurrentLandValueDes(workingIDStore);
+			return store.sortByCurrentLandValueDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByCurrentImprovementValue(boolean isSortAscending) {
+	public List<String> sortByCurrentImprovementValue(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store
-					.sortByCurrentImprovementValue(workingIDStore);
+			return store.sortByCurrentImprovementValue(houseIDs);
 		} else {
-			workingIDStore = store
-					.sortByCurrentImprovementValueDes(workingIDStore);
+			return store.sortByCurrentImprovementValueDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByAssessmentYear(boolean isSortAscending) {
+	public List<String> sortByAssessmentYear(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByAssessmentYear(workingIDStore);
+			return store.sortByAssessmentYear(houseIDs);
 		} else {
-			workingIDStore = store.sortByAssessmentYearDes(workingIDStore);
+			return store.sortByAssessmentYearDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByPreviousLandValue(boolean isSortAscending) {
+	public List<String> sortByPreviousLandValue(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByPreviousLandValue(workingIDStore);
+			return store.sortByPreviousLandValue(houseIDs);
 		} else {
-			workingIDStore = store.sortByPreviousLandValueDes(workingIDStore);
+			return store.sortByPreviousLandValueDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByPreviousImprovementValue(boolean isSortAscending) {
+	public List<String> sortByPreviousImprovementValue(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store
-					.sortByPreviousImprovementValue(workingIDStore);
+			return store.sortByPreviousImprovementValue(houseIDs);
 		} else {
-			workingIDStore = store
-					.sortByPreviousImprovementValueDes(workingIDStore);
+			return store.sortByPreviousImprovementValueDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByYearBuilt(boolean isSortAscending) {
+	public List<String> sortByYearBuilt(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByYearBuilt(workingIDStore);
+			return store.sortByYearBuilt(houseIDs);
 		} else {
-			workingIDStore = store.sortByYearBuiltDes(workingIDStore);
+			return store.sortByYearBuiltDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByBigImprovementYear(boolean isSortAscending) {
+	public List<String> sortByBigImprovementYear(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByBigImprovementYear(workingIDStore);
+			return store.sortByBigImprovementYear(houseIDs);
 		} else {
-			workingIDStore = store.sortByBigImprovementYearDes(workingIDStore);
+			return store.sortByBigImprovementYearDes(houseIDs);
 		}
 	}
 
 	@Override
-	public void sortByPrice(boolean isSortAscending) {
+	public List<String> sortByPrice(boolean isSortAscending,
+			List<String> houseIDs) {
 		if (isSortAscending) {
-			workingIDStore = store.sortByPrice(workingIDStore);
+			return store.sortByPrice(houseIDs);
 		} else {
-			workingIDStore = store.sortByPriceDes(workingIDStore);
+			return store.sortByPriceDes(houseIDs);
 		}
 	}
 
@@ -325,7 +297,7 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public HouseData retrieveSingleHouse(int civicNumber, String street) {
-		workingIDStore = new ArrayList<String>();
+		ArrayList<String> workingIDStore = new ArrayList<String>();
 		workingIDStore.addAll(store.searchByAddress(civicNumber, street));
 		HouseDataPoint currentHDP = store.getHouses(workingIDStore, 0, 1)
 				.get(0);
@@ -333,20 +305,20 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void searchHousesForSalePolygon(String[] userSearchInput,
+	public List<String> searchHousesForSalePolygon(String[] userSearchInput,
 			double[] latitude, double[] longitude) {
-		//TODO: Degbuging - Remove
+		// TODO: Degbuging - Remove
 		System.out.println("Polygon Search");
 
 		Set<String> results = store.searchForSaleInPolygon(latitude, longitude);
 
 		results = firstPassSearch(userSearchInput, results);
 		results = secondPassSearch(userSearchInput, results);
-		
+
 		// convert to array
 		ArrayList<String> convertedResults = new ArrayList<String>();
 		convertedResults.addAll(results);
-		workingIDStore = convertedResults;
+		return convertedResults;
 	}
 
 	/**
@@ -427,8 +399,14 @@ public class HouseDataServiceImpl extends RemoteServiceServlet implements
 	}
 
 	@Override
-	public void getHomesByUser(String email) {
-		workingIDStore = new ArrayList<String>();
+	public List<String> getHomesByUser(String email) {
+		ArrayList<String> workingIDStore = new ArrayList<String>();
 		workingIDStore.addAll(store.searchByOwner(email));
+		return workingIDStore;
+	}
+
+	@Override
+	public int getHouseDatabaseLength() {
+		return store.getAllKeys().size();
 	}
 }
