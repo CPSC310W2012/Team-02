@@ -57,7 +57,7 @@ public class PasswordGenerator {
 	 * @post true;
 	 * @return the dialog box containing the disclaimer dialogbox.
 	 */
-	public void generateDisclaimer() {
+	public void generatePasswordPrompt() {
 		//check to see what the value of the cookie is
 		String retrievedValue = Cookies.getCookie(cookieName);
 		if(retrievedValue == null || retrievedValue.equals("false")) {
@@ -118,7 +118,7 @@ public class PasswordGenerator {
 				}
 				else
 				{
-					Window.Location.assign("www.google.com");
+					Window.Location.assign("http://www.google.com/");
 				}
 			}
 		});
